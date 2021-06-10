@@ -1,0 +1,10 @@
+@use 'theme' as *;
+
+%surface {
+    padding: 1.5em;
+    background-color: var(--color-surface);
+}
+
+%card {
+    border-radius: var(--radius);
+}
