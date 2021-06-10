@@ -7,8 +7,7 @@
     "main": "pages/_app.js",
     "scripts": {
         "dev": "next dev",
-        "#build": "`next export` uses static export; Use only `next build` for other deploy options.",
-        "build": "next build && next export",
+        "build": "next build",
         "start": "next start",
         "#clean": "Clean up dist files generated on dev, old builds, etc; Optimally done before new builds",
         "clean": "npx rimraf .next out"
