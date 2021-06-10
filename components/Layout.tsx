@@ -10,7 +10,7 @@ import '@reach/skip-nav/styles.css'
 import IconButton from './IconButton'
 import scrollToTop from '@/lib/scroll-to-top'
 
-export const SITE_TITLE = 'My App'
+export const SITE_TITLE = 'Boat Daddy'
 
 const PAGES = [
     { link: '/', title: 'Home' },
