@@ -26,7 +26,7 @@ function useAlert<S>(
         return (
             <Alert
                 hidden={!message}
-                className={`alert${isError ? ' alert__error' : ''}`}
+                className={`alert${isError ? ' alert--error' : ''}`}
             >
                 {isError && <ErrorIcon />}
                 {message && <span>{message.toString()}</span>}

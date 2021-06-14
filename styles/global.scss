@@ -237,7 +237,7 @@ button,
 .input,
 .button {
     outline: none;
-    line-height: 2em;
+    line-height: 2.2em;
     padding: 0 0.75rem;
     font-size: 1rem;
     font-weight: 300;
@@ -254,6 +254,13 @@ button,
 
     &:focus {
         box-shadow: var(--color-comment) 0px 0px 0px 3px;
+    }
+}
+
+.surface {
+    input,
+    .input {
+        background-color: var(--color-comment);
     }
 }
 
@@ -274,6 +281,7 @@ button,
     display: inline-flex;
     vertical-align: middle;
     align-items: center;
+    padding: 0 0.95rem;
     cursor: pointer;
     background: transparent;
 
@@ -392,7 +400,7 @@ button,
     letter-spacing: 0.01071em;
     background-color: var(--color-surface);
 }
-.alert__error {
+.alert--error {
     color: $red;
     background-color: $pink;
 }
@@ -455,18 +463,28 @@ button,
 
 .modal,
 [data-reach-dialog-content] {
-    width: 50vw;
-    margin: 10vh auto;
+    width: 100%;
+    height: 100vh;
+    box-sizing: border-box;
     background: var(--color-surface);
     padding: 2rem;
     outline: none;
+    transition: all 0.3s ease;
+
+    @include breakpoint(screen) {
+        width: 50vw;
+        height: auto;
+        margin: 10vh auto;
+    }
 
     .close-button {
         position: fixed;
         top: 1rem;
         right: 1rem;
-        line-height: 0.6rem;
+        line-height: 1rem;
+        padding: 0.3rem;
         font-size: 2rem;
+        box-shadow: none !important;
     }
 }
 
@@ -511,92 +529,6 @@ button,
 
 .surface {
     @extend %surface;
-}
-
-// Outline
-
-#__next {
-    > header,
-    > section,
-    > main,
-    > footer {
-        box-sizing: border-box;
-        max-width: 1280px;
-        margin: 0 auto;
-        padding-right: var(--spacing);
-        padding-left: var(--spacing);
-    }
-
-    > header {
-        width: 100%;
-        margin-top: var(--spacing);
-        margin-bottom: var(--spacing);
-
-        h1 {
-        }
-
-        nav {
-        }
-    }
-
-    > main {
-        line-height: 1.6;
-    }
-
-    > footer {
-        position: relative;
-        margin-top: $spacing-large;
-        margin-bottom: $spacing-large;
-        line-height: 1.6;
-
-        nav ul {
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-            display: flex;
-
-            li {
-                margin: 0 1em 0 0;
-                padding: 0;
-
-                &:first-child {
-                    font-weight: bold;
-                }
-            }
-        }
-
-        a.sourcecode {
-            text-decoration: none;
-            span {
-                display: none;
-                @extend .a;
-                @include breakpoint(screen) {
-                    display: unset;
-                }
-            }
-        }
-    }
-}
-
-#scroll-top {
-    position: absolute;
-    top: 0;
-    right: var(--spacing);
-    transition: transform 0.2s ease-in-out 0s;
-
-    &:hover {
-        transform: translateY(-10px);
-    }
-
-    svg {
-        width: 1.5em;
-        height: 1.5em;
-    }
-
-    @include breakpoint(omnivision) {
-        right: unset;
-        left: math.div($spacing-large, 2);
-    }
 }
 
 // Animations
@@ -644,4 +576,17 @@ button,
     font-size: 0.65em;
     letter-spacing: 0.08em;
     font-weight: 400;
+}
+
+.visually-hidden {
+    border: 0px;
+    clip: rect(0px, 0px, 0px, 0px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0px;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+    overflow-wrap: normal;
 }

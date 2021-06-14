@@ -1,5 +1,9 @@
 // import App from "next/app";
 import type { AppProps /*, AppContext */ } from 'next/app'
+import Amplify, { Auth } from 'aws-amplify'
+import awsconfig from '../src/aws-exports'
+
+Amplify.configure(awsconfig)
 
 import 'normalize.css'
 import '@/styles/global.scss'
