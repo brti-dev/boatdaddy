@@ -3,7 +3,7 @@ import React, { useReducer } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Auth } from 'aws-amplify'
+// import { Auth } from 'aws-amplify'
 import { BiArrowToTop as ArrowTopIcon } from 'react-icons/bi'
 import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
@@ -51,15 +51,15 @@ function Layout({ title = SITE_TITLE, children }) {
             password: event.target.password.value,
         }
 
-        try {
-            const res = await Auth.signIn(form)
-            console.log(res)
-        } catch (error) {
-            console.error(error)
-            setAlert(new Error(error.message))
-        } finally {
-            setSignIn({ loading: false })
-        }
+        // try {
+        //     const res = await Auth.signIn(form)
+        //     console.log(res)
+        // } catch (error) {
+        //     console.error(error)
+        //     setAlert(new Error(error.message))
+        // } finally {
+        //     setSignIn({ loading: false })
+        // }
     }
 
     const submitSignUp = async event => {
@@ -82,15 +82,15 @@ function Layout({ title = SITE_TITLE, children }) {
             },
         }
 
-        try {
-            const res = await Auth.signUp(form)
-            console.log(res)
-        } catch (error) {
-            console.error(error)
-            setAlert(new Error(error.message))
-        } finally {
-            setSignIn({ loading: false })
-        }
+        // try {
+        //     const res = await Auth.signUp(form)
+        //     console.log(res)
+        // } catch (error) {
+        //     console.error(error)
+        //     setAlert(new Error(error.message))
+        // } finally {
+        //     setSignIn({ loading: false })
+        // }
     }
 
     return (
@@ -282,9 +282,20 @@ function Layout({ title = SITE_TITLE, children }) {
                         ))}
                     </ul>
                 </nav>
-                <IconButton className={classes.scrollTop} onClick={scrollToTop}>
+                <div
+                    style={{
+                        lineHeight: 1.6,
+                        marginTop: '1em',
+                        fontSize: '80%',
+                    }}
+                >
+                    &copy;2021 Maranda Cox, CEO{' '}
+                    <span style={{ opacity: 0.33 }}>|</span>{' '}
+                    <a href="https://mattberti.com">Matt Berti</a> production
+                </div>
+                {/* <IconButton className={classes.scrollTop} onClick={scrollToTop}>
                     <ArrowTopIcon />
-                </IconButton>
+                </IconButton> */}
             </footer>
         </>
     )

@@ -18,10 +18,10 @@ export default function Home() {
             <main>
                 <p>
                     <strong>Boat Daddy</strong> is the premier boat hailing app
-                    that connects you to boats and daddies near you right now.
+                    that connects you to boats and daddies nearby right now.
                 </p>
                 <div className={classes.hero}>
-                    <Button href="/hail" variant="contained" color="secondary">
+                    <Button to="/hail" variant="contained" color="secondary">
                         Hail a Boat Daddy
                     </Button>
                     <img

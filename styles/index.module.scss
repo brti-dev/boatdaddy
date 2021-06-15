@@ -1,7 +1,7 @@
 .hero {
     position: relative;
 
-    button {
+    [class~='button'] {
         position: absolute;
         z-index: 1;
         top: 50%;
