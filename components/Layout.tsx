@@ -1,5 +1,5 @@
 /* eslint-disable prefer-template */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -10,12 +10,12 @@ import '@reach/skip-nav/styles.css'
 import { Dialog } from '@reach/dialog'
 import { VisuallyHidden } from '@reach/visually-hidden'
 
-import IconButton from './IconButton'
-import scrollToTop from '@/lib/scroll-to-top'
-import Button from './Button'
 import classes from '@/styles/layout.module.scss'
-import { useReducer } from 'react'
+import scrollToTop from '@/lib/scroll-to-top'
 import useAlert from '@/lib/use-alert'
+import Button from './Button'
+import IconButton from './IconButton'
+import CheckButton, { checkButtonContainerClass } from './CheckButton'
 
 export const SITE_TITLE = 'Boat Daddy'
 
@@ -229,33 +229,16 @@ function Layout({ title = SITE_TITLE, children }) {
                                         id="sessionform__birthdate"
                                         required
                                     />
-                                    <div className={classes.checkboxes}>
-                                        <input
-                                            type="checkbox"
-                                            name="gender"
-                                            value="male"
-                                            id="sessionform__gender"
-                                            className="visually-hidden"
-                                        />
-                                        <label
-                                            htmlFor="sessionform__gender"
-                                            className="button button-outlined"
-                                        >
+                                    <div className={checkButtonContainerClass}>
+                                        <CheckButton name="gender" value="male">
                                             👨 I'm a daddy
-                                        </label>
-                                        <input
-                                            type="checkbox"
+                                        </CheckButton>
+                                        <CheckButton
                                             name="has_boat"
                                             value="true"
-                                            id="sessionform__has_boat"
-                                            className="visually-hidden"
-                                        />
-                                        <label
-                                            htmlFor="sessionform__has_boat"
-                                            className="button button-outlined"
                                         >
                                             🛥️ I have a boat
-                                        </label>
+                                        </CheckButton>
                                     </div>
                                     <div className={classes.submitRow}>
                                         <Button

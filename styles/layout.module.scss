@@ -40,37 +40,10 @@
     }
 }
 
-.checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-
-    label {
-        margin-right: 1em;
-        opacity: 0.8;
-        border: 1px solid var(--color-comment);
-        font-size: 85%;
-        white-space: nowrap;
-
-        &:hover {
-            opacity: 1;
-        }
-
-        &:nth-last-of-type(1) {
-            margin: 0;
-        }
-    }
-
-    input:checked + label {
-        opacity: 1;
-        border-color: var(--color-font);
-        box-shadow: var(--color-font) 0px 0px 0px 1px;
-    }
-}
-
 .submitRow {
     display: flex;
     flex-direction: row-reverse;
-    margin-left: 1em;
+    gap: 1em;
 }
 
 .main {
