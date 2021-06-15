@@ -1,0 +1,22 @@
+.hero {
+    position: relative;
+
+    button {
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+
+        &:hover + img {
+            opacity: 0.9;
+        }
+    }
+
+    img {
+        object-fit: contain;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+}

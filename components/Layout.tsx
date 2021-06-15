@@ -1,5 +1,5 @@
 /* eslint-disable prefer-template */
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useReducer } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -20,7 +20,7 @@ import CheckButton, { checkButtonContainerClass } from './CheckButton'
 export const SITE_TITLE = 'Boat Daddy'
 
 const PAGES = [
-    { link: '/', title: 'Hail a Boat Daddy' },
+    { link: '/hail', title: 'Hail a Boat Daddy' },
     { link: '/about', title: 'About' },
     { link: '/privacy-policy', title: 'Policy' },
 ]
