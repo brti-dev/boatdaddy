@@ -24,6 +24,10 @@
     @include breakpoint(screen) {
       margin: 1em 0;
     }
+
+    a {
+      text-decoration: none !important;
+    }
   }
 }
 
@@ -55,6 +59,7 @@
   margin-top: var(--spacing);
   margin-bottom: var(--spacing);
   line-height: 1.6;
+  font-size: 95%;
 
   nav ul {
     margin: 0;

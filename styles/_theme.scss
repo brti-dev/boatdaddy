@@ -2,13 +2,13 @@
 
 @use 'sass:color';
 
-$blue: hsl(210, 100%, 65%);
-$lightblue: hsl(210, 100%, 70%);
-$darkblue: #0073e6;
+$blue: hsl(196, 68%, 55%);
+$lightblue: hsl(196, 68%, 65%);
+$darkblue: hsl(196, 68%, 40%);
 $red: #dd3333;
 $green: #00a264;
 $purple: #6b3ea8;
-$pink: #ffcfd8;
+$pink: #ea9ab2;
 $darkpink: color.scale($pink, $lightness: -10%);
 $darkerpink: color.scale($pink, $lightness: -20%);
 $darkestpink: color.scale($pink, $lightness: -30%);
@@ -20,11 +20,11 @@ $color-body-light: hsl(0, 0%, 98%);
 $color-surface-light: hsl(0, 0%, 85%);
 $color-surface-hover-light: color.scale($color-surface-light, $lightness: 30%);
 $color-comment-light: hsl(0, 0%, 70%);
-$color-primary-light: $darkblue;
-$color-primary-hover-light: $blue;
+$color-primary-light: hsl(172, 45%, 54%);
+$color-primary-hover-light: hsl(172, 45%, 60%);
 
 $color-font-dark: white;
-$color-body-dark: rgb(24, 26, 27);
+$color-body-dark: #071013;
 $color-surface-dark: rgb(36, 37, 38);
 $color-surface-hover-dark: color.scale($color-surface-dark, $lightness: 2%);
 $color-comment-dark: rgb(58, 59, 60);
@@ -37,13 +37,13 @@ $color-secondary-hover: color.scale($color-secondary, $lightness: 30%);
 // Media query based on client preference
 
 @mixin theme($theme) {
-    @if $theme == dark {
-        @media (prefers-color-scheme: dark) {
-            @content;
-        }
-    } @else {
-        @media (prefers-color-scheme: light) {
-            @content;
-        }
+  @if $theme == dark {
+    @media (prefers-color-scheme: dark) {
+      @content;
     }
+  } @else {
+    @media (prefers-color-scheme: light) {
+      @content;
+    }
+  }
 }

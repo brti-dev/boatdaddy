@@ -1,5 +1,5 @@
 /* eslint-disable prefer-template */
-import React, { useReducer } from 'react'
+import { useReducer, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -39,6 +39,14 @@ function Layout({ title = SITE_TITLE, children }) {
   const [Alert, setAlert] = useAlert(null)
   const openSignIn = () => setSignIn({ opened: true })
   const closeSignIn = () => setSignIn({ opened: false })
+
+  const formFocusRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (signIn.opened && formFocusRef.current) {
+      formFocusRef.current.focus()
+    }
+  }, [signIn])
 
   const submitSignIn = async event => {
     event.preventDefault()
@@ -113,7 +121,9 @@ function Layout({ title = SITE_TITLE, children }) {
       </Head>
       <SkipNavLink />
       <header id="top" className={classes.header}>
-        <h1>🛥️👨</h1>
+        <h1>
+          <Link href="/">🛥️👨</Link>
+        </h1>
         <div id="session">
           <>
             <Button onClick={openSignIn} variant="contained" color="secondary">
@@ -140,6 +150,8 @@ function Layout({ title = SITE_TITLE, children }) {
                     name="email"
                     id="sessionform__email"
                     required
+                    autoFocus
+                    ref={formFocusRef}
                   />
                   <label htmlFor="sessionform__password">Password</label>
                   <input
@@ -178,6 +190,8 @@ function Layout({ title = SITE_TITLE, children }) {
                     name="email"
                     id="sessionform__email"
                     required
+                    autoFocus
+                    ref={formFocusRef}
                   />
                   <label htmlFor="sessionform__password">Password</label>
                   <input
