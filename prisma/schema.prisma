@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Actor {
+  id Int @id @default(autoincrement())
+  role Role
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  ridesAsDriver Ride[] @relation("Driver")
+  ridesAsRider Ride[] @relation("Rider")
+}
+
+model Identity {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId Int @unique
+  User User @relation(fields: [userId], references: [id])
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+  bio String?
+  userId Int @unique
+  User User @relation(fields: [userId], references: [id])
+}
+
+model Ride {
+  id Int @id @default(autoincrement())
+  startedAt DateTime @default(now())
+  finishedAt DateTime?
+  driver Actor @relation("Driver", fields: [driverId], references: [id])
+  driverId Int
+  rider Actor @relation("Rider", fields: [riderId], references: [id])
+  riderId Int
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  isDaddy Boolean
+  hasBoat Boolean
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  identity Identity?
+  profile Profile?
+  actor Actor?
+  @@map(name: "users") // Maps NextAuth table
+}
+
+enum Role {
+  DRIVER
+  RIDER
+  ADMIN
+}
