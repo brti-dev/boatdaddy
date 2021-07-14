@@ -4,92 +4,71 @@
 .section,
 .main,
 .footer {
-    box-sizing: border-box;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding-right: var(--spacing);
-    padding-left: var(--spacing);
+  box-sizing: border-box;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-right: var(--spacing);
+  padding-left: var(--spacing);
 }
 
 .header {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 1em;
-    display: flex;
-    justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
 
-    h1 {
-        margin: 0;
+  h1 {
+    margin: 0;
 
-        @include breakpoint(screen) {
-            margin: 1em 0;
-        }
+    @include breakpoint(screen) {
+      margin: 1em 0;
     }
+  }
 }
 
 .sessionForm {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    & > * + * {
-        margin-top: 1em;
-    }
+  & > * + * {
+    margin-top: 1em;
+  }
 
-    h2 {
-        margin: 0;
-    }
+  h2 {
+    margin: 0;
+  }
 }
 
 .submitRow {
-    display: flex;
-    flex-direction: row-reverse;
-    gap: 1em;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1em;
 }
 
 .main {
-    line-height: 1.6;
+  line-height: 1.6;
 }
 
 .footer {
-    position: relative;
-    margin-top: var(--spacing);
-    margin-bottom: var(--spacing);
-    line-height: 1.6;
+  position: relative;
+  margin-top: var(--spacing);
+  margin-bottom: var(--spacing);
+  line-height: 1.6;
 
-    nav ul {
-        margin: 0;
-        padding: 0;
-        list-style-type: none;
-        display: flex;
+  nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: flex;
 
-        li {
-            margin: 0 1em 0 0;
-            padding: 0;
+    li {
+      margin: 0 1em 0 0;
+      padding: 0;
 
-            &:first-child {
-                font-weight: bold;
-            }
-        }
+      &:first-child {
+        font-weight: bold;
+      }
     }
-}
-
-.scrollTop {
-    position: absolute;
-    top: 0;
-    right: var(--spacing);
-    transition: transform 0.2s ease-in-out 0s;
-
-    &:hover {
-        transform: translateY(-10px);
-    }
-
-    svg {
-        width: 1.5em;
-        height: 1.5em;
-    }
-
-    @include breakpoint(omnivision) {
-        right: unset;
-        left: math.div(var(--spacing), 2);
-    }
+  }
 }

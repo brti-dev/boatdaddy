@@ -259,9 +259,6 @@ function Layout({ title = SITE_TITLE, children }) {
           &copy;2021 Maranda Cox, CEO <span style={{ opacity: 0.33 }}>|</span>{' '}
           <a href="https://mattberti.com">Matt Berti</a> production
         </div>
-        {/* <IconButton className={classes.scrollTop} onClick={scrollToTop}>
-                    <ArrowTopIcon />
-                </IconButton> */}
       </footer>
     </>
   )
