@@ -77,24 +77,3 @@
     }
   }
 }
-
-.scrollTop {
-  position: absolute;
-  top: 0;
-  right: var(--spacing);
-  transition: transform 0.2s ease-in-out 0s;
-
-  &:hover {
-    transform: translateY(-10px);
-  }
-
-  svg {
-    width: 1.5em;
-    height: 1.5em;
-  }
-
-  @include breakpoint(omnivision) {
-    right: unset;
-    left: math.div(var(--spacing), 2);
-  }
-}

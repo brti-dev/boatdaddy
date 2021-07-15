@@ -3,7 +3,7 @@ import { useReducer, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-// import { Auth } from 'aws-amplify'
+import { Auth } from 'aws-amplify'
 import { BiArrowToTop as ArrowTopIcon } from 'react-icons/bi'
 import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
@@ -11,10 +11,8 @@ import { Dialog } from '@reach/dialog'
 import { VisuallyHidden } from '@reach/visually-hidden'
 
 import classes from '@/styles/layout.module.scss'
-import scrollToTop from '@/lib/scroll-to-top'
 import useAlert from '@/lib/use-alert'
 import Button from './Button'
-import IconButton from './IconButton'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
 
 export const SITE_TITLE = 'Boat Daddy'
@@ -58,16 +56,17 @@ function Layout({ title = SITE_TITLE, children }) {
       username: event.target.email.value,
       password: event.target.password.value,
     }
+    console.log(form)
 
-    // try {
-    //     const res = await Auth.signIn(form)
-    //     console.log(res)
-    // } catch (error) {
-    //     console.error(error)
-    //     setAlert(new Error(error.message))
-    // } finally {
-    //     setSignIn({ loading: false })
-    // }
+    try {
+      const res = await Auth.signIn(form)
+      console.log(res)
+    } catch (error) {
+      console.error(error)
+      setAlert(new Error(error.message))
+    } finally {
+      setSignIn({ loading: false })
+    }
   }
 
   const submitSignUp = async event => {
@@ -89,6 +88,7 @@ function Layout({ title = SITE_TITLE, children }) {
         'custom:has_boat': event.target.has_boat.value,
       },
     }
+    console.log(form)
 
     // try {
     //     const res = await Auth.signUp(form)
@@ -273,9 +273,6 @@ function Layout({ title = SITE_TITLE, children }) {
           &copy;2021 Maranda Cox, CEO <span style={{ opacity: 0.33 }}>|</span>{' '}
           <a href="https://mattberti.com">Matt Berti</a> production
         </div>
-        {/* <IconButton className={classes.scrollTop} onClick={scrollToTop}>
-                    <ArrowTopIcon />
-                </IconButton> */}
       </footer>
     </>
   )
