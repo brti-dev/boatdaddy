@@ -3,7 +3,7 @@ import { useReducer, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-// import { Auth } from 'aws-amplify'
+import { signIn, signOut, useSession } from 'next-auth/client'
 import { BiArrowToTop as ArrowTopIcon } from 'react-icons/bi'
 import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
@@ -11,7 +11,6 @@ import { Dialog } from '@reach/dialog'
 import { VisuallyHidden } from '@reach/visually-hidden'
 
 import classes from '@/styles/layout.module.scss'
-import scrollToTop from '@/lib/scroll-to-top'
 import useAlert from '@/lib/use-alert'
 import Button from './Button'
 import IconButton from './IconButton'
@@ -25,6 +24,22 @@ const PAGES = [
   { link: '/privacy-policy', title: 'Policy' },
 ]
 
+function useCsrfToken() {
+  const token = useRef(null)
+
+  useEffect(() => {
+    const fetchTokenUrl = 'http://localhost:3000/api/auth/csrf'
+    fetch(fetchTokenUrl)
+      .then(res => res.json())
+      .then(data => {
+        token.current = data.csrfToken
+        console.log('Fetched csrf token', data)
+      })
+  }, [])
+
+  return token
+}
+
 function Layout({ title = SITE_TITLE, children }) {
   const { pathname, query } = useRouter()
   const pathnameRoot = pathname.split('/', 2).join('/')
@@ -32,48 +47,66 @@ function Layout({ title = SITE_TITLE, children }) {
   const currentPageIndex = PAGES.findIndex(page => page.link === pathnameRoot)
   const isCurrentPage = (link: string) => link === pathnameRoot
 
-  const [signIn, setSignIn] = useReducer(
+  const [session, loading] = useSession()
+
+  const [signInState, setSignInState] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     { opened: false, loading: false, show: 'signin' }
   )
   const [Alert, setAlert] = useAlert(null)
-  const openSignIn = () => setSignIn({ opened: true })
-  const closeSignIn = () => setSignIn({ opened: false })
+  const openSignIn = () => setSignInState({ opened: true })
+  const closeSignIn = () => setSignInState({ opened: false })
 
   const formFocusRef = useRef<HTMLInputElement>(null)
 
+  const csrfToken = useCsrfToken()
+
   useEffect(() => {
-    if (signIn.opened && formFocusRef.current) {
+    if (signInState.opened && formFocusRef.current) {
       formFocusRef.current.focus()
     }
-  }, [signIn])
+  }, [signInState])
 
   const submitSignIn = async event => {
     event.preventDefault()
 
-    setSignIn({ loading: true })
+    if (!csrfToken.current) {
+      console.error('No csrf token', csrfToken)
+      setAlert(new Error('Something went wrong'))
+
+      return
+    }
+
+    setSignInState({ loading: true })
     setAlert(null)
 
     const form = {
-      username: event.target.email.value,
-      password: event.target.password.value,
+      csrfToken: csrfToken.current,
+      email: event.target.email.value,
     }
 
+    fetch()
+
+    // const form = {
+    //   username: event.target.email.value,
+    //   password: event.target.password.value,
+    // }
+
     // try {
-    //     const res = await Auth.signIn(form)
+    //     const res = await Auth.signInState(form)
     //     console.log(res)
     // } catch (error) {
     //     console.error(error)
     //     setAlert(new Error(error.message))
     // } finally {
-    //     setSignIn({ loading: false })
+    //     setSignInState({ loading: false })
     // }
   }
 
   const submitSignUp = async event => {
     event.preventDefault()
 
-    setSignIn({ loading: true })
+    setSignInState({ loading: true })
     setAlert(null)
 
     const form = {
@@ -97,9 +130,141 @@ function Layout({ title = SITE_TITLE, children }) {
     //     console.error(error)
     //     setAlert(new Error(error.message))
     // } finally {
-    //     setSignIn({ loading: false })
+    //     setSignInState({ loading: false })
     // }
   }
+
+  const SignIn = () => (
+    <>
+      <Button onClick={openSignIn} variant="contained" color="secondary">
+        Sign In
+      </Button>
+      <Dialog
+        isOpen={signInState.opened}
+        onDismiss={closeSignIn}
+        className="surface"
+        aria-label="sign in"
+        style={{ maxWidth: 500 }}
+      >
+        <button className="close-button" onClick={closeSignIn}>
+          <VisuallyHidden>Close</VisuallyHidden>
+          <span aria-hidden>×</span>
+        </button>
+        {signInState.show === 'signin' ? (
+          <form method="post" className={classes.sessionForm}>
+            <input type="hidden" name="csrfToken" value={csrfToken.current} />
+            <h2>Hello, Daddy</h2>
+            <Alert />
+            <label htmlFor="sessionform__email">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="sessionform__email"
+              required
+              autoFocus
+              ref={formFocusRef}
+            />
+            <label htmlFor="sessionform__password">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="sessionform__password"
+              required
+            />
+            <div className={classes.submitRow}>
+              <Button
+                type="submit"
+                loading={signInState.loading}
+                variant="contained"
+                color="primary"
+              >
+                Sign In
+              </Button>
+              <Button
+                onClick={() =>
+                  setSignInState({
+                    show: 'signup',
+                  })
+                }
+              >
+                Sign Up
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <form onSubmit={submitSignUp} className={classes.sessionForm}>
+            <h2>Welcome, Daddy</h2>
+            <Alert />
+            <label htmlFor="sessionform__email">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="sessionform__email"
+              required
+              autoFocus
+              ref={formFocusRef}
+            />
+            <label htmlFor="sessionform__password">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="sessionform__password"
+              required
+            />
+            <label htmlFor="sessionform__name">Name</label>
+            <input
+              type="text"
+              name="name"
+              id="sessionform__name"
+              required
+              placeholder="Given name or nickname"
+            />
+            <label htmlFor="sessionform__birthdate">Birthday</label>
+            <input
+              type="date"
+              name="birthdate"
+              id="sessionform__birthdate"
+              required
+            />
+            <div className={checkButtonContainerClass}>
+              <CheckButton name="gender" value="male">
+                👨 I'm a daddy
+              </CheckButton>
+              <CheckButton name="has_boat" value="true">
+                🛥️ I have a boat
+              </CheckButton>
+            </div>
+            <div className={classes.submitRow}>
+              <Button
+                type="submit"
+                loading={signInState.loading}
+                variant="contained"
+                color="primary"
+              >
+                Sign Up
+              </Button>
+              <Button
+                onClick={() =>
+                  setSignInState({
+                    show: 'signin',
+                  })
+                }
+              >
+                Sign In
+              </Button>
+            </div>
+          </form>
+        )}
+      </Dialog>
+    </>
+  )
+
+  const SignedIn = () => (
+    <>
+      {session.user.email}
+      <Button onClick={() => signOut()}>Sign Out</Button>
+    </>
+  )
 
   return (
     <>
@@ -124,129 +289,7 @@ function Layout({ title = SITE_TITLE, children }) {
         <h1>
           <Link href="/">🛥️👨</Link>
         </h1>
-        <div id="session">
-          <>
-            <Button onClick={openSignIn} variant="contained" color="secondary">
-              Sign In
-            </Button>
-            <Dialog
-              isOpen={signIn.opened}
-              onDismiss={closeSignIn}
-              className="surface"
-              aria-label="sign in"
-              style={{ maxWidth: 500 }}
-            >
-              <button className="close-button" onClick={closeSignIn}>
-                <VisuallyHidden>Close</VisuallyHidden>
-                <span aria-hidden>×</span>
-              </button>
-              {signIn.show === 'signin' ? (
-                <form onSubmit={submitSignIn} className={classes.sessionForm}>
-                  <h2>Hello, Daddy</h2>
-                  <Alert />
-                  <label htmlFor="sessionform__email">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="sessionform__email"
-                    required
-                    autoFocus
-                    ref={formFocusRef}
-                  />
-                  <label htmlFor="sessionform__password">Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="sessionform__password"
-                    required
-                  />
-                  <div className={classes.submitRow}>
-                    <Button
-                      type="submit"
-                      loading={signIn.loading}
-                      variant="contained"
-                      color="primary"
-                    >
-                      Sign In
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        setSignIn({
-                          show: 'signup',
-                        })
-                      }
-                    >
-                      Sign Up
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                <form onSubmit={submitSignUp} className={classes.sessionForm}>
-                  <h2>Welcome, Daddy</h2>
-                  <Alert />
-                  <label htmlFor="sessionform__email">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="sessionform__email"
-                    required
-                    autoFocus
-                    ref={formFocusRef}
-                  />
-                  <label htmlFor="sessionform__password">Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    id="sessionform__password"
-                    required
-                  />
-                  <label htmlFor="sessionform__name">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="sessionform__name"
-                    required
-                    placeholder="Given name or nickname"
-                  />
-                  <label htmlFor="sessionform__birthdate">Birthday</label>
-                  <input
-                    type="date"
-                    name="birthdate"
-                    id="sessionform__birthdate"
-                    required
-                  />
-                  <div className={checkButtonContainerClass}>
-                    <CheckButton name="gender" value="male">
-                      👨 I'm a daddy
-                    </CheckButton>
-                    <CheckButton name="has_boat" value="true">
-                      🛥️ I have a boat
-                    </CheckButton>
-                  </div>
-                  <div className={classes.submitRow}>
-                    <Button
-                      type="submit"
-                      loading={signIn.loading}
-                      variant="contained"
-                      color="primary"
-                    >
-                      Sign Up
-                    </Button>
-                    <Button
-                      onClick={() =>
-                        setSignIn({
-                          show: 'signin',
-                        })
-                      }
-                    >
-                      Sign In
-                    </Button>
-                  </div>
-                </form>
-              )}
-            </Dialog>
-          </>
-        </div>
+        <div id="session">{!session ? <SignIn /> : <SignedIn />}</div>
       </header>
       <SkipNavContent />
       <main className={classes.main}>{children}</main>

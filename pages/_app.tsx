@@ -1,5 +1,6 @@
 // import App from "next/app";
 import type { AppProps /*, AppContext */ } from 'next/app'
+import { Provider } from 'next-auth/client'
 // import Amplify, { Auth } from 'aws-amplify'
 // import awsconfig from '../src/aws-exports'
 
@@ -9,7 +10,11 @@ import 'normalize.css'
 import '@/styles/global.scss'
 
 function MyApp({ Component, pageProps }: AppProps) {
-    return <Component {...pageProps} />
+  return (
+    <Provider session={pageProps.session}>
+      <Component {...pageProps} />
+    </Provider>
+  )
 }
 
 // Only uncomment this method if you have blocking data requirements for
