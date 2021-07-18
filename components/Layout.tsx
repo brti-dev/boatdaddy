@@ -12,6 +12,7 @@ import { VisuallyHidden } from '@reach/visually-hidden'
 import classes from '@/styles/layout.module.scss'
 import useAlert from '@/lib/use-alert'
 import Button from './Button'
+import Avatar from './Avatar'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
 
 export const SITE_TITLE = 'Boat Daddy'
@@ -46,6 +47,7 @@ function Layout({ title = SITE_TITLE, children }) {
   const isCurrentPage = (link: string) => link === pathnameRoot
 
   const [session, loading] = useSession()
+  console.log('useSession', session, loading)
 
   // State of modals and forms
   type SignInState = {
@@ -150,134 +152,138 @@ function Layout({ title = SITE_TITLE, children }) {
   }
 
   const SignIn = () => (
-    <>
-      <Button onClick={openSignIn} variant="contained" color="secondary">
-        Sign In
-      </Button>
-      <Dialog
-        isOpen={signInState.opened}
-        onDismiss={closeSignIn}
-        className="surface"
-        aria-label="sign in"
-        style={{ maxWidth: 500 }}
-      >
-        <button className="close-button" onClick={closeSignIn}>
-          <VisuallyHidden>Close</VisuallyHidden>
-          <span aria-hidden>×</span>
-        </button>
-        {signInState.show === 'signin' ? (
-          <form method="post" className={classes.sessionForm}>
-            <input type="hidden" name="csrfToken" value={csrfToken.current} />
-            <h2>Hello, Daddy</h2>
-            <Alert />
-            <label htmlFor="sessionform__email">Email</label>
-            <input
-              type="email"
-              name="email"
-              id="sessionform__email"
-              required
-              autoFocus
-              ref={formFocusRef}
-            />
-            <label htmlFor="sessionform__password">Password</label>
-            <input
-              type="password"
-              name="password"
-              id="sessionform__password"
-              required
-            />
-            <div className={classes.submitRow}>
-              <Button
-                type="submit"
-                loading={signInState.loading}
-                variant="contained"
-                color="primary"
-              >
-                Sign In
-              </Button>
-              <Button
-                onClick={() =>
-                  setSignInState({
-                    show: 'signup',
-                  })
-                }
-              >
-                Sign Up
-              </Button>
-            </div>
-          </form>
-        ) : (
-          <form onSubmit={submitSignUp} className={classes.sessionForm}>
-            <h2>Welcome, Daddy</h2>
-            <Alert />
-            <label htmlFor="sessionform__email">Email</label>
-            <input
-              type="email"
-              name="email"
-              id="sessionform__email"
-              required
-              autoFocus
-              ref={formFocusRef}
-            />
-            <label htmlFor="sessionform__password">Password</label>
-            <input
-              type="password"
-              name="password"
-              id="sessionform__password"
-              required
-            />
-            <label htmlFor="sessionform__name">Name</label>
-            <input
-              type="text"
-              name="name"
-              id="sessionform__name"
-              required
-              placeholder="Given name or nickname"
-            />
-            <label htmlFor="sessionform__birthdate">Birthday</label>
-            <input
-              type="date"
-              name="birthdate"
-              id="sessionform__birthdate"
-              required
-            />
-            <div className={checkButtonContainerClass}>
-              <CheckButton name="gender" value="male">
-                👨 I'm a daddy
-              </CheckButton>
-              <CheckButton name="has_boat" value="true">
-                🛥️ I have a boat
-              </CheckButton>
-            </div>
-            <div className={classes.submitRow}>
-              <Button
-                type="submit"
-                loading={signInState.loading}
-                variant="contained"
-                color="primary"
-              >
-                Sign Up
-              </Button>
-              <Button
-                onClick={() =>
-                  setSignInState({
-                    show: 'signin',
-                  })
-                }
-              >
-                Sign In
-              </Button>
-            </div>
-          </form>
-        )}
-      </Dialog>
-    </>
+    <Button onClick={() => signIn()} variant="contained" color="secondary">
+      Sign In
+    </Button>
+    // <>
+    //   <Button onClick={openSignIn} variant="contained" color="secondary">
+    //     Sign In
+    //   </Button>
+    //   <Dialog
+    //     isOpen={signInState.opened}
+    //     onDismiss={closeSignIn}
+    //     className="surface"
+    //     aria-label="sign in"
+    //     style={{ maxWidth: 500 }}
+    //   >
+    //     <button className="close-button" onClick={closeSignIn}>
+    //       <VisuallyHidden>Close</VisuallyHidden>
+    //       <span aria-hidden>×</span>
+    //     </button>
+    //     {signInState.show === 'signin' ? (
+    //       <form method="post" className={classes.sessionForm}>
+    //         <input type="hidden" name="csrfToken" value={csrfToken.current} />
+    //         <h2>Hello, Daddy</h2>
+    //         <Alert />
+    //         <label htmlFor="sessionform__email">Email</label>
+    //         <input
+    //           type="email"
+    //           name="email"
+    //           id="sessionform__email"
+    //           required
+    //           autoFocus
+    //           ref={formFocusRef}
+    //         />
+    //         <label htmlFor="sessionform__password">Password</label>
+    //         <input
+    //           type="password"
+    //           name="password"
+    //           id="sessionform__password"
+    //           required
+    //         />
+    //         <div className={classes.submitRow}>
+    //           <Button
+    //             type="submit"
+    //             loading={signInState.loading}
+    //             variant="contained"
+    //             color="primary"
+    //           >
+    //             Sign In
+    //           </Button>
+    //           <Button
+    //             onClick={() =>
+    //               setSignInState({
+    //                 show: 'signup',
+    //               })
+    //             }
+    //           >
+    //             Sign Up
+    //           </Button>
+    //         </div>
+    //       </form>
+    //     ) : (
+    //       <form onSubmit={submitSignUp} className={classes.sessionForm}>
+    //         <h2>Welcome, Daddy</h2>
+    //         <Alert />
+    //         <label htmlFor="sessionform__email">Email</label>
+    //         <input
+    //           type="email"
+    //           name="email"
+    //           id="sessionform__email"
+    //           required
+    //           autoFocus
+    //           ref={formFocusRef}
+    //         />
+    //         <label htmlFor="sessionform__password">Password</label>
+    //         <input
+    //           type="password"
+    //           name="password"
+    //           id="sessionform__password"
+    //           required
+    //         />
+    //         <label htmlFor="sessionform__name">Name</label>
+    //         <input
+    //           type="text"
+    //           name="name"
+    //           id="sessionform__name"
+    //           required
+    //           placeholder="Given name or nickname"
+    //         />
+    //         <label htmlFor="sessionform__birthdate">Birthday</label>
+    //         <input
+    //           type="date"
+    //           name="birthdate"
+    //           id="sessionform__birthdate"
+    //           required
+    //         />
+    //         <div className={checkButtonContainerClass}>
+    //           <CheckButton name="gender" value="male">
+    //             👨 I'm a daddy
+    //           </CheckButton>
+    //           <CheckButton name="has_boat" value="true">
+    //             🛥️ I have a boat
+    //           </CheckButton>
+    //         </div>
+    //         <div className={classes.submitRow}>
+    //           <Button
+    //             type="submit"
+    //             loading={signInState.loading}
+    //             variant="contained"
+    //             color="primary"
+    //           >
+    //             Sign Up
+    //           </Button>
+    //           <Button
+    //             onClick={() =>
+    //               setSignInState({
+    //                 show: 'signin',
+    //               })
+    //             }
+    //           >
+    //             Sign In
+    //           </Button>
+    //         </div>
+    //       </form>
+    //     )}
+    //   </Dialog>
+    // </>
   )
 
   const SignedIn = () => (
     <>
-      {session.user.email}
-      <Button onClick={() => signOut()}>Sign Out</Button>
+      <Avatar alt={session.user.name} src={session.user.image ?? null}>
+        {session.user.name.slice(0, 1)}
+      </Avatar>
     </>
   )
 
