@@ -1,7 +1,7 @@
 {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "boatda1298e1e2",
+    "resourceNameTruncated": "boatdad71967be",
     "userPoolName": "boatdaddy",
     "autoVerifiedAttributes": [
         "email"
@@ -15,27 +15,21 @@
     "emailVerificationSubject": "Forgot password code: {####}",
     "emailVerificationMessage": "Forgot password code: {####}",
     "defaultPasswordPolicy": false,
-    "passwordPolicyMinLength": 8,
-    "passwordPolicyCharacters": [
-        "Requires Lowercase",
-        "Requires Numbers",
-        "Requires Symbols",
-        "Requires Uppercase"
-    ],
+    "passwordPolicyMinLength": 6,
+    "passwordPolicyCharacters": [],
     "requiredAttributes": [
         "email",
         "birthdate",
-        "gender",
-        "name",
-        "picture"
+        "given_name",
+        "gender"
     ],
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "boatda1298e1e2_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "boatdad71967be_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "1298e1e2",
+    "sharedId": "d71967be",
     "resourceName": "boatdaddy",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
@@ -65,7 +59,7 @@
     "authProvidersUserPool": [
         "Facebook"
     ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"birthdate\":\"birthday\",\"gender\":\"gender\",\"name\":\"name\",\"picture\":\"picture\",\"username\":\"id\"}}]",
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"birthdate\":\"birthday\",\"given_name\":\"first_name\",\"gender\":\"gender\",\"username\":\"id\"}}]",
     "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://main.d3hc29a1csvaa7.amplifyapp.com/\",\"https://www.boatdaddy.com\"],\"LogoutURLs\":[\"https://main.d3hc29a1csvaa7.amplifyapp.com/\",\"https://www.boatdaddy.com\"]}",
     "usernameCaseSensitive": false,
     "dependsOn": []

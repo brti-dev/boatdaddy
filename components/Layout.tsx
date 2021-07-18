@@ -4,7 +4,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Auth } from 'aws-amplify'
-import { BiArrowToTop as ArrowTopIcon } from 'react-icons/bi'
 import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
 import { Dialog } from '@reach/dialog'
@@ -30,16 +29,30 @@ function Layout({ title = SITE_TITLE, children }) {
   const currentPageIndex = PAGES.findIndex(page => page.link === pathnameRoot)
   const isCurrentPage = (link: string) => link === pathnameRoot
 
+  // State of modals and forms
+  type SignInState = {
+    opened: boolean
+    loading: boolean
+    show: 'signin' | 'signup'
+  }
+  type SignInNewState = {
+    opened?: boolean
+    loading?: boolean
+    show?: 'signin' | 'signup'
+  }
   const [signIn, setSignIn] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
+    (state: SignInState, newState: SignInNewState) => ({
+      ...state,
+      ...newState,
+    }),
     { opened: false, loading: false, show: 'signin' }
   )
   const [Alert, setAlert] = useAlert(null)
   const openSignIn = () => setSignIn({ opened: true })
   const closeSignIn = () => setSignIn({ opened: false })
 
+  // Focus on first form element when the modal opens
   const formFocusRef = useRef<HTMLInputElement>(null)
-
   useEffect(() => {
     if (signIn.opened && formFocusRef.current) {
       formFocusRef.current.focus()
@@ -75,30 +88,35 @@ function Layout({ title = SITE_TITLE, children }) {
     setSignIn({ loading: true })
     setAlert(null)
 
-    const form = {
+    const signInForm = {
       username: event.target.email.value,
       password: event.target.password.value,
+    }
+    const signUpForm = {
+      ...signInForm,
       attributes: {
         email: event.target.email.value,
         gender: event.target.gender.value,
         birthdate: event.target.birthdate.value,
         given_name: event.target.name.value,
-        name: event.target.name.value,
         preferred_username: event.target.email.value,
-        'custom:has_boat': event.target.has_boat.value,
+        // 'custom:has_boat': event.target.has_boat.value,
       },
     }
-    console.log(form)
+    console.log({ signUpForm })
 
-    // try {
-    //     const res = await Auth.signUp(form)
-    //     console.log(res)
-    // } catch (error) {
-    //     console.error(error)
-    //     setAlert(new Error(error.message))
-    // } finally {
-    //     setSignIn({ loading: false })
-    // }
+    try {
+      const signUpRes = await Auth.signUp(signUpForm)
+      console.log({ signUpRes })
+
+      const signInRes = await Auth.signIn(signInForm)
+      console.log({ signInRes })
+    } catch (error) {
+      console.error(error)
+      setAlert(new Error(error.message))
+    } finally {
+      setSignIn({ loading: false })
+    }
   }
 
   return (
