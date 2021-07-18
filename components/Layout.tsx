@@ -4,7 +4,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { signIn, signOut, useSession } from 'next-auth/client'
-import { BiArrowToTop as ArrowTopIcon } from 'react-icons/bi'
 import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
 import { Dialog } from '@reach/dialog'
@@ -13,7 +12,6 @@ import { VisuallyHidden } from '@reach/visually-hidden'
 import classes from '@/styles/layout.module.scss'
 import useAlert from '@/lib/use-alert'
 import Button from './Button'
-import IconButton from './IconButton'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
 
 export const SITE_TITLE = 'Boat Daddy'
@@ -49,14 +47,29 @@ function Layout({ title = SITE_TITLE, children }) {
 
   const [session, loading] = useSession()
 
+  // State of modals and forms
+  type SignInState = {
+    opened: boolean
+    loading: boolean
+    show: 'signin' | 'signup'
+  }
+  type SignInNewState = {
+    opened?: boolean
+    loading?: boolean
+    show?: 'signin' | 'signup'
+  }
   const [signInState, setSignInState] = useReducer(
-    (state, newState) => ({ ...state, ...newState }),
+    (state: SignInState, newState: SignInNewState) => ({
+      ...state,
+      ...newState,
+    }),
     { opened: false, loading: false, show: 'signin' }
   )
   const [Alert, setAlert] = useAlert(null)
   const openSignIn = () => setSignInState({ opened: true })
   const closeSignIn = () => setSignInState({ opened: false })
 
+  // Focus on first form element when the modal opens
   const formFocusRef = useRef<HTMLInputElement>(null)
 
   const csrfToken = useCsrfToken()
@@ -84,8 +97,7 @@ function Layout({ title = SITE_TITLE, children }) {
       csrfToken: csrfToken.current,
       email: event.target.email.value,
     }
-
-    fetch()
+    console.log(form)
 
     // const form = {
     //   username: event.target.email.value,
@@ -109,19 +121,22 @@ function Layout({ title = SITE_TITLE, children }) {
     setSignInState({ loading: true })
     setAlert(null)
 
-    const form = {
+    const signInForm = {
       username: event.target.email.value,
       password: event.target.password.value,
+    }
+    const signUpForm = {
+      ...signInForm,
       attributes: {
         email: event.target.email.value,
         gender: event.target.gender.value,
         birthdate: event.target.birthdate.value,
         given_name: event.target.name.value,
-        name: event.target.name.value,
         preferred_username: event.target.email.value,
-        'custom:has_boat': event.target.has_boat.value,
+        // 'custom:has_boat': event.target.has_boat.value,
       },
     }
+    console.log({ signUpForm })
 
     // try {
     //     const res = await Auth.signUp(form)
