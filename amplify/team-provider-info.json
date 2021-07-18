@@ -9,12 +9,11 @@
       "UnauthRoleName": "amplify-amplify6cf9a7453bea4-staging-63129-unauthRole",
       "StackName": "amplify-amplify6cf9a7453bea4-staging-63129",
       "StackId": "arn:aws:cloudformation:us-west-2:652796474903:stack/amplify-amplify6cf9a7453bea4-staging-63129/2739ac40-ccda-11eb-9b3a-0a0e9901ce6b",
-      "AmplifyAppId": "d3hc29a1csvaa7",
-      "AuthTriggerTemplateURL": ""
+      "AmplifyAppId": "d3hc29a1csvaa7"
     },
     "categories": {
       "auth": {
-        "boatdaddy430a612f": {}
+        "boatdaddy": {}
       }
     }
   }

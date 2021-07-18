@@ -1,6 +1,6 @@
 {
   "auth": {
-    "boatdaddy430a612f": {
+    "boatdaddy": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
