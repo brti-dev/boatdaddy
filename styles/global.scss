@@ -64,8 +64,9 @@ h4,
 h5,
 h6,
 .h {
+  font-family: 'Corben';
   text-rendering: optimizeLegibility;
-  line-height: 1;
+  line-height: 1.5;
   color: #282828;
 
   @include theme(dark) {

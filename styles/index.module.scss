@@ -1,8 +1,12 @@
 @use 'breakpoint' as *;
 
 .heading {
+  font-family: 'Corben';
+  font-size: 140%;
+  line-height: 1.3;
+
   @include breakpoint(screen) {
-    font-size: 200%;
+    font-size: 235%;
     padding-right: 3em;
   }
 }
@@ -16,8 +20,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-family: 'Corben';
     font-weight: bold;
     white-space: nowrap;
+
+    @include breakpoint(screen) {
+      font-size: 150%;
+    }
 
     &:hover + img {
       opacity: 0.9;
