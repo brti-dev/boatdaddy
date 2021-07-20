@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Image from 'next/image'
 
 import Layout from '@/components/Layout'
 import classes from '@/styles/index.module.scss'
@@ -16,16 +17,18 @@ export default function Home() {
       </Head>
       <main>
         <p className={classes.heading}>
-          <strong>Boat Daddy</strong> is the premier boat hailing app that
-          connects you to daddies on boats nearby right now.
+          <strong>Boat Daddy</strong> is the boat hailing app that connects you
+          to daddies on boats nearby right now.
         </p>
         <div className={classes.hero}>
           <Button to="/hail" variant="contained" color="secondary">
             Hail a Boat Daddy
           </Button>
-          <img
+          <Image
             src="/img/hero_redshortsdaddy.jpg"
             alt="Boat daddy in red shorts"
+            width={1920}
+            height={1280}
           />
         </div>
       </main>

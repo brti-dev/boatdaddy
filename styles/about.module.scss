@@ -1,0 +1,47 @@
+@use 'breakpoint' as *;
+
+.hero {
+  margin: 0;
+  padding: 0;
+  position: relative;
+
+  figcaption {
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 1em 2em;
+    font-style: normal;
+    font-family: 'Corben', serif;
+    font-size: 120%;
+    color: #55ad90;
+    text-align: left;
+    max-width: 100%;
+
+    @include breakpoint(screen) {
+      font-size: 225%;
+    }
+  }
+
+  img {
+    background-color: #dbdfe2;
+    object-fit: contain;
+  }
+}
+
+.dropCap {
+  &:first-of-type::first-letter {
+    font-family: 'Corben', serif;
+    float: left;
+    font-size: 7.125em;
+    font-weight: bold;
+    line-height: 0.65;
+    margin: 0;
+    padding: 0.05em 0.1em 0 0;
+  }
+}

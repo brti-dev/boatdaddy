@@ -334,7 +334,8 @@ function Layout({ title = SITE_TITLE, children }) {
             fontSize: '80%',
           }}
         >
-          &copy;2021 Maranda Cox, CEO <span style={{ opacity: 0.33 }}>|</span>{' '}
+          &copy;2021 The Andas <span style={{ opacity: 0.33 }}>|</span> Maranda
+          Cox, CEO <span style={{ opacity: 0.33 }}>|</span>{' '}
           <a href="https://mattberti.com">Matt Berti</a> production
         </div>
       </footer>
