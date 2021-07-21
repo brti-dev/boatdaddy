@@ -8,6 +8,7 @@ import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
 import { Dialog } from '@reach/dialog'
 import { VisuallyHidden } from '@reach/visually-hidden'
+import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
 import classes from '@/styles/layout.module.scss'
 import useAlert from '@/lib/use-alert'
@@ -40,7 +41,8 @@ function useCsrfToken() {
 }
 
 function Layout({ title = SITE_TITLE, children }) {
-  const { pathname, query } = useRouter()
+  const router = useRouter()
+  const { pathname, query } = router
   const pathnameRoot = pathname.split('/', 2).join('/')
 
   const currentPageIndex = PAGES.findIndex(page => page.link === pathnameRoot)
@@ -280,11 +282,25 @@ function Layout({ title = SITE_TITLE, children }) {
   )
 
   const SignedIn = () => (
-    <>
-      <Avatar alt={session.user.name} src={session.user.image ?? null}>
+    <Menu>
+      <MenuButton
+        as={Avatar}
+        alt={session.user.name}
+        src={session.user.image ?? null}
+      >
         {session.user.name.slice(0, 1)}
-      </Avatar>
-    </>
+      </MenuButton>
+      <MenuList>
+        <MenuItem onSelect={() => router.push('/rides')}>My Rides</MenuItem>
+        <MenuItem onSelect={() => router.push(`/@${session.user.email}`)}>
+          Profile
+        </MenuItem>
+        <MenuItem onSelect={() => router.push('/account')}>
+          Account Settings
+        </MenuItem>
+        <MenuItem onSelect={() => signOut()}>Sign Out</MenuItem>
+      </MenuList>
+    </Menu>
   )
 
   return (

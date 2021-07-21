@@ -29,6 +29,10 @@
       text-decoration: none !important;
     }
   }
+
+  [class^='avatar'] {
+    cursor: pointer;
+  }
 }
 
 .sessionForm {
