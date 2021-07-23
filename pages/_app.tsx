@@ -1,30 +1,41 @@
 import { useEffect } from 'react'
 import { Provider, useSession, signIn } from 'next-auth/client'
 
+import { Session } from '@/lib/session'
+import Loading from '@/components/Loading'
+import ProfileEdit from './account'
+
 import 'normalize.css'
 import '@/styles/global.scss'
 
-// Example use of authorization requirement:
+// Example use of authorization requirement at /pages/admin
 // @see https://next-auth.js.org/getting-started/client#alternatives
-// export default function AdminDashboard() {
-//   const [session] = useSession()
-//   // session is always non-null inside this page, all the way down the React tree.
-//   return 'Some super secret dashboard'
-// }
-// AdminDashboard.auth = true
 
 function MyApp({ Component, pageProps }) {
   return (
     <Provider session={pageProps.session}>
-      {Component.auth ? (
-        <Auth>
+      <ProfileCheck>
+        {Component.auth ? (
+          <Auth>
+            <Component {...pageProps} />
+          </Auth>
+        ) : (
           <Component {...pageProps} />
-        </Auth>
-      ) : (
-        <Component {...pageProps} />
-      )}
+        )}
+      </ProfileCheck>
     </Provider>
   )
+}
+
+function ProfileCheck({ children }) {
+  const [session, loading] = useSession()
+  const extSession: Session = session
+  const isUser = !!session?.user
+  const hasIdentity = !!extSession?.user.identity
+
+  if (loading || !isUser || hasIdentity) return children
+
+  return <ProfileEdit />
 }
 
 function Auth({ children }) {
@@ -41,7 +52,7 @@ function Auth({ children }) {
 
   // Session is being fetched, or no user.
   // If no user, useEffect() will redirect.
-  return <div>Loading...</div>
+  return <Loading fullScreen />
 }
 
 // Only uncomment this method if you have blocking data requirements for
