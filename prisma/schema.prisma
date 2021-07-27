@@ -42,10 +42,11 @@ model Actor {
 
 model Identity {
   id Int @id @default(autoincrement())
-  username String?
-  birthday DateTime? @db.Date
-  isDaddy Boolean?
-  hasBoat Boolean?
+  name String
+  username String
+  birthday DateTime @db.Date
+  isDaddy Boolean
+  hasBoat Boolean
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
   userId Int @unique
