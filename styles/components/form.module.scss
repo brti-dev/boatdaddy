@@ -1,0 +1,20 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 0.5em;
+  }
+}
+
+.submitRow {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1em;
+}
