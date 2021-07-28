@@ -9,32 +9,44 @@ export default async function handle(
 ) {
   const session_ = await getSession({ req })
   const session: Session = session_
+  const { name, username, birthday, isDaddy, hasBoat } = JSON.parse(req.body)
 
-  const operation = {
-    data: {
-      name: req.body.name,
-      username: req.body.username,
-      birthday: new Date(req.body.birthday),
-      isDaddy: req.body.isDaddy === 'true',
-      hasBoat: req.body.hasBoat === 'true',
-      //     createdAt DateTime @default(now()) @map(name: "created_at")
-      // updatedAt DateTime @updatedAt @map(name: "updated_at")
-      // userId: session.user.id,
-      User: { connect: { id: session.user.id } },
-    },
+  const data = {
+    name,
+    username,
+    birthday: new Date(birthday),
+    isDaddy: !!isDaddy,
+    hasBoat: !!hasBoat,
+    //     createdAt DateTime @default(now()) @map(name: "created_at")
+    // updatedAt DateTime @updatedAt @map(name: "updated_at")
+    // userId: session.user.id,
   }
+
+  // res.status(200).json({ reqBody: req.body, reqOperation: operation })
 
   switch (req.method) {
     case 'PUT':
-      const putResult = await prisma.identity.create(operation)
+      const putOperation = {
+        data: {
+          ...data,
+          User: { connect: { id: session.user.id } },
+        },
+      }
+      const putResult = await prisma.identity.create(putOperation)
+
       res.json(putResult)
 
       break
 
     case 'POST':
-      operation.where = { user: { id: session.user.id } }
-      const postResult = await prisma.identity.update(operation)
+      const postOperation = {
+        data,
+        where: { userId: session.user.id },
+      }
+      const postResult = await prisma.identity.update(postOperation)
+
       res.json(postResult)
+
       break
 
     default:
