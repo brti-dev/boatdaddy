@@ -41,10 +41,14 @@
 
 .footer {
   position: relative;
-  margin-top: var(--spacing);
+  margin-top: calc(var(--spacing) * 3);
   margin-bottom: var(--spacing);
   line-height: 1.6;
   font-size: 95%;
+
+  @include breakpoint(screen) {
+    margin-top: var(--spacing);
+  }
 
   nav ul {
     margin: 0;
