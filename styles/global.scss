@@ -248,6 +248,11 @@ button,
   &:focus {
     box-shadow: var(--color-comment) 0px 0px 0px 3px;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
 }
 
 select.input {
@@ -273,11 +278,6 @@ button,
 
   svg {
     margin-right: 0.5em;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.75;
   }
 
   &.size-small {

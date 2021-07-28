@@ -35,25 +35,6 @@
   }
 }
 
-.sessionForm {
-  display: flex;
-  flex-direction: column;
-
-  & > * + * {
-    margin-top: 1em;
-  }
-
-  h2 {
-    margin: 0;
-  }
-}
-
-.submitRow {
-  display: flex;
-  flex-direction: row-reverse;
-  gap: 1em;
-}
-
 .main {
   line-height: 1.6;
 }
