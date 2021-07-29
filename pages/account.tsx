@@ -81,7 +81,10 @@ export default function ProfileEdit() {
     event.preventDefault()
 
     if (state.error) {
-      setAlert(new Error('Please fix the errors below before submitting'))
+      setAlert({
+        message: 'Please fix the errors below before submitting',
+        severity: 'error',
+      })
 
       return
     }
@@ -125,17 +128,15 @@ export default function ProfileEdit() {
       .then(res => res.json())
       .then(data => {
         console.log(data)
-        setAlert('🏝️ Account updated 🚣')
+        setAlert({ message: 'Account updated', severity: 'success' })
         scrollToTop()
       })
       .catch(err => {
-        setAlert(new Error('Something went wrong'))
+        setAlert({ message: 'Something went wrong', severity: 'error' })
         console.error(err)
       })
       .finally(() => setState({ loading: false }))
   }
-
-  console.log(state)
 
   const isError = (name: string) => state.error?.inputName === name
 
@@ -143,7 +144,6 @@ export default function ProfileEdit() {
     <Layout title="Your Boat Daddy Account">
       <h1>{session.user.identity ? 'Edit' : 'Create'} Account</h1>
       <Form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
-        <pre>{JSON.stringify(session, null, 2)}</pre>
         <Alert />
         <FormGroup
           label="Name"
@@ -185,7 +185,7 @@ export default function ProfileEdit() {
           helperText={isError('username') ? state.error.message : null}
         />
         <FormGroup
-          label="Birthdate"
+          label="Birthday"
           input={
             <TextInput
               type="date"

@@ -1,20 +1,16 @@
 /* eslint-disable prefer-template */
-import { useReducer, useEffect, useRef } from 'react'
+import { useReducer } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { signIn, signOut, useSession } from 'next-auth/client'
 import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
-import { Dialog } from '@reach/dialog'
-import { VisuallyHidden } from '@reach/visually-hidden'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
 import classes from '@/styles/layout.module.scss'
-import useAlert from '@/lib/use-alert'
 import Button from './Button'
 import Avatar from './Avatar'
-import CheckButton, { checkButtonContainerClass } from './CheckButton'
 
 export const SITE_TITLE = 'Boat Daddy'
 
@@ -23,22 +19,6 @@ const PAGES = [
   { link: '/about', title: 'About' },
   { link: '/privacy-policy', title: 'Policy' },
 ]
-
-function useCsrfToken() {
-  const token = useRef(null)
-
-  useEffect(() => {
-    const fetchTokenUrl = 'http://localhost:3000/api/auth/csrf'
-    fetch(fetchTokenUrl)
-      .then(res => res.json())
-      .then(data => {
-        token.current = data.csrfToken
-        console.log('Fetched csrf token', data)
-      })
-  }, [])
-
-  return token
-}
 
 function Layout({ title = SITE_TITLE, children }) {
   const router = useRouter()
@@ -51,107 +31,78 @@ function Layout({ title = SITE_TITLE, children }) {
   const [session, loading] = useSession()
   console.log('useSession', session, loading)
 
-  // State of modals and forms
-  type SignInState = {
-    opened: boolean
-    loading: boolean
-    show: 'signin' | 'signup'
-  }
-  type SignInNewState = {
-    opened?: boolean
-    loading?: boolean
-    show?: 'signin' | 'signup'
-  }
-  const [signInState, setSignInState] = useReducer(
-    (state: SignInState, newState: SignInNewState) => ({
-      ...state,
-      ...newState,
-    }),
-    { opened: false, loading: false, show: 'signin' }
-  )
-  const [Alert, setAlert] = useAlert(null)
-  const openSignIn = () => setSignInState({ opened: true })
-  const closeSignIn = () => setSignInState({ opened: false })
+  // Manual sign in methods (Replaced by Next Auth)
+  // // State of modals and forms
+  // type SignInState = {
+  //   opened: boolean
+  //   loading: boolean
+  //   show: 'signin' | 'signup'
+  // }
+  // type SignInNewState = {
+  //   opened?: boolean
+  //   loading?: boolean
+  //   show?: 'signin' | 'signup'
+  // }
+  // const [signInState, setSignInState] = useReducer(
+  //   (state: SignInState, newState: SignInNewState) => ({
+  //     ...state,
+  //     ...newState,
+  //   }),
+  //   { opened: false, loading: false, show: 'signin' }
+  // )
+  // const [Alert, setAlert] = useAlert(null)
+  // const openSignIn = () => setSignInState({ opened: true })
+  // const closeSignIn = () => setSignInState({ opened: false })
 
-  // Focus on first form element when the modal opens
-  const formFocusRef = useRef<HTMLInputElement>(null)
+  // // Focus on first form element when the modal opens
+  // const formFocusRef = useRef<HTMLInputElement>(null)
 
-  const csrfToken = useCsrfToken()
+  // useEffect(() => {
+  //   if (signInState.opened && formFocusRef.current) {
+  //     formFocusRef.current.focus()
+  //   }
+  // }, [signInState])
 
-  useEffect(() => {
-    if (signInState.opened && formFocusRef.current) {
-      formFocusRef.current.focus()
-    }
-  }, [signInState])
+  // const submitSignIn = async event => {
+  //   event.preventDefault()
 
-  const submitSignIn = async event => {
-    event.preventDefault()
+  //   setSignInState({ loading: true })
+  //   setAlert(null)
 
-    if (!csrfToken.current) {
-      console.error('No csrf token', csrfToken)
-      setAlert(new Error('Something went wrong'))
+  //   const form = {
+  //     email: event.target.email.value,
+  //   }
+  //   console.log(form)
 
-      return
-    }
+  //   const form = {
+  //     username: event.target.email.value,
+  //     password: event.target.password.value,
+  //   }
+  // }
 
-    setSignInState({ loading: true })
-    setAlert(null)
+  // const submitSignUp = async event => {
+  //   event.preventDefault()
 
-    const form = {
-      csrfToken: csrfToken.current,
-      email: event.target.email.value,
-    }
-    console.log(form)
+  //   setSignInState({ loading: true })
+  //   setAlert(null)
 
-    // const form = {
-    //   username: event.target.email.value,
-    //   password: event.target.password.value,
-    // }
-
-    // try {
-    //     const res = await Auth.signInState(form)
-    //     console.log(res)
-    // } catch (error) {
-    //     console.error(error)
-    //     setAlert(new Error(error.message))
-    // } finally {
-    //     setSignInState({ loading: false })
-    // }
-  }
-
-  const submitSignUp = async event => {
-    event.preventDefault()
-
-    setSignInState({ loading: true })
-    setAlert(null)
-
-    const signInForm = {
-      username: event.target.email.value,
-      password: event.target.password.value,
-    }
-    const signUpForm = {
-      ...signInForm,
-      attributes: {
-        email: event.target.email.value,
-        gender: event.target.gender.value,
-        birthdate: event.target.birthdate.value,
-        given_name: event.target.name.value,
-        preferred_username: event.target.email.value,
-        // 'custom:has_boat': event.target.has_boat.value,
-      },
-    }
-    console.log({ signUpForm })
-
-    // try {
-    //     const res = await Auth.signUp(form)
-    //     console.log(res)
-    // } catch (error) {
-    //     console.error(error)
-    //     setAlert(new Error(error.message))
-    // } finally {
-    //     setSignInState({ loading: false })
-    // }
-  }
+  //   const signInForm = {
+  //     username: event.target.email.value,
+  //     password: event.target.password.value,
+  //   }
+  //   const signUpForm = {
+  //     ...signInForm,
+  //     attributes: {
+  //       email: event.target.email.value,
+  //       gender: event.target.gender.value,
+  //       birthdate: event.target.birthdate.value,
+  //       given_name: event.target.name.value,
+  //       preferred_username: event.target.email.value,
+  //       'custom:has_boat': event.target.has_boat.value,
+  //     },
+  //   }
+  //   console.log({ signUpForm })
+  // }
 
   const SignIn = () => (
     <Button onClick={() => signIn()} variant="contained" color="secondary">
@@ -174,7 +125,6 @@ function Layout({ title = SITE_TITLE, children }) {
     //     </button>
     //     {signInState.show === 'signin' ? (
     //       <form method="post" className={classes.sessionForm}>
-    //         <input type="hidden" name="csrfToken" value={csrfToken.current} />
     //         <h2>Hello, Daddy</h2>
     //         <Alert />
     //         <label htmlFor="sessionform__email">Email</label>
