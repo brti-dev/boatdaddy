@@ -1,4 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/client'
+import { Session } from '@/lib/session'
 import prisma from '@/lib/prisma'
 
 export default async function handle(
@@ -7,6 +9,9 @@ export default async function handle(
 ) {
   switch (req.method) {
     case 'GET':
+      const session_ = await getSession({ req })
+      const session: Session = session_
+      
       const rides = await prisma.ride.findMany()
 
       res.json(rides)

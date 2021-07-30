@@ -10,6 +10,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  DRIVER
+  RIDER
+  ADMIN
+}
+
+// Nextauth
 model Account {
   id                 Int       @default(autoincrement()) @id
   compoundId         String    @unique @map(name: "compound_id")
@@ -31,15 +38,18 @@ model Account {
   @@map(name: "accounts")
 }
 
+// Gives permission to perform the specified `role`
 model Actor {
   id Int @id @default(autoincrement())
   role Role
+  isActive Boolean @default(true)
   user User @relation(fields: [userId], references: [id])
   userId Int
   ridesAsDriver Ride[] @relation("Driver")
   ridesAsRider Ride[] @relation("Rider")
 }
 
+// Site account
 model Identity {
   id Int @id @default(autoincrement())
   name String
@@ -97,10 +107,4 @@ model User {
   profile Profile?
   actor Actor?
   @@map(name: "users") // Maps NextAuth table
-}
-
-enum Role {
-  DRIVER
-  RIDER
-  ADMIN
 }

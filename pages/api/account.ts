@@ -17,18 +17,20 @@ export default async function handle(
     birthday: new Date(birthday),
     isDaddy: !!isDaddy,
     hasBoat: !!hasBoat,
-    //     createdAt DateTime @default(now()) @map(name: "created_at")
-    // updatedAt DateTime @updatedAt @map(name: "updated_at")
-    // userId: session.user.id,
   }
 
   // res.status(200).json({ reqBody: req.body, reqOperation: operation })
 
   switch (req.method) {
     case 'PUT':
+      // Create account
+      const roles = [{ role: 'RIDER' }]
+      if (data.hasBoat) roles.push({ role: 'DRIVER' })
+
       const putOperation = {
         data: {
           ...data,
+          actor: { create: roles },
           User: { connect: { id: session.user.id } },
         },
       }
@@ -39,6 +41,23 @@ export default async function handle(
       break
 
     case 'POST':
+      // Update account
+      const allRoles = await prisma.actor.findMany({
+        where: { userId: session.user.id },
+      })
+      console.log({ allRoles })
+
+      let createRoles: string[]
+
+      // await prisma.actor.create({
+      //   data: { role: 'RIDER', userId: session.user.id },
+      // })
+      // if (data.hasBoat) {
+      //   await prisma.actor.create({
+      //     data: { role: 'DRIVER', userId: session.user.id },
+      //   })
+      // }
+
       const postOperation = {
         data,
         where: { userId: session.user.id },
