@@ -57,17 +57,11 @@ model Identity {
   birthday DateTime @db.Date
   isDaddy Boolean
   hasBoat Boolean
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  userId Int @unique
-  User User @relation(fields: [userId], references: [id])
-}
-
-model Profile {
-  id Int @id @default(autoincrement())
   bio String?
   aboutBoat String?
   boatImage String?
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
   userId Int @unique
   User User @relation(fields: [userId], references: [id])
 }
@@ -106,7 +100,6 @@ model User {
   accounts Account[]
   sessions Session[]
   identity Identity?
-  profile Profile?
   actor Actor[]
   @@map(name: "users") // Maps NextAuth table
 }

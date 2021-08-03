@@ -29,10 +29,5 @@ export default async function handle(
     return
   }
 
-  const profile = await prisma.profile.findUnique({
-    where: { userId: user.userId },
-    select: { bio: true },
-  })
-
-  res.json({ ...user, ...profile })
+  res.json(user)
 }

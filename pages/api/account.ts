@@ -16,6 +16,9 @@ export default async function handle(
     birthday,
     isDaddy,
     hasBoat,
+    bio,
+    aboutBoat,
+    boatImage,
   } = JSON.parse(req.body)
 
   const name = name_.trim()
@@ -37,6 +40,9 @@ export default async function handle(
     birthday: new Date(birthday),
     isDaddy: !!isDaddy,
     hasBoat: !!hasBoat,
+    bio,
+    aboutBoat,
+    boatImage,
   }
 
   // res.status(200).json({ reqBody: req.body, reqOperation: operation })

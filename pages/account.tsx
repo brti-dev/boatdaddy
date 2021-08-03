@@ -230,6 +230,38 @@ export default function ProfileEdit() {
             🛥️ I have a boat
           </CheckButton>
         </div>
+        <FormGroup
+          className={!state.identity?.isDaddy && 'visually-hidden'}
+          label="About you👨"
+          input={
+            <TextInput
+              type="date"
+              name="bio"
+              value={session.user.identity?.bio}
+              multiline
+              rows={2}
+              onChange={handleChange}
+            />
+          }
+          error={isError('bio')}
+          helperText={isError('bio') ? state.error.message : null}
+        />
+        <FormGroup
+          className={!state.identity?.hasBoat && 'visually-hidden'}
+          label="About your boat🛥️"
+          input={
+            <TextInput
+              type="date"
+              name="aboutBoat"
+              value={session.user.identity?.aboutBoat}
+              multiline
+              rows={2}
+              onChange={handleChange}
+            />
+          }
+          error={isError('aboutBoat')}
+          helperText={isError('aboutBoat') ? state.error.message : null}
+        />
         <Button
           type="submit"
           loading={state.loading}

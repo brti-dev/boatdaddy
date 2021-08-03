@@ -6,6 +6,9 @@ export type Identity = {
   hasBoat?: Boolean
   createdAt?: string
   updatedAt?: string
+  bio?: string
+  aboutBoat?: string
+  boatImage?: string
 }
 
 export type Session = {
