@@ -1,7 +1,7 @@
 import { useReducer, SyntheticEvent } from 'react'
 import { useSession } from 'next-auth/client'
 
-import { Session, Identity } from '@/lib/session'
+import { Session, Identity, USERNAME_TESTS } from '@/lib/session'
 import useAlert from '@/lib/use-alert'
 import scrollToTop from '@/lib/scroll-to-top'
 import Layout from '@/components/Layout'
@@ -57,21 +57,13 @@ export default function ProfileEdit() {
     }
 
     if (name === 'username') {
-      const testInitialChar = /^[a-zA-Z]/.test(value as string)
-      if (!testInitialChar) {
-        const message = 'Username must begin with a letter A-Z'
-        setState({ error: { inputName: name, message } })
+      USERNAME_TESTS.map(({ test, message }) => {
+        if (!test(value as string)) {
+          setState({ error: { inputName: name, message } })
 
-        return
-      }
-
-      const testLength = (value as string).length >= 3
-      if (!testLength) {
-        const message = 'Username must be at least three characters long'
-        setState({ error: { inputName: name, message } })
-
-        return
-      }
+          return
+        }
+      })
     }
 
     setState({ identity: { ...state.identity, [name]: value } })
@@ -120,20 +112,27 @@ export default function ProfileEdit() {
     setState({ loading: true })
 
     const fetchMethod = !session.user.identity ? 'PUT' : 'POST'
-    console.log(fetchMethod, state.identity)
     fetch(API_ENDPOINT, {
       method: fetchMethod,
       body: JSON.stringify(state.identity),
     })
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) {
+          const json = await res.json()
+          throw new Error(json.message ?? 'Something went wrong')
+        }
+
+        return res.json()
+      })
       .then(data => {
-        console.log(data)
         setAlert({ message: 'Account updated', severity: 'success' })
         scrollToTop()
       })
       .catch(err => {
-        setAlert({ message: 'Something went wrong', severity: 'error' })
-        console.error(err)
+        setAlert({
+          message: err.message ?? 'Something went wrong',
+          severity: 'error',
+        })
       })
       .finally(() => setState({ loading: false }))
   }

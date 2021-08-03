@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/client'
-import { Session } from '@/lib/session'
-import prisma from '@/lib/prisma'
 
-console.log({ prisma })
+import { Session, USERNAME_TESTS } from '@/lib/session'
+import prisma from '@/lib/prisma'
 
 export default async function handle(
   req: NextApiRequest,
@@ -11,7 +10,26 @@ export default async function handle(
 ) {
   const session_ = await getSession({ req })
   const session: Session = session_
-  const { name, username, birthday, isDaddy, hasBoat } = JSON.parse(req.body)
+  const {
+    name: name_,
+    username,
+    birthday,
+    isDaddy,
+    hasBoat,
+  } = JSON.parse(req.body)
+
+  const name = name_.trim()
+  if (name === '' || name.length < 2) {
+    res
+      .status(400)
+      .json({ message: 'Please input a name that is at least two characters' })
+  }
+
+  USERNAME_TESTS.map(({ test, message }) => {
+    if (!test(username)) {
+      res.status(400).json({ message })
+    }
+  })
 
   const data = {
     name,
@@ -47,7 +65,6 @@ export default async function handle(
     const allActor = await prisma.actor.findMany({
       where: { userId: session.user.id },
     })
-    console.log({ allActor })
 
     let roles: string[] = []
 
