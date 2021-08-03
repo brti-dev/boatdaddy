@@ -8,6 +8,7 @@ import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
+import { Session } from '@/lib/session'
 import classes from '@/styles/layout.module.scss'
 import Button from './Button'
 import Avatar from './Avatar'
@@ -28,7 +29,8 @@ function Layout({ title = SITE_TITLE, children }) {
   const currentPageIndex = PAGES.findIndex(page => page.link === pathnameRoot)
   const isCurrentPage = (link: string) => link === pathnameRoot
 
-  const [session, loading] = useSession()
+  const [session_, loading] = useSession()
+  const session: Session = session_
   console.log('useSession', session, loading)
 
   // Manual sign in methods (Replaced by Next Auth)
@@ -242,7 +244,9 @@ function Layout({ title = SITE_TITLE, children }) {
       </MenuButton>
       <MenuList>
         <MenuItem onSelect={() => router.push('/rides')}>My Rides</MenuItem>
-        <MenuItem onSelect={() => router.push(`/@${session.user.email}`)}>
+        <MenuItem
+          onSelect={() => router.push(`/@${session.user.identity?.username}`)}
+        >
           Profile
         </MenuItem>
         <MenuItem onSelect={() => router.push('/account')}>
