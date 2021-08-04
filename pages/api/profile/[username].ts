@@ -29,5 +29,8 @@ export default async function handle(
     return
   }
 
-  res.json(user)
+  const profile = { ...user, image: user.User?.image }
+  delete profile.User
+
+  res.json(profile)
 }
