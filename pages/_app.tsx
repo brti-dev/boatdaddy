@@ -52,7 +52,7 @@ function Auth({ children }) {
 
   // Session is being fetched, or no user.
   // If no user, useEffect() will redirect.
-  return <Loading fullScreen />
+  return <Loading fullscreen />
 }
 
 // Only uncomment this method if you have blocking data requirements for
