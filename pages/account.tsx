@@ -10,6 +10,7 @@ import CheckButton, {
   checkButtonContainerClass,
 } from '@/components/CheckButton'
 import Button from '@/components/Button'
+import ErrorPage from '@/components/ErrorPage'
 
 type FormStateIdentity = {
   identity: Identity | null
@@ -31,6 +32,14 @@ const API_ENDPOINT = '/api/account'
 export default function ProfileEdit() {
   const [session_] = useSession()
   const session: Session = session_
+
+  if (!session) {
+    return (
+      <ErrorPage>
+        <p>No session found</p>
+      </ErrorPage>
+    )
+  }
 
   const [state, setState] = useReducer(
     (state: FormState, newState: FormNewState) => ({
