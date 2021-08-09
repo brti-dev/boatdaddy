@@ -21,7 +21,7 @@ const PAGES = [
   { link: '/privacy-policy', title: 'Policy' },
 ]
 
-function Layout({ title = SITE_TITLE, children }) {
+function Layout({ title = SITE_TITLE, showFooter = true, children }) {
   const router = useRouter()
   const { pathname, query } = router
   const pathnameRoot = pathname.split('/', 2).join('/')
@@ -284,31 +284,33 @@ function Layout({ title = SITE_TITLE, children }) {
       </header>
       <SkipNavContent />
       <main className={classes.main}>{children}</main>
-      <footer className={classes.footer}>
-        <nav aria-label="Footer">
-          <ul>
-            {PAGES.map(({ link, title: pageTitle }) => (
-              <li
-                key={link}
-                className={isCurrentPage(link) ? 'current' : undefined}
-              >
-                <Link href={link}>{pageTitle}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div
-          style={{
-            lineHeight: 1.6,
-            marginTop: '1em',
-            fontSize: '80%',
-          }}
-        >
-          &copy;2021 The Andas <span style={{ opacity: 0.33 }}>|</span> Maranda
-          Cox, CEO <span style={{ opacity: 0.33 }}>|</span>{' '}
-          <a href="https://mattberti.com">Matt Berti</a> production
-        </div>
-      </footer>
+      {showFooter && (
+        <footer className={classes.footer}>
+          <nav aria-label="Footer">
+            <ul>
+              {PAGES.map(({ link, title: pageTitle }) => (
+                <li
+                  key={link}
+                  className={isCurrentPage(link) ? 'current' : undefined}
+                >
+                  <Link href={link}>{pageTitle}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div
+            style={{
+              lineHeight: 1.6,
+              marginTop: '1em',
+              fontSize: '80%',
+            }}
+          >
+            &copy;2021 The Andas <span style={{ opacity: 0.33 }}>|</span>{' '}
+            Maranda Cox, CEO <span style={{ opacity: 0.33 }}>|</span>{' '}
+            <a href="https://mattberti.com">Matt Berti</a> production
+          </div>
+        </footer>
+      )}
     </>
   )
 }
