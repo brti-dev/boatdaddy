@@ -11,8 +11,8 @@
     "start": "next start",
     "#clean": "Clean up dist files generated on dev, old builds, etc; Optimally done before new builds",
     "clean": "npx rimraf .next out",
-    "dbcli": "heroku pg:psql postgresql-parallel-93526 --app boatdaddy-db",
-    "dbkillconnections": "heroku pg:kill postgresql-parallel-93526 --app boatdaddy-db"
+    "db:cli": "heroku pg:psql postgresql-parallel-93526 --app boatdaddy-db",
+    "db:killconnections": "heroku pg:kill postgresql-parallel-93526 --app boatdaddy-db"
   },
   "dependencies": {
     "@prisma/client": "^2.27.0",

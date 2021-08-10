@@ -42,7 +42,7 @@ model Account {
 model Actor {
   id Int @id @default(autoincrement())
   role Role
-  isActive Boolean @default(true)
+  isActive Boolean @default(true) // Determines if the current action is actionable; False means the action has been banned or turned off
   userId Int
   user User @relation(fields: [userId], references: [id])
   ridesAsDriver Ride[] @relation("Driver")
@@ -101,5 +101,6 @@ model User {
   sessions Session[]
   identity Identity?
   actor Actor[]
+  
   @@map(name: "users") // Maps NextAuth table
 }
