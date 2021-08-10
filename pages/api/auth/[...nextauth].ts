@@ -49,12 +49,15 @@ const options = {
      * @return {object}              Session that will be returned to the client
      */
     async session(session, token) {
-      console.log({ token })
-      const identity: object | null = await prisma.identity.findUnique({
-        where: { userId: token.id },
+      const user = await prisma.user.findUnique({
+        where: { id: token.id },
+        include: { identity: true, actor: true },
       })
       session.user.id = token.id
-      session.user.identity = identity
+      session.user.roles = user.actor
+        .map(actor => (actor.isActive ? actor.role : null))
+        .filter(role => !!role)
+      session.user.identity = user.identity
 
       return session
     },

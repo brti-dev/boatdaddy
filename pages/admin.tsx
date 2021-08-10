@@ -7,4 +7,4 @@ export default function AdminDashboard() {
   // session is always non-null inside this page, all the way down the React tree.
   return 'Welcome to super secret dashboard, Daddy'
 }
-AdminDashboard.auth = true
+AdminDashboard.admin = true

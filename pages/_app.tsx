@@ -7,21 +7,35 @@ import ProfileEdit from './account'
 
 import 'normalize.css'
 import '@/styles/global.scss'
-
-// Example use of authorization requirement at /pages/admin
-// @see https://next-auth.js.org/getting-started/client#alternatives
+import ErrorPage from '@/components/ErrorPage'
 
 function MyApp({ Component, pageProps }) {
+  const Page = () => {
+    if (Component.auth) {
+      return (
+        <Auth>
+          <Component {...pageProps} />
+        </Auth>
+      )
+    }
+
+    if (Component.admin) {
+      return (
+        <Auth>
+          <Admin>
+            <Component {...pageProps} />
+          </Admin>
+        </Auth>
+      )
+    }
+
+    return <Component {...pageProps} />
+  }
+
   return (
     <Provider session={pageProps.session}>
       <ProfileCheck>
-        {Component.auth ? (
-          <Auth>
-            <Component {...pageProps} />
-          </Auth>
-        ) : (
-          <Component {...pageProps} />
-        )}
+        <Page />
       </ProfileCheck>
     </Provider>
   )
@@ -38,9 +52,13 @@ function ProfileCheck({ children }) {
   return <ProfileEdit />
 }
 
+/**
+ * Wrapper component for session requirement to access child components
+ */
 function Auth({ children }) {
   const [session, loading] = useSession()
   const isUser = !!session?.user
+
   useEffect(() => {
     if (loading) return // Do nothing while loading
     if (!isUser) signIn() // If not authenticated, force log in
@@ -53,6 +71,41 @@ function Auth({ children }) {
   // Session is being fetched, or no user.
   // If no user, useEffect() will redirect.
   return <Loading fullscreen />
+}
+
+function Unauthorized() {
+  console.warn('unauthorized')
+  return (
+    <ErrorPage
+      title="Not Authorized"
+      message="You aren't authorized to access this page"
+    />
+  )
+}
+
+/**
+ * Wrapper component for ADMIN role authorization access for child components
+ * @example Use of authorization requirement at /pages/admin
+ * @see https://next-auth.js.org/getting-started/client#alternatives
+ */
+function Admin({ children }) {
+  const [session_] = useSession()
+  const session: Session = session_
+  const isAdmin = !!session?.user?.roles?.includes('ADMIN')
+  console.log(
+    'Check Admin',
+    session,
+    'roles',
+    session?.user?.roles,
+    'isAdmin',
+    isAdmin
+  )
+
+  if (isAdmin) {
+    return children
+  }
+
+  return <Unauthorized />
 }
 
 // Only uncomment this method if you have blocking data requirements for

@@ -1,3 +1,5 @@
+type Role = 'DRIVER' | 'RIDER' | 'ADMIN'
+
 export type Identity = {
   name?: string
   username?: string
@@ -17,6 +19,7 @@ export type Session = {
     name?: string | null
     email?: string | null
     image?: string | null
+    roles?: Role[] | null
     identity?: Identity
   }
   expires?: string
