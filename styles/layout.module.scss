@@ -21,10 +21,6 @@
   h1 {
     margin: 0;
 
-    @include breakpoint(screen) {
-      margin: 1em 0;
-    }
-
     a {
       text-decoration: none !important;
     }
