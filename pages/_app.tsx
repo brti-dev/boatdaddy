@@ -3,11 +3,11 @@ import { Provider, useSession, signIn } from 'next-auth/client'
 
 import { Session } from '@/lib/session'
 import Loading from '@/components/Loading'
+import ErrorPage from '@/components/ErrorPage'
 import ProfileEdit from './account'
 
 import 'normalize.css'
 import '@/styles/global.scss'
-import ErrorPage from '@/components/ErrorPage'
 
 function MyApp({ Component, pageProps }) {
   const Page = () => {
