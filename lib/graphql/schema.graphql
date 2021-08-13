@@ -1,0 +1,12 @@
+type Query {
+  about: String!
+}
+
+type Mutation {
+  setAboutMessage(message: String!): String
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
