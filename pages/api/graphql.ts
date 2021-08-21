@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import fs from 'fs'
+import { readFileSync } from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
@@ -13,15 +13,7 @@ import { authChecker } from '@/lib/graphql/auth'
 
 const ABOUT = 'Boat Daddy API 1.0'
 
-const typeDefs = gql`
-  type Query {
-    about: String!
-  }
-
-  type Mutation {
-    setAboutMessage(message: String!): String
-  }
-`
+const typeDefs = readFileSync('lib/graphql/schema.graphql').toString('utf-8')
 
 const resolvers = {
   Query: {

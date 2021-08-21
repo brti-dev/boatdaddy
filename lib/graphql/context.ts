@@ -1,8 +1,8 @@
-import PrismaClient from '@/lib/prisma'
+import { PrismaClient } from '@prisma/client'
 
 export interface Context {
   uid: number | null
-  prisma: any //PrismaClient
+  prisma: PrismaClient
 }
 
 export interface AuthorizedContext extends Context {
