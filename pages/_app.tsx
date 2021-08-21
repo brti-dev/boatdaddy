@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
-import { Provider, useSession, signIn } from 'next-auth/client'
+import { Provider as AuthProvider, useSession, signIn } from 'next-auth/client'
+import { ApolloProvider } from '@apollo/client'
 
+import { useApollo } from '@/lib/graphql/apollo'
 import { Session } from '@/lib/session'
 import Loading from '@/components/Loading'
 import ErrorPage from '@/components/ErrorPage'
@@ -10,6 +12,8 @@ import 'normalize.css'
 import '@/styles/global.scss'
 
 function MyApp({ Component, pageProps }) {
+  const client = useApollo()
+
   const Page = () => {
     if (Component.auth) {
       return (
@@ -33,11 +37,13 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <Provider session={pageProps.session}>
-      <ProfileCheck>
-        <Page />
-      </ProfileCheck>
-    </Provider>
+    <AuthProvider session={pageProps.session}>
+      <ApolloProvider client={client}>
+        <ProfileCheck>
+          <Page />
+        </ProfileCheck>
+      </ApolloProvider>
+    </AuthProvider>
   )
 }
 

@@ -15,6 +15,7 @@
     "db:killconnections": "heroku pg:kill postgresql-parallel-93526 --app boatdaddy-db"
   },
   "dependencies": {
+    "@apollo/client": "^3.4.8",
     "@prisma/client": "^2.27.0",
     "@reach/alert": "^0.15.0",
     "@reach/dialog": "^0.15.0",

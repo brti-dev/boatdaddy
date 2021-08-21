@@ -5,7 +5,7 @@ import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { getSession } from 'next-auth/client'
 
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { Context } from '@/lib/graphql/context'
 import { Session } from '@/lib/session'
 import { authChecker } from '@/lib/graphql/auth'
