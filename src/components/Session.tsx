@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { signIn, signOut, useSession } from 'next-auth/client'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
-import { Session as SessionType } from '@/lib/session'
+import { Session as SessionType } from 'src/session'
 import Button from './Button'
 import Avatar from './Avatar'
 

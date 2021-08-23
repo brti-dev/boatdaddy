@@ -16,12 +16,7 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "emitDecoratorMetadata": true, // for TypeGraphQL
-    "experimentalDecorators": true, // for TypeGraphQL
-    "paths": {
-      "@/components/*": ["components/*"],
-      "@/lib/*": ["lib/*"],
-      "@/styles/*": ["styles/*"]
-    }
+    "experimentalDecorators": true // for TypeGraphQL
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", ".next", "out"]

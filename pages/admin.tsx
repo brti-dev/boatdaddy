@@ -1,5 +1,5 @@
 import { useSession } from 'next-auth/client'
-import { Session } from '@/lib/session'
+import { Session } from 'src/session'
 
 export default function AdminDashboard() {
   const [session_] = useSession()

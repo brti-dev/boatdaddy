@@ -6,7 +6,7 @@ import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
 
 import Session from './Session'
-import classes from '@/styles/layout.module.scss'
+import classes from 'styles/layout.module.scss'
 
 export const SITE_TITLE = 'Boat Daddy'
 

@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/client'
 
-import { Session, USERNAME_TESTS } from '@/lib/session'
-import { prisma } from '@/lib/prisma'
+import { Session, USERNAME_TESTS } from 'src/session'
+import { prisma } from 'src/prisma'
 
 export default async function handle(
   req: NextApiRequest,

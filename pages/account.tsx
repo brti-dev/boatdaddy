@@ -1,16 +1,16 @@
 import { useReducer, SyntheticEvent } from 'react'
 import { useSession } from 'next-auth/client'
 
-import { Session, Identity, USERNAME_TESTS } from '@/lib/session'
-import useAlert from '@/lib/use-alert'
-import scrollToTop from '@/lib/scroll-to-top'
-import Layout from '@/components/Layout'
-import { Form, FormGroup, TextInput } from '@/components/Form'
+import { Session, Identity, USERNAME_TESTS } from 'src/session'
+import useAlert from 'src/lib/use-alert'
+import scrollToTop from 'src/lib/scroll-to-top'
+import Layout from 'src/components/Layout'
+import { Form, FormGroup, TextInput } from 'src/components/Form'
 import CheckButton, {
   checkButtonContainerClass,
-} from '@/components/CheckButton'
-import Button from '@/components/Button'
-import ErrorPage from '@/components/ErrorPage'
+} from 'src/components/CheckButton'
+import Button from 'src/components/Button'
+import ErrorPage from 'src/components/ErrorPage'
 
 type FormStateIdentity = {
   identity: Identity | null

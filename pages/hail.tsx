@@ -1,8 +1,8 @@
 import { useQuery, gql } from '@apollo/client'
 
-import Layout from '@/components/Layout'
-import Map from '@/components/Map'
-import classes from '@/styles/hail.module.scss'
+import Layout from 'src/components/Layout'
+import Map from 'src/components/Map'
+import classes from 'styles/hail.module.scss'
 
 const ABOUT_QUERY = gql`
   query About {

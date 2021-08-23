@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import ReactMapGL from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import useMediaQuery from '@/lib/use-media-query'
+import useMediaQuery from 'src/lib/use-media-query'
 
 export default function Map() {
   const mapRef = useRef(null)

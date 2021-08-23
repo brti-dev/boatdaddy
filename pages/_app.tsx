@@ -2,14 +2,14 @@ import { useEffect } from 'react'
 import { Provider as AuthProvider, useSession, signIn } from 'next-auth/client'
 import { ApolloProvider } from '@apollo/client'
 
-import { useApollo } from '@/lib/graphql/apollo'
-import { Session } from '@/lib/session'
-import Loading from '@/components/Loading'
-import ErrorPage from '@/components/ErrorPage'
+import { useApollo } from 'src/graphql/apollo'
+import { Session } from 'src/session'
+import Loading from 'src/components/Loading'
+import ErrorPage from 'src/components/ErrorPage'
 import ProfileEdit from './account'
 
 import 'normalize.css'
-import '@/styles/global.scss'
+import 'styles/global.scss'
 
 function MyApp({ Component, pageProps }) {
   const client = useApollo()

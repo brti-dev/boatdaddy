@@ -3,11 +3,26 @@ import intervalToDuration from 'date-fns/intervalToDuration'
 import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
 import ContentLoader from 'react-content-loader'
+import { useQuery, gql } from '@apollo/client'
 
-import useApi from '@/lib/use-api'
-import Layout from '@/components/Layout'
-import classes from '@/styles/profile.module.scss'
-import Button from '@/components/Button'
+import Layout from 'src/components/Layout'
+import classes from 'styles/profile.module.scss'
+import Button from 'src/components/Button'
+
+const SIGNATURE_MUTATION = gql`
+  mutation CreateSignatureMutation {
+    createImageSignature {
+      signature
+      timestamp
+    }
+  }
+`
+
+const PROFILE_QUERY = gql`
+  query Profile {
+    about
+  }
+`
 
 const Loader = () => (
   <ContentLoader
@@ -73,11 +88,13 @@ function ProfileView({ profile }) {
 
 function Profile() {
   const { query } = useRouter()
-  console.log(query)
 
   const username = query?.username?.slice(1)
 
-  const [profile, error] = useApi(`/api/profile/${username}`)
+  const result = useQuery(PROFILE_QUERY)
+  console.log({ result })
+  const { data, error, loading } = result
+  const profile = data
 
   if (error) {
     console.error(error)

@@ -6,7 +6,7 @@ import {
   SyntheticEvent,
 } from 'react'
 
-import classes from '@/styles/components/form.module.scss'
+import classes from 'styles/components/form.module.scss'
 
 export type Form = {
   children: React.ReactElement

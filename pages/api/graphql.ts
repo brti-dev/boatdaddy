@@ -4,11 +4,11 @@ import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { getSession } from 'next-auth/client'
 
-import { prisma } from '@/lib/prisma'
-import { Context } from '@/lib/graphql/context'
-import { Session } from '@/lib/session'
-import { schema } from '@/lib/graphql'
-// import about from '@/lib/graphql/about'
+import { prisma } from 'src/prisma'
+import { Context } from 'src/graphql/context'
+import { Session } from 'src/session'
+import { schema } from 'src/graphql'
+// import about from 'src/lib/graphql/about'
 
 const apolloServer = new ApolloServer({
   schema,
