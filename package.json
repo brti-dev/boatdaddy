@@ -25,6 +25,7 @@
     "@reach/visually-hidden": "^0.15.0",
     "apollo-server-micro": "^3.1.2",
     "class-validator": "^0.13.1",
+    "cloudinary": "^1.26.3",
     "date-fns": "^2.23.0",
     "graphql": "^15.5.1",
     "micro": "^9.3.4",
@@ -38,7 +39,8 @@
     "react-map-gl": "^6.1.16",
     "reflect-metadata": "^0.1.13",
     "sass": "^1.32.8",
-    "swr": "^0.5.6"
+    "swr": "^0.5.6",
+    "type-graphql": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

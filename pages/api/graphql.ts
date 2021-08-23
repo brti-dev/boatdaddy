@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import { readFileSync } from 'fs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
@@ -8,31 +7,11 @@ import { getSession } from 'next-auth/client'
 import { prisma } from '@/lib/prisma'
 import { Context } from '@/lib/graphql/context'
 import { Session } from '@/lib/session'
-import { authChecker } from '@/lib/graphql/auth'
+import { schema } from '@/lib/graphql'
 // import about from '@/lib/graphql/about'
 
-const ABOUT = 'Boat Daddy API 1.0'
-
-const typeDefs = readFileSync('lib/graphql/schema.graphql').toString('utf-8')
-
-const resolvers = {
-  Query: {
-    about(parent, args, context) {
-      console.log('query', parent, args, context)
-      return ABOUT
-    },
-  },
-  Mutation: {
-    setAboutMessage(parent, args, context) {
-      console.log('mutation', parent, args, context)
-      return ABOUT
-    },
-  },
-}
-
 const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   // tracing: process.env.NODE_ENV === 'development',
   // Globally-available variables
   context: async ({ req }: { req: NextApiRequest }): Promise<Context> => {
