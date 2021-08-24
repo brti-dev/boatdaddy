@@ -11,6 +11,8 @@
     "start": "next start",
     "#clean": "Clean up dist files generated on dev, old builds, etc; Optimally done before new builds",
     "clean": "npx rimraf .next out",
+    "#codegen": "Create types for mutations",
+    "codegen": "npx apollo client:codegen --target typescript --localSchemaFile schema.gql --outputFlat --includes \"{pages,src}/**\" --excludes \"src/generated/**\" src/generated",
     "db:cli": "heroku pg:psql postgresql-parallel-93526 --app boatdaddy-db",
     "db:killconnections": "heroku pg:killall postgresql-parallel-93526 --app boatdaddy-db"
   },

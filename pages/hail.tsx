@@ -3,6 +3,7 @@ import { useQuery, gql } from '@apollo/client'
 import Layout from 'src/components/Layout'
 import Map from 'src/components/Map'
 import classes from 'styles/hail.module.scss'
+import { About } from 'src/generated/About'
 
 const ABOUT_QUERY = gql`
   query About {
@@ -11,7 +12,7 @@ const ABOUT_QUERY = gql`
 `
 
 export default function Hail() {
-  const { data } = useQuery(ABOUT_QUERY)
+  const { data }: { data: About } = useQuery(ABOUT_QUERY)
 
   return (
     <Layout title="Hail A Boat Daddy" showFooter={false}>
