@@ -1,5 +1,6 @@
-import { useReducer, SyntheticEvent } from 'react'
+import { useReducer, SyntheticEvent, ChangeEvent } from 'react'
 import { useSession } from 'next-auth/client'
+import { useMutation, gql } from '@apollo/client'
 
 import { Session, Identity, USERNAME_TESTS } from 'src/session'
 import useAlert from 'src/lib/use-alert'
@@ -11,6 +12,7 @@ import CheckButton, {
 } from 'src/components/CheckButton'
 import Button from 'src/components/Button'
 import ErrorPage from 'src/components/ErrorPage'
+import { CreateSignatureMutation } from 'src/generated/CreateSignatureMutation'
 
 type FormStateIdentity = {
   identity: Identity | null
@@ -26,12 +28,57 @@ type FormStateError = {
 }
 type FormState = FormStateIdentity & FormStateLoading & FormStateError
 type FormNewState = FormStateIdentity | FormStateLoading | FormStateError
+type UploadImageResponse = {
+  secure_url: string
+}
 
 const API_ENDPOINT = '/api/account'
+const CLOUDINARY_API_ENDPOINT = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`
+
+const SIGNATURE_MUTATION = gql`
+  mutation CreateSignatureMutation {
+    createImageSignature {
+      signature
+      timestamp
+    }
+  }
+`
+
+async function uploadImage(
+  image: File,
+  signature: string,
+  timestamp: number
+): Promise<UploadImageResponse> {
+  const formData = new FormData()
+  formData.append('file', image)
+  formData.append('signature', signature)
+  formData.append('timestamp', timestamp.toString())
+  formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_KEY ?? '')
+
+  const response = await fetch(CLOUDINARY_API_ENDPOINT, {
+    method: 'POST',
+    body: formData,
+  })
+
+  return response.json()
+}
 
 export default function ProfileEdit() {
   const [session_] = useSession()
   const session: Session = session_
+
+  const [createSignature] =
+    useMutation<CreateSignatureMutation>(SIGNATURE_MUTATION)
+
+  const handleCreate = async data => {
+    const { data: signatureData } = await createSignature()
+    if (signatureData) {
+      console.log(signatureData)
+      const { signature, timestamp } = signatureData.createImageSignature
+      const imageData = await uploadImage(data.image[0], signature, timestamp)
+      console.log(imageData)
+    }
+  }
 
   if (!session) {
     return (
@@ -56,7 +103,7 @@ export default function ProfileEdit() {
   const [Alert, setAlert] = useAlert(null)
 
   const handleChange = (
-    event: SyntheticEvent,
+    event: ChangeEvent<HTMLInputElement>,
     value: string | number | boolean | null
   ) => {
     const { name } = event.target as HTMLInputElement
@@ -271,6 +318,40 @@ export default function ProfileEdit() {
           error={isError('aboutBoat')}
           helperText={isError('aboutBoat') ? state.error.message : null}
         />
+        <input
+          type="hidden"
+          name="boatImage"
+          value={session.user.identity?.boatImage}
+          onChange={event => handleChange(event, event.target.value)}
+        />
+        <FormGroup
+          className={!state.identity?.hasBoat && 'visually-hidden'}
+          label="Add an image of your boat"
+          input={
+            <input
+              type="file"
+              name="boatImage"
+              accept="image/*"
+              className="visually-hidden"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                if (event?.target?.files?.[0]) {
+                  const file = event.target.files[0]
+                  const reader = new FileReader()
+                  reader.onloadend = () => {
+                    handleChange(event, reader.result as string)
+                  }
+                  reader.readAsDataURL(file)
+                }
+              }}
+            />
+          }
+          error={isError('boatImage')}
+        />
+        {state.identity?.hasBoat && state.identity?.boatImage && (
+          <div>
+            <img src={state.identity.boatImage} alt="Your boat" />
+          </div>
+        )}
         <Button
           type="submit"
           loading={state.loading}
