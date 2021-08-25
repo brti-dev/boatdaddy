@@ -10,10 +10,10 @@ const cloudinary = require('cloudinary').v2
 
 @ObjectType()
 class ImageSignature {
-  @Field(_type => String)
+  @Field()
   signature!: string
 
-  @Field(_type => Int)
+  @Field(type => Int)
   timestamp!: number
 }
 

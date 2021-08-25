@@ -16,10 +16,10 @@ import { Context, AuthorizedContext } from './context'
 
 @ObjectType()
 class Profile {
-  @Field()
+  @Field(type => Int)
   id: number
 
-  @Field()
+  @Field(type => Int)
   userId: number
 
   @Field()

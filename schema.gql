@@ -24,12 +24,12 @@ type Profile {
   boatImage: String
   createdAt: DateTime!
   hasBoat: Boolean!
-  id: Float!
+  id: Int!
   image: String
   isDaddy: Boolean!
   name: String!
   updatedAt: DateTime!
-  userId: Float!
+  userId: Int!
   username: String!
 }
 
