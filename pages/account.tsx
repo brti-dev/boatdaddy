@@ -12,7 +12,7 @@ import CheckButton, {
 } from 'src/components/CheckButton'
 import Button from 'src/components/Button'
 import ErrorPage from 'src/components/ErrorPage'
-import { CreateSignatureMutation } from 'src/generated/CreateSignatureMutation'
+import { CreateSignatureMutation } from 'src/graphql/generated/CreateSignatureMutation'
 
 type FormStateIdentity = {
   identity: Identity | null
