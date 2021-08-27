@@ -91,8 +91,18 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
           <li>Member for {memberSince}</li>
         </ul>
       </div>
-      {profile.isDaddy && profile.bio && <p>👨 {profile.bio}</p>}
-      {profile.hasBoat && profile.aboutBoat && <p>🛥️ {profile.aboutBoat}</p>}
+      {profile.isDaddy && profile.bio && (
+        <>
+          <h2>👨 Bio</h2>
+          <p>{profile.bio}</p>
+        </>
+      )}
+      {profile.hasBoat && profile.aboutBoat && (
+        <>
+          <h2>🛥️ Boat</h2>
+          <p>{profile.aboutBoat}</p>
+        </>
+      )}
       {profile.hasBoat && profile.boatImage && (
         <Image
           className="fuu"
