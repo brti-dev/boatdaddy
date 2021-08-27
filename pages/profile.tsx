@@ -4,23 +4,34 @@ import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
 import ContentLoader from 'react-content-loader'
 import { useQuery, gql } from '@apollo/client'
+import { Image } from 'cloudinary-react'
 
+import {
+  Profile_profile,
+  Profile as ProfileQuery,
+  ProfileVariables,
+} from 'src/graphql/generated/Profile'
 import Layout from 'src/components/Layout'
-import classes from 'styles/profile.module.scss'
 import Button from 'src/components/Button'
-
-const SIGNATURE_MUTATION = gql`
-  mutation CreateSignatureMutation {
-    createImageSignature {
-      signature
-      timestamp
-    }
-  }
-`
+import ErrorPage from 'src/components/ErrorPage'
+import classes from 'styles/profile.module.scss'
 
 const PROFILE_QUERY = gql`
-  query Profile {
-    about
+  query Profile($username: String!) {
+    profile(username: $username) {
+      aboutBoat
+      bio
+      birthday
+      boatImage
+      createdAt
+      hasBoat
+      image
+      isDaddy
+      name
+      updatedAt
+      userId
+      username
+    }
   }
 `
 
@@ -42,13 +53,25 @@ const Loader = () => (
   </ContentLoader>
 )
 
-function ProfileView({ profile }) {
-  const birthday = parseISO(profile.birthday)
-  const { years: age } = intervalToDuration({
-    start: birthday,
-    end: new Date(),
-  })
-  const memberSince = formatDistance(parseISO(profile.createdAt), new Date())
+function ProfileView({ profile }: { profile: Profile_profile }) {
+  let birthday = parseISO(profile.birthday)
+  let age: number
+  try {
+    const { years } = intervalToDuration({
+      start: birthday,
+      end: new Date(),
+    })
+    age = years
+  } catch (error) {
+    age = 0
+  }
+
+  let memberSince: string
+  try {
+    memberSince = formatDistance(parseISO(profile.createdAt), new Date())
+  } catch (error) {
+    memberSince = '?'
+  }
 
   return (
     <div className={classes.profile}>
@@ -64,12 +87,26 @@ function ProfileView({ profile }) {
           <li>
             <strong>{profile.name}</strong>
           </li>
-          <li>{age} years old</li>
+          <li>{age ?? '?'} years old</li>
           <li>Member for {memberSince}</li>
         </ul>
       </div>
-      {profile.isDaddy && profile.bio && <p>{profile.bio}</p>}
-      {profile.hasBoat && profile.aboutBoat && <p>{profile.aboutBoat}</p>}
+      {profile.isDaddy && profile.bio && <p>👨 {profile.bio}</p>}
+      {profile.hasBoat && profile.aboutBoat && <p>🛥️ {profile.aboutBoat}</p>}
+      {profile.hasBoat && profile.boatImage && (
+        <Image
+          className="fuu"
+          cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+          publicId={profile.userId}
+          secure
+          alt={profile.username}
+          dpr="auto"
+          quality="auto"
+          width={900}
+          height={Math.floor((9 / 16) * 900)}
+          gravity="auto"
+        />
+      )}
       {profile.hasBoat && (
         <div>
           <Button
@@ -89,29 +126,29 @@ function ProfileView({ profile }) {
 function Profile() {
   const { query } = useRouter()
 
-  const username = query?.username?.slice(1)
+  const username = query?.username?.slice(1) as string
 
-  const result = useQuery(PROFILE_QUERY)
+  if (!username) {
+    return null
+  }
+
+  const result = useQuery<ProfileQuery, ProfileVariables>(PROFILE_QUERY, {
+    variables: { username },
+  })
   console.log({ result })
   const { data, error, loading } = result
-  const profile = data
 
   if (error) {
     console.error(error)
 
-    return (
-      <Layout>
-        <h1>Oops</h1>
-        <p>{error.message ?? 'Something went wrong'}</p>
-      </Layout>
-    )
+    return <ErrorPage title="Oops" message="Something went wrong" />
   }
 
   return (
     <Layout>
       <main>
         <h1>{username}</h1>
-        {profile ? <ProfileView profile={profile} /> : <Loader />}
+        {data?.profile ? <ProfileView profile={data.profile} /> : <Loader />}
       </main>
     </Layout>
   )
