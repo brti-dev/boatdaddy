@@ -3,7 +3,7 @@ import { useQuery, gql } from '@apollo/client'
 import Layout from 'src/components/Layout'
 import Map from 'src/components/Map'
 import classes from 'styles/hail.module.scss'
-import { About } from 'src/generated/About'
+import { About } from 'src/graphql/generated/About'
 
 const ABOUT_QUERY = gql`
   query About {
