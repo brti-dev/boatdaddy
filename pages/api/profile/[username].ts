@@ -5,6 +5,11 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  res.redirect(301, '/api/graphql')
+
+  // This API method has been deprecated and replaced with GraphQL
+  return
+
   const { query } = req
   const username = query?.username as string
 

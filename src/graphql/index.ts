@@ -6,7 +6,7 @@ import { authChecker } from './auth'
 const ABOUT = 'Boat Daddy API 1.0'
 
 @Resolver()
-class DummyResolver {
+class AboutResolver {
   @Query(_returns => String)
   about() {
     return ABOUT
@@ -14,7 +14,7 @@ class DummyResolver {
 }
 
 export const schema = buildSchemaSync({
-  resolvers: [DummyResolver, ImageResolver, ProfileResolver],
+  resolvers: [AboutResolver, ImageResolver, ProfileResolver],
   emitSchemaFile: process.env.NODE_ENV === 'development',
   authChecker,
 })

@@ -8,7 +8,6 @@ import { prisma } from 'src/prisma'
 import { Context } from 'src/graphql/context'
 import { Session } from 'src/session'
 import { schema } from 'src/graphql'
-// import about from 'src/lib/graphql/about'
 
 const apolloServer = new ApolloServer({
   schema,
