@@ -27,20 +27,6 @@
   }
 }
 
-.image,
-.image > img {
-  width: 120px;
-  height: 120px;
-  background-color: var(--color-primary);
-  border-radius: 50%;
-}
-
-.noImage {
-  font-size: 4em;
-  line-height: 120px;
-  text-align: center;
-}
-
 .hailButton {
   font-family: Corben;
   font-weight: bold;

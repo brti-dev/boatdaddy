@@ -14,6 +14,7 @@ import {
 import Layout from 'src/components/Layout'
 import Button from 'src/components/Button'
 import ErrorPage from 'src/components/ErrorPage'
+import ProfileImage from 'src/components/ProfileImage'
 import classes from 'styles/profile.module.scss'
 
 const PROFILE_QUERY = gql`
@@ -76,13 +77,7 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
   return (
     <div className={classes.profile}>
       <div className={classes.heading}>
-        <div className={classes.image}>
-          {profile.image ? (
-            <img src={profile.image} />
-          ) : (
-            <div className={classes.noImage}>👨</div>
-          )}
-        </div>
+        <ProfileImage src={profile.image} />
         <ul>
           <li>
             <strong>{profile.name}</strong>
