@@ -13,15 +13,17 @@ export type Identity = {
   boatImage?: string
 }
 
+export type User = {
+  id?: number | null
+  name?: string | null
+  email?: string | null
+  image?: string | null
+  roles?: Role[] | null
+  identity?: Identity
+}
+
 export type Session = {
-  user?: {
-    id?: number | null
-    name?: string | null
-    email?: string | null
-    image?: string | null
-    roles?: Role[] | null
-    identity?: Identity
-  }
+  user?: User
   expires?: string
 }
 
