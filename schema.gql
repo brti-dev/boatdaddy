@@ -3,6 +3,20 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""New Identity type"""
+input AddProfileInput {
+  aboutBoat: String
+  bio: String
+  birthday: DateTime!
+  boatImage: String
+  hasBoat: Boolean!
+  image: String
+  isDaddy: Boolean!
+  name: String!
+  userId: Int!
+  username: String!
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
@@ -14,6 +28,7 @@ type ImageSignature {
 }
 
 type Mutation {
+  addProfile(input: AddProfileInput!): Profile!
   createImageSignature: ImageSignature!
 }
 

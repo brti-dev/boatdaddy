@@ -9,7 +9,8 @@ import CheckButton, {
   checkButtonContainerClass,
 } from 'src/components/CheckButton'
 import Button from 'src/components/Button'
-import ErrorPage from 'src/components/ErrorPage'
+import Divider from 'src/components/Divider'
+import ProfileImage from 'src/components/ProfileImage'
 import { CreateSignatureMutation } from 'src/graphql/generated/CreateSignatureMutation'
 
 type FormStateIdentity = {
@@ -30,7 +31,6 @@ type UploadImageResponse = {
   secure_url: string
 }
 
-const API_ENDPOINT = '/api/account'
 const CLOUDINARY_API_ENDPOINT = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`
 
 const SIGNATURE_MUTATION = gql`
@@ -61,7 +61,7 @@ async function uploadImage(
   return response.json()
 }
 
-export default function AccountEdit({ account }: { account: User }) {
+export default function AccountForm({ account = {} }: { account?: Profile }) {
   const [createSignature] =
     useMutation<CreateSignatureMutation>(SIGNATURE_MUTATION)
 
@@ -81,7 +81,7 @@ export default function AccountEdit({ account }: { account: User }) {
       ...newState,
     }),
     {
-      identity: account?.identity ?? { name: account.name },
+      identity: account?.identity ?? { name: account?.name },
       loading: false,
       error: null,
     }
@@ -185,6 +185,21 @@ export default function AccountEdit({ account }: { account: User }) {
   return (
     <Form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
       <Alert />
+      <div style={{ display: 'flex', gap: '1em', alignItems: 'center' }}>
+        <ProfileImage src={account.image} />
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '1em',
+            alignContent: 'flex-start',
+          }}
+        >
+          <Button variant="outlined">Change</Button>
+          {account.image && <Button>Remove</Button>}
+        </div>
+      </div>
+      <Divider />
       <FormGroup
         label="Name"
         input={
@@ -205,7 +220,8 @@ export default function AccountEdit({ account }: { account: User }) {
           <TextInput
             name="email"
             value={account.email}
-            disabled
+            disabled={!!account.email}
+            required
             onChange={handleChange}
           />
         }
@@ -306,7 +322,7 @@ export default function AccountEdit({ account }: { account: User }) {
       <input
         type="hidden"
         name="boatImage"
-        value={account.identity?.boatImage}
+        value={account.identity?.boatImage || ''}
         onChange={event => handleChange(event, event.target.value)}
       />
       <FormGroup
