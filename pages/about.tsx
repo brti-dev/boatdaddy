@@ -5,7 +5,7 @@ import classes from 'styles/about.module.scss'
 import photoAttribution from '../public/img/hero_landscape_attribution'
 import photoAttributionHome from '../public/img/hero_redshortsdaddy_attribution'
 
-export default function Home() {
+export default function About() {
   return (
     <Layout title="About Boat Daddy">
       <main>
