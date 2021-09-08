@@ -5,10 +5,21 @@ import { useRouter } from 'next/router'
 import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
 
-import Session from './Session'
 import classes from 'styles/layout.module.scss'
+import NavAuthenticated from './NavAuthenticated'
+import NavUnauthenticated from './NavUnauthenticated'
 
 export const SITE_TITLE = 'Boat Daddy'
+
+function Session() {
+  const session: any = {}
+
+  return (
+    <div id="session">
+      {session?.isAuthenticated ? <NavAuthenticated /> : <NavUnauthenticated />}
+    </div>
+  )
+}
 
 const PAGES = [
   { link: '/hail', title: 'Hail a Boat Daddy' },

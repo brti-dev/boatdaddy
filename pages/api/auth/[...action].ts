@@ -1,56 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
-// const cors = require('cors')
-import { AuthenticationError, ForbiddenError } from 'apollo-server-micro'
 import { OAuth2Client } from 'google-auth-library'
 import { useRouter } from 'next/router'
 
-const USER_LEVELS = {
-  guest: 0,
-  customer: 1,
-  manager: 2,
-  admin: 3,
-}
+import { getJwtSecret, getUser } from 'src/graphql/auth'
 
-let { JWT_SECRET } = process.env
-if (!JWT_SECRET) {
-  if (process.env.NODE_ENV !== 'production') {
-    JWT_SECRET = 'tempjwtsecretfordevonly'
-    console.warn(
-      'Missing env var JWT_SECRET. Using unsafe secret for dev purpose.'
-    )
-  } else {
-    console.error('Missing env var JWT_SECRET. Authentication disabled.')
-  }
-}
-
-const getJwt = (req: NextApiRequest) => {
-  const header = req.headers.authorization
-
-  if (typeof header === 'undefined') {
-    return null
-  }
-
-  const bearer = header.split(' ')
-  const token = bearer[1]
-
-  return token
-}
-
-function getUser(req: NextApiRequest) {
-  const token = getJwt(req)
-  if (!token) {
-    return {}
-  }
-
-  try {
-    const credentials = jwt.verify(token, JWT_SECRET)
-
-    return credentials
-  } catch (error) {
-    return { isLoggedIn: false, error: { isError: true, message: error } }
-  }
-}
+const JWT_SECRET = getJwtSecret()
 
 export default async function Auth(req: NextApiRequest, res: NextApiResponse) {
   const router = useRouter()
@@ -146,81 +101,4 @@ export default async function Auth(req: NextApiRequest, res: NextApiResponse) {
   } else if (action === 'user') {
     res.send(getUser(req))
   }
-}
-
-// Clear cookie upon logout (With JWT enabled it's handled on frontend)
-// routes.use('/logout', async (req, res) => {
-//     res.clearCookie('jwt');
-//     res.json({ status: 'ok', user: getUser(req) });
-// });
-
-function getUserLevel(levelString) {
-  if (USER_LEVELS[levelString]) {
-    return USER_LEVELS[levelString]
-  }
-
-  return 0
-}
-
-function mustBeLoggedIn(resolver) {
-  return (root, args, { user }) => {
-    if (!user || !user.isLoggedIn) {
-      throw new AuthenticationError('Must be signed in')
-    }
-
-    return resolver(root, args, { user })
-  }
-}
-
-function mustBeManager(resolver) {
-  return (root, args, { user }) => {
-    if (!user || USER_LEVELS[user.level] < USER_LEVELS.manager) {
-      throw new ForbiddenError('Not authorized to perform this action')
-    }
-
-    return resolver(root, args, { user })
-  }
-}
-
-function mustBeAdmin(resolver) {
-  return (root, args, { user }) => {
-    if (!user || USER_LEVELS[user.level] < USER_LEVELS.admin) {
-      throw new ForbiddenError('Not authorized to perform this action')
-    }
-
-    return resolver(root, args, { user })
-  }
-}
-
-/**
- * A NON-RESOLVER function to check user actions
- *
- * @param {object} owner A user object; Must have `id` prop
- * @param {object} user A user object; Must have `id` and `level` props
- * logging purposes only
- */
-function verifyIsOwner(owner, user, action) {
-  if (
-    owner.id !== user.id &&
-    getUserLevel(user.level) < getUserLevel('manager')
-  ) {
-    throw new ForbiddenError('Not authorized to perform this action')
-  }
-}
-
-/**
- * Get the user session from context
- */
-function resolveUser(_, args, { user }) {
-  return user
-}
-
-module.exports = {
-  getUser,
-  mustBeLoggedIn,
-  mustBeManager,
-  mustBeAdmin,
-  resolveUser,
-  getUserLevel,
-  verifyIsOwner,
 }

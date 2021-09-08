@@ -11,9 +11,7 @@ import Avatar from './Avatar'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
 import formClasses from 'styles/components/form.module.scss'
 
-export default function Session() {
-  const router = useRouter()
-
+export default function NavUnauthenticated() {
   // State of modals and forms
   type SignInState = {
     opened: boolean
@@ -86,7 +84,7 @@ export default function Session() {
     console.log({ signUpForm })
   }
 
-  const SignIn = () => (
+  return (
     <>
       <Button onClick={openSignIn} variant="contained" color="secondary">
         Sign In
@@ -209,30 +207,4 @@ export default function Session() {
       </Dialog>
     </>
   )
-
-  const SignedIn = () => (
-    <Menu>
-      <MenuButton
-        as={Avatar}
-        alt={session.user.name}
-        src={session.user.image ?? null}
-      >
-        {session.user.name.slice(0, 1)}
-      </MenuButton>
-      <MenuList>
-        <MenuItem onSelect={() => router.push('/rides')}>My Rides</MenuItem>
-        <MenuItem
-          onSelect={() => router.push(`/@${session.user.identity?.username}`)}
-        >
-          Profile
-        </MenuItem>
-        <MenuItem onSelect={() => router.push('/account')}>
-          Account Settings
-        </MenuItem>
-        <MenuItem onSelect={() => signOut()}>Sign Out</MenuItem>
-      </MenuList>
-    </Menu>
-  )
-
-  return <div id="session">{!session ? <SignIn /> : <SignedIn />}</div>
 }

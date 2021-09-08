@@ -2,7 +2,6 @@ import 'reflect-metadata'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
-import { getSession } from 'next-auth/client'
 
 import { prisma } from 'src/prisma'
 import { Context } from 'src/graphql/context'
@@ -14,8 +13,9 @@ const apolloServer = new ApolloServer({
   // tracing: process.env.NODE_ENV === 'development',
   // Globally-available variables
   context: async ({ req }: { req: NextApiRequest }): Promise<Context> => {
-    const session_ = await getSession({ req })
-    const session: Session = session_
+    const session: any = {}
+    // const session_ = await getSession({ req })
+    // const session: Session = session_
     console.log('session for gql context', session)
 
     return {
