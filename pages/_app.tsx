@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import { Provider as AuthProvider, useSession, signIn } from 'next-auth/client'
 import { ApolloProvider } from '@apollo/client'
 
 import { useApollo } from 'src/graphql/apollo'
@@ -10,6 +9,16 @@ import ProfileEdit from './account'
 
 import 'normalize.css'
 import 'styles/global.scss'
+
+function signIn() {}
+
+function useSession() {
+  return []
+}
+
+function AuthProvider({ session, children }) {
+  return children
+}
 
 function MyApp({ Component, pageProps }) {
   const client = useApollo()

@@ -16,10 +16,8 @@ enum Role {
   ADMIN
 }
 
-// Nextauth
-model Account {
+model Identity {
   id                 Int       @default(autoincrement()) @id
-  compoundId         String    @unique @map(name: "compound_id")
   userId             Int       @map(name: "user_id")
   providerType       String    @map(name: "provider_type")
   providerId         String    @map(name: "provider_id")
@@ -50,7 +48,7 @@ model Actor {
 }
 
 // Site account
-model Identity {
+model Profile {
   id Int @id @default(autoincrement())
   name String
   username String @unique
@@ -63,7 +61,7 @@ model Identity {
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
   userId Int @unique
-  User User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Ride {
@@ -86,21 +84,27 @@ model Session {
   updatedAt    DateTime @default(now()) @map(name: "updated_at")
   user User @relation(fields: [userId], references: [id])
 
+	// method: String
+	// givenName: String
+	// name: String
+	// email: Email
+	// id: Int
+	// level: UserLevel
+
   @@map(name: "sessions")
 }
 
 model User {
   id Int @id @default(autoincrement())
-  name String?
   email String? @unique
   emailVerified DateTime? @map(name: "email_verified")
   image String?
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
-  accounts Account[]
   sessions Session[]
   identity Identity?
   actor Actor[]
+  profile Profile?
   
   @@map(name: "users") // Maps NextAuth table
 }

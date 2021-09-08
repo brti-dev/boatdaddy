@@ -126,3 +126,7 @@ export const TextInput = forwardRef<
     />
   )
 })
+
+export function SubmitRow({ children }) {
+  return <div className={classes.submitRow}>{children}</div>
+}
