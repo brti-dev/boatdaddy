@@ -16,7 +16,7 @@ const AuthContext = createContext(undefined)
 
 function AuthProvider(props) {
   const result = useQuery(AUTH_QUERY)
-  console.log()
+  console.log('session result', result)
   const { data, error, loading } = result
   // code for pre-loading the user's information if we have their token in
   // localStorage goes here
@@ -36,7 +36,7 @@ function AuthProvider(props) {
   // rarely re-render/cause a performance problem.
   return (
     <AuthContext.Provider
-      value={{ data, login, logout, register }}
+      value={{ data, error, loading, login, logout, register }}
       {...props}
     />
   )
