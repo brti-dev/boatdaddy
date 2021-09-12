@@ -2,18 +2,16 @@ import { ApolloProvider } from '@apollo/client'
 
 import { useApollo } from 'src/graphql/apollo'
 import { AuthProvider } from 'src/context/auth-context'
-import Loading from 'src/components/Loading'
-import ErrorPage from 'src/components/ErrorPage'
-
-import 'normalize.css'
-import 'styles/global.scss'
+import { UserProvider } from 'src/context/user-context'
 
 function AppProviders({ children }) {
   const client = useApollo()
 
   return (
     <ApolloProvider client={client}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <UserProvider>{children}</UserProvider>
+      </AuthProvider>
     </ApolloProvider>
   )
 }

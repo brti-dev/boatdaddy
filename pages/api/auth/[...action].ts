@@ -3,9 +3,7 @@ import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 import { useRouter } from 'next/router'
 
-import { getJwtSecret, getUser } from 'src/graphql/auth'
-
-const JWT_SECRET = getJwtSecret()
+import { JWT_SECRET, getSession } from 'src/graphql/auth'
 
 export default async function Auth(req: NextApiRequest, res: NextApiResponse) {
   const router = useRouter()
@@ -99,6 +97,8 @@ export default async function Auth(req: NextApiRequest, res: NextApiResponse) {
 
     res.json(credentials)
   } else if (action === 'user') {
-    res.send(getUser(req))
+    const session = getSession(req)
+
+    res.send(session)
   }
 }

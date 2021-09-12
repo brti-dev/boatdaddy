@@ -1,9 +1,22 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { AuthenticationError, ForbiddenError } from 'apollo-server-micro'
+import { AuthChecker, registerEnumType } from 'type-graphql'
+import {
+  Field,
+  ObjectType,
+  Int,
+  Mutation,
+  Authorized,
+  Resolver,
+  ID,
+  Query,
+  Arg,
+  Ctx,
+} from 'type-graphql'
+import { Min, Max } from 'class-validator'
 
-import { AuthChecker } from 'type-graphql'
-import { Context } from './context'
+import { Context, AuthorizedContext } from './context'
 
 const USER_LEVELS = {
   guest: 0,
@@ -12,29 +25,71 @@ const USER_LEVELS = {
   admin: 3,
 }
 
-export const authChecker: AuthChecker<Context> = ({ context }) => {
+let { JWT_SECRET } = process.env
+if (!JWT_SECRET) {
+  if (process.env.NODE_ENV !== 'production') {
+    JWT_SECRET = '__tempjwtsecretfordevonly__'
+    console.warn('Missing env var JWT_SECRET. Using unsafe secret for dev env.')
+  } else {
+    throw new AuthenticationError(
+      'Missing env var JWT_SECRET. Authentication cannot proceed.'
+    )
+  }
+}
+
+enum AuthMethod {
+  Google = 'GOOGLE',
+  Test = 'TEST',
+}
+registerEnumType(AuthMethod, {
+  name: 'Auth Methods',
+  description: 'Authorization methods, including third party APIs',
+})
+
+@ObjectType()
+class Session {
+  @Field(type => AuthMethod)
+  method: AuthMethod
+
+  @Field()
+  name: string
+
+  @Field()
+  email: string
+
+  @Field(type => Int)
+  id: number
+
+  // @Field()
+  // isLoggedIn: boolean
+}
+
+@Resolver(Session)
+export class SessionResolver {
+  // constructor(ctx: Context) {}
+
+  @Query(returns => Session, { nullable: true })
+  async profile(@Ctx() ctx: Context): Promise<Session | null> {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.uid },
+      select: { name: true, email: true, id: true },
+    })
+
+    if (!user || Object.keys(user).length === 0) {
+      return null
+      //`The requested resource (username '${username}') could not be found`,
+    }
+
+    return { method: AuthMethod.Test, ...user }
+  }
+}
+
+const authChecker: AuthChecker<Context> = ({ context }) => {
   const { uid } = context
   return !!uid
 }
 
-export function getJwtSecret() {
-  let { JWT_SECRET } = process.env
-
-  if (!JWT_SECRET) {
-    if (process.env.NODE_ENV !== 'production') {
-      JWT_SECRET = 'tempjwtsecretfordevonly'
-      console.warn(
-        'Missing env var JWT_SECRET. Using unsafe secret for dev purpose.'
-      )
-    } else {
-      console.error('Missing env var JWT_SECRET. Authentication disabled.')
-    }
-  }
-
-  return JWT_SECRET
-}
-
-export const getJwt = (req: NextApiRequest) => {
+function getJwt(req: NextApiRequest) {
   const header = req.headers.authorization
 
   if (typeof header === 'undefined') {
@@ -47,9 +102,8 @@ export const getJwt = (req: NextApiRequest) => {
   return token
 }
 
-export function getUser(req: NextApiRequest) {
+function getSession(req: NextApiRequest): Session | {} {
   const token = getJwt(req)
-  const JWT_SECRET = getJwtSecret()
   if (!token) {
     return {}
   }
@@ -59,7 +113,9 @@ export function getUser(req: NextApiRequest) {
 
     return credentials
   } catch (error) {
-    return { isLoggedIn: false, error: { isError: true, message: error } }
+    console.error(error)
+
+    return {}
   }
 }
 
@@ -69,7 +125,7 @@ export function getUser(req: NextApiRequest) {
 //     res.json({ status: 'ok', user: getUser(req) });
 // });
 
-export function getUserLevel(levelString) {
+function getUserLevel(levelString) {
   if (USER_LEVELS[levelString]) {
     return USER_LEVELS[levelString]
   }
@@ -77,7 +133,7 @@ export function getUserLevel(levelString) {
   return 0
 }
 
-export function mustBeLoggedIn(resolver) {
+function mustBeLoggedIn(resolver) {
   return (root, args, { user }) => {
     if (!user || !user.isLoggedIn) {
       throw new AuthenticationError('Must be signed in')
@@ -87,7 +143,7 @@ export function mustBeLoggedIn(resolver) {
   }
 }
 
-export function mustBeManager(resolver) {
+function mustBeManager(resolver) {
   return (root, args, { user }) => {
     if (!user || USER_LEVELS[user.level] < USER_LEVELS.manager) {
       throw new ForbiddenError('Not authorized to perform this action')
@@ -97,7 +153,7 @@ export function mustBeManager(resolver) {
   }
 }
 
-export function mustBeAdmin(resolver) {
+function mustBeAdmin(resolver) {
   return (root, args, { user }) => {
     if (!user || USER_LEVELS[user.level] < USER_LEVELS.admin) {
       throw new ForbiddenError('Not authorized to perform this action')
@@ -114,7 +170,7 @@ export function mustBeAdmin(resolver) {
  * @param {object} user A user object; Must have `id` and `level` props
  * logging purposes only
  */
-export function verifyIsOwner(owner, user, action) {
+function verifyIsOwner(owner, user, action) {
   if (
     owner.id !== user.id &&
     getUserLevel(user.level) < getUserLevel('manager')
@@ -123,9 +179,4 @@ export function verifyIsOwner(owner, user, action) {
   }
 }
 
-/**
- * Get the user session from context
- */
-export function resolveUser(_, args, { user }) {
-  return user
-}
+export { JWT_SECRET, authChecker, getSession }

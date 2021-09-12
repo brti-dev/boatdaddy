@@ -5,15 +5,17 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-co
 
 import { prisma } from 'src/prisma'
 import { Context } from 'src/graphql/context'
-import { Session } from 'src/session'
 import { schema } from 'src/graphql'
+import { getSession } from 'src/graphql/auth'
+// import {} from 'src/graphql/generated/'
 
 const apolloServer = new ApolloServer({
   schema,
   // tracing: process.env.NODE_ENV === 'development',
+
   // Globally-available variables
   context: async ({ req }: { req: NextApiRequest }): Promise<Context> => {
-    const session: any = {}
+    const session: any = getSession(req)
     // const session_ = await getSession({ req })
     // const session: Session = session_
     console.log('session for gql context', session)

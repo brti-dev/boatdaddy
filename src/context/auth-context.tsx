@@ -1,7 +1,23 @@
 import { createContext, useContext } from 'react'
+import { useQuery, gql } from '@apollo/client'
 
-const AuthContext = createContext()
+const AUTH_QUERY = gql`
+  query Session {
+    session {
+      method
+      name
+      email
+      id
+    }
+  }
+`
+
+const AuthContext = createContext(undefined)
+
 function AuthProvider(props) {
+  const result = useQuery(AUTH_QUERY)
+  console.log()
+  const { data, error, loading } = result
   // code for pre-loading the user's information if we have their token in
   // localStorage goes here
   // 🚨 this is the important bit.
@@ -9,9 +25,9 @@ function AuthProvider(props) {
   // But we post-pone rendering any of the children until after we've determined
   // whether or not we have a user token and if we do, then we render a spinner
   // while we go retrieve that user's information.
-  if (weAreStillWaitingToGetTheUserData) {
-    return <FullPageSpinner />
-  }
+  // if (weAreStillWaitingToGetTheUserData) {
+  //   return <FullPageSpinner />
+  // }
   const login = () => {} // make a login request
   const register = () => {} // register the user
   const logout = () => {} // clear the token in localStorage and the user data
@@ -25,5 +41,14 @@ function AuthProvider(props) {
     />
   )
 }
-const useAuth = () => useContext(AuthContext)
+
+function useAuth() {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error(`useAuth must be used within a AuthProvider`)
+  }
+
+  return context
+}
+
 export { AuthProvider, useAuth }
