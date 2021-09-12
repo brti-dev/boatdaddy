@@ -1,11 +1,21 @@
+import { useQuery, gql } from '@apollo/client'
 import Image from 'next/image'
 
 import Layout from 'src/components/Layout'
 import classes from 'styles/about.module.scss'
 import photoAttribution from '../public/img/hero_landscape_attribution'
 import photoAttributionHome from '../public/img/hero_redshortsdaddy_attribution'
+import { About as AboutType } from 'src/graphql/generated/About'
+
+const ABOUT_QUERY = gql`
+  query About {
+    about
+  }
+`
 
 export default function About() {
+  const { data }: { data: AboutType } = useQuery(ABOUT_QUERY)
+
   return (
     <Layout title="About Boat Daddy">
       <main>
@@ -33,6 +43,7 @@ export default function About() {
         <h2>Attribution</h2>
         <p>{photoAttribution}</p>
         <p>{photoAttributionHome}</p>
+        <p>{data ? data.about : 'loading API...'}</p>
       </main>
     </Layout>
   )
