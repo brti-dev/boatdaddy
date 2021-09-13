@@ -1,5 +1,23 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
+
+/**
+ * Object to send in HTTP body request at auth API
+ */
+export type AuthBody = {
+  method: 'GOOGLE' | 'MOCK' | 'PASSWORD'
+  token: string
+  email?: string
+  password?: string
+}
+
+// Generate later...
+export type Session = {
+  method: string
+  name: string
+  email: string
+  id: number
+}
 
 const AUTH_QUERY = gql`
   query Session {
@@ -15,31 +33,37 @@ const AUTH_QUERY = gql`
 const AuthContext = createContext(undefined)
 
 function AuthProvider(props) {
-  const result = useQuery(AUTH_QUERY)
-  console.log('session result', result)
-  const { data, error, loading } = result
-  // code for pre-loading the user's information if we have their token in
-  // localStorage goes here
-  // 🚨 this is the important bit.
-  // Normally your provider components render the context provider with a value.
-  // But we post-pone rendering any of the children until after we've determined
-  // whether or not we have a user token and if we do, then we render a spinner
-  // while we go retrieve that user's information.
-  // if (weAreStillWaitingToGetTheUserData) {
-  //   return <FullPageSpinner />
-  // }
-  const login = () => {} // make a login request
+  const [data, setData] = useState(null)
+
+  const authResult = useQuery(AUTH_QUERY)
+  console.log('session result', authResult)
+
+  useEffect(() => {
+    setData(authResult?.data)
+  }, [authResult])
+
+  const login = async (reqBodyObject: AuthBody) => {
+    const apiEndpoint = process.env.UI_AUTH_ENDPOINT
+    const response = await fetch(`${apiEndpoint}/login`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reqBodyObject),
+    })
+    const body = await response.text()
+    const result = JSON.parse(body)
+
+    setData(result)
+  }
   const register = () => {} // register the user
   const logout = () => {} // clear the token in localStorage and the user data
-  // note, I'm not bothering to optimize this `value` with React.useMemo here
-  // because this is the top-most component rendered in our app and it will very
-  // rarely re-render/cause a performance problem.
-  return (
-    <AuthContext.Provider
-      value={{ data, error, loading, login, logout, register }}
-      {...props}
-    />
+
+  const value = useMemo(
+    () => ({ data, login, logout, register }),
+    [data, login, logout, register]
   )
+
+  return <AuthContext.Provider value={value} {...props} />
 }
 
 function useAuth() {

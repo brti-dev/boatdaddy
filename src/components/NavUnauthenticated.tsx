@@ -10,19 +10,41 @@ import Button from './Button'
 import Avatar from './Avatar'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
 import formClasses from 'styles/components/form.module.scss'
+import { useAuth, AuthBody, Session } from 'src/context/auth-context'
+
+const GoogleIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6 12C6 15.3137 8.68629 18 12 18C14.6124 18 16.8349 16.3304 17.6586 14H12V10H21.8047V14H21.8C20.8734 18.5645 16.8379 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C15.445 2 18.4831 3.742 20.2815 6.39318L17.0039 8.68815C15.9296 7.06812 14.0895 6 12 6C8.68629 6 6 8.68629 6 12Z"
+      fill="currentColor"
+    />
+  </svg>
+)
+
+// State of modals and forms
+
+type SignInState = {
+  opened: boolean
+  loading: boolean
+  show: 'signin' | 'signup'
+}
+
+type SignInNewState = {
+  opened?: boolean
+  loading?: boolean
+  show?: 'signin' | 'signup'
+}
 
 export default function NavUnauthenticated() {
-  // State of modals and forms
-  type SignInState = {
-    opened: boolean
-    loading: boolean
-    show: 'signin' | 'signup'
-  }
-  type SignInNewState = {
-    opened?: boolean
-    loading?: boolean
-    show?: 'signin' | 'signup'
-  }
+  const auth = useAuth()
+  console.log({ auth })
+
   const [signInState, setSignInState] = useReducer(
     (state: SignInState, newState: SignInNewState) => ({
       ...state,
@@ -43,21 +65,50 @@ export default function NavUnauthenticated() {
     }
   }, [signInState])
 
-  const submitSignIn = async event => {
+  const googleLogin = async () => {
+    const globalWindow = window as any
+    const auth2 = globalWindow.gapi.auth2.getAuthInstance()
+    const googleUser = await auth2.signIn()
+    const googleToken = googleUser.getAuthResponse().id_token
+
+    submitSignIn({ method: 'GOOGLE', token: googleToken })
+  }
+
+  const mockLogin = () => submitSignIn({ method: 'MOCK', token: 'foobar' })
+
+  const submitPasswordSignIn = async event => {
     event.preventDefault()
 
+    const form: AuthBody = {
+      method: 'PASSWORD',
+      token: 'foobar',
+      email: event.target.email.value,
+      password: event.target.password.value,
+    }
+
+    submitSignIn(form)
+  }
+
+  const submitSignIn = (body: AuthBody) => {
     setSignInState({ loading: true })
     setAlert(null)
 
-    const form = {
-      email: event.target.email.value,
-    }
-    console.log(form)
+    auth
+      .login(body)
+      .then(result => {
+        if (result.errors) {
+          throw new Error(result.errors[0])
+        }
 
-    // const form = {
-    //   username: event.target.email.value,
-    //   password: event.target.password.value,
-    // }
+        if (!result.jwt) {
+          throw Error('No token received from server')
+        }
+
+        console.log('login result', result)
+      })
+      .catch(error => {
+        setAlert(`Error authenticating: ${error}`)
+      })
   }
 
   const submitSignUp = async event => {
@@ -101,9 +152,26 @@ export default function NavUnauthenticated() {
           <span aria-hidden>×</span>
         </button>
         {signInState.show === 'signin' ? (
-          <Form method="post">
+          <Form onSubmit={submitPasswordSignIn}>
             <h2>Hello, Daddy</h2>
             <Alert />
+            <Button
+              variant="outlined"
+              loading={signInState.loading}
+              onClick={mockLogin}
+              style={{ justifyContent: 'center' }}
+            >
+              Mock Sign-In (Test User)
+            </Button>
+            <Button
+              variant="outlined"
+              loading={signInState.loading}
+              onClick={googleLogin}
+              style={{ justifyContent: 'center' }}
+            >
+              <GoogleIcon />
+              <span>Sign in with Google</span>
+            </Button>
             <label htmlFor="sessionform__email">Email</label>
             <input
               type="email"

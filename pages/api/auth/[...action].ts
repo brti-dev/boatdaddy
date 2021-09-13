@@ -14,7 +14,7 @@ export default async function Auth(req: NextApiRequest, res: NextApiResponse) {
       res.status(500).send('Missing JWT_SECRET. Authentication refused.')
     }
 
-    const { method, token } = req.body
+    const { method, token, email, password } = req.body
 
     if (!token) {
       res.status(400).send('Missing Token')
@@ -22,7 +22,7 @@ export default async function Auth(req: NextApiRequest, res: NextApiResponse) {
     }
 
     /**
-     * Object to save as JSON web token cookie, UI access
+     * Object to save as JSON web token, UI access
      */
     let credentials: any = { method }
 
