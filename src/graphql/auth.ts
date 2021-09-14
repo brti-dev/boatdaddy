@@ -37,22 +37,23 @@ if (!JWT_SECRET) {
   }
 }
 
-enum AuthMethod {
+enum Provider {
   Google = 'GOOGLE',
-  Test = 'TEST',
+  Password = 'PASSWORD',
+  Mock = 'MOCK',
 }
-registerEnumType(AuthMethod, {
-  name: 'Auth Methods',
-  description: 'Authorization methods, including third party APIs',
+registerEnumType(Provider, {
+  name: 'Auth Providers',
+  description: 'Authorization providers, including third party APIs',
 })
 
 @ObjectType()
 class Session {
-  @Field(type => AuthMethod)
-  method: AuthMethod
+  @Field(type => Provider)
+  provider: Provider
 
   @Field()
-  name: string
+  username: string
 
   @Field()
   email: string
@@ -69,10 +70,10 @@ export class SessionResolver {
   // constructor(ctx: Context) {}
 
   @Query(returns => Session, { nullable: true })
-  async profile(@Ctx() ctx: Context): Promise<Session | null> {
+  async session(@Ctx() ctx: Context): Promise<Session | null> {
     const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.uid },
-      select: { name: true, email: true, id: true },
+      select: { username: true, email: true, id: true },
     })
 
     if (!user || Object.keys(user).length === 0) {
@@ -80,7 +81,7 @@ export class SessionResolver {
       //`The requested resource (username '${username}') could not be found`,
     }
 
-    return { method: AuthMethod.Test, ...user }
+    return { provider: Provider.Mock, ...user }
   }
 }
 

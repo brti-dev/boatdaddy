@@ -3,16 +3,17 @@ import { useQuery, gql } from '@apollo/client'
 import Layout from 'src/components/Layout'
 import Map from 'src/components/Map'
 import classes from 'styles/hail.module.scss'
-// import { About } from 'src/graphql/generated/About'
+import { About } from 'src/graphql/generated/About'
 
-// const ABOUT_QUERY = gql`
-//   query About {
-//     about
-//   }
-// `
+// Results in: .../Sites/boatdaddy/pages/hail.tsx: Cannot query field "foo" on type "Query". Validation of GraphQL query document failed
+const ABOUT_QUERY = gql`
+  query FooQuery {
+    foo
+  }
+`
 
 export default function Hail() {
-  // const { data }: { data: About } = useQuery(ABOUT_QUERY)
+  const { data }: { data: any } = useQuery(ABOUT_QUERY)
 
   return (
     <Layout title="Hail A Boat Daddy" showFooter={false}>
@@ -21,7 +22,7 @@ export default function Hail() {
       </div>
       <div className={classes.hail}>
         <h5>Hail these daddies</h5>
-        {/* {JSON.stringify(data, null, 2)} */}
+        {JSON.stringify(data, null, 2)}
       </div>
     </Layout>
   )

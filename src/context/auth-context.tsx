@@ -5,29 +5,22 @@ import { useQuery, gql } from '@apollo/client'
  * Object to send in HTTP body request at auth API
  */
 export type AuthBody = {
-  method: 'GOOGLE' | 'MOCK' | 'PASSWORD'
+  provider: 'GOOGLE' | 'MOCK' | 'PASSWORD'
   token: string
   email?: string
   password?: string
 }
 
-// Generate later...
-export type Session = {
-  method: string
-  name: string
-  email: string
-  id: number
-}
-
 const AUTH_QUERY = gql`
-  query Session {
-    session {
-      method
-      name
-      email
-      id
-    }
+  query About2 {
+    about
   }
+  # query Session {
+  #   provider
+  #   username
+  #   email
+  #   id
+  # }
 `
 
 const AuthContext = createContext(undefined)

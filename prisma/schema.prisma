@@ -16,24 +16,10 @@ enum Role {
   ADMIN
 }
 
-model Identity {
-  id                 Int       @default(autoincrement()) @id
-  userId             Int       @map(name: "user_id")
-  providerType       String    @map(name: "provider_type")
-  providerId         String    @map(name: "provider_id")
-  providerAccountId  String    @map(name: "provider_account_id")
-  refreshToken       String?   @map(name: "refresh_token")
-  accessToken        String?   @map(name: "access_token")
-  accessTokenExpires DateTime? @map(name: "access_token_expires")
-  createdAt          DateTime  @default(now()) @map(name: "created_at")
-  updatedAt          DateTime  @default(now()) @map(name: "updated_at")
-  user User @relation(fields: [userId], references: [id])
-
-  @@index([providerAccountId], name: "providerAccountId")
-  @@index([providerId], name: "providerId")
-  @@index([userId], name: "userId")
-
-  @@map(name: "accounts")
+enum Provider {
+  PASSWORD
+  GOOGLE
+  MOCK
 }
 
 // Gives permission to perform the specified `role`
@@ -47,11 +33,32 @@ model Actor {
   ridesAsRider Ride[] @relation("Rider")
 }
 
+// Access to login and session
+model Identity {
+  id Int @default(autoincrement()) @id
+  userId Int @map(name: "user_id")
+  provider Provider
+  providerId String? @map(name: "provider_id")
+  providerAccountId String? @map(name: "provider_account_id")
+  refreshToken String? @map(name: "refresh_token")
+  accessToken String? @map(name: "access_token")
+  accessTokenExpires DateTime? @map(name: "access_token_expires")
+  password String?
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([providerAccountId], name: "providerAccountId")
+  @@index([providerId], name: "providerId")
+  @@index([userId], name: "userId")
+
+  @@map(name: "accounts")
+}
+
 // Site account
 model Profile {
   id Int @id @default(autoincrement())
   name String
-  username String @unique
   birthday DateTime @db.Date
   isDaddy Boolean
   hasBoat Boolean
@@ -96,6 +103,7 @@ model Session {
 
 model User {
   id Int @id @default(autoincrement())
+  username String @unique
   email String? @unique
   emailVerified DateTime? @map(name: "email_verified")
   image String?

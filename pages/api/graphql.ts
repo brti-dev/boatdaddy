@@ -18,13 +18,14 @@ const apolloServer = new ApolloServer({
     const session: any = getSession(req)
     // const session_ = await getSession({ req })
     // const session: Session = session_
-    console.log('session for gql context', session)
+    console.log('Session for gql context', session)
 
     return {
       uid: session?.user?.id,
       prisma,
     }
   },
+
   plugins: [
     ApolloServerPluginLandingPageGraphQLPlayground({
       settings: { 'request.credentials': 'include' },
