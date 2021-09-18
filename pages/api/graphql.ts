@@ -5,12 +5,13 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-co
 
 import { prisma } from 'src/prisma'
 import { Context } from 'src/graphql/context'
-import { schema } from 'src/graphql'
+import { typeDefs, resolvers } from 'src/graphql'
 import { getSession } from 'src/graphql/auth'
 // import {} from 'src/graphql/generated/'
 
 const apolloServer = new ApolloServer({
-  schema,
+  typeDefs,
+  resolvers,
   // tracing: process.env.NODE_ENV === 'development',
 
   // Globally-available variables

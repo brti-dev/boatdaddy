@@ -6,14 +6,14 @@ import classes from 'styles/hail.module.scss'
 import { About } from 'src/graphql/generated/About'
 
 // Results in: .../Sites/boatdaddy/pages/hail.tsx: Cannot query field "foo" on type "Query". Validation of GraphQL query document failed
-const ABOUT_QUERY = gql`
+const FOO_QUERY = gql`
   query FooQuery {
     foo
   }
 `
 
 export default function Hail() {
-  const { data }: { data: any } = useQuery(ABOUT_QUERY)
+  const { data }: { data: any } = useQuery(FOO_QUERY)
 
   return (
     <Layout title="Hail A Boat Daddy" showFooter={false}>
