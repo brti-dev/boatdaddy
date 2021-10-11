@@ -15,6 +15,18 @@ export const typeDefs = gql`
   """
   scalar DateTime
 
+  enum Role {
+    RIDER
+    DRIVER
+    ADMIN
+  }
+
+  enum Provider {
+    PASSWORD
+    GOOGLE
+    MOCK
+  }
+
   type ImageSignature {
     signature: String!
     timestamp: Int!
@@ -36,8 +48,16 @@ export const typeDefs = gql`
     username: String!
   }
 
+  type Session {
+    provider: Provider!
+    userId: Int!
+    username: String!
+    roles: [Role]
+  }
+
   type Query {
     about: String!
+    auth: Session!
     foo: String!
     profile(username: String!): Profile
   }

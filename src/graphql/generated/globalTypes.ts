@@ -1,12 +1,28 @@
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
+type Role = 'DRIVER' | 'RIDER' | 'ADMIN'
 
-//==============================================================
-// START Enums and Input Objects
-//==============================================================
+export type Identity = {
+  name?: string
+  username?: string
+  birthday?: string
+  isDaddy?: Boolean
+  hasBoat?: Boolean
+  createdAt?: string
+  updatedAt?: string
+  bio?: string
+  aboutBoat?: string
+  boatImage?: string
+}
 
-//==============================================================
-// END Enums and Input Objects
-//==============================================================
+export type User = {
+  id?: number | null
+  name?: string | null
+  email?: string | null
+  image?: string | null
+  roles?: Role[] | null
+  identity?: Identity
+}
+
+export type Session = {
+  user?: User
+  expires?: string
+}
