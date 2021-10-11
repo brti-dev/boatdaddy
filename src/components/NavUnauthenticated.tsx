@@ -10,7 +10,7 @@ import Button from './Button'
 import Avatar from './Avatar'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
 import formClasses from 'styles/components/form.module.scss'
-import { useAuth, AuthBody } from 'src/context/auth-context'
+import { useAuth, AuthBody, AuthResponse } from 'src/context/auth-context'
 
 const GoogleIcon = () => (
   <svg
@@ -95,19 +95,11 @@ export default function NavUnauthenticated() {
 
     auth
       .login(body)
-      .then(result => {
-        if (result.errors) {
-          throw new Error(result.errors[0])
-        }
-
-        if (!result.jwt) {
-          throw Error('No token received from server')
-        }
-
-        console.log('login result', result)
-      })
       .catch(error => {
-        setAlert(`Error authenticating: ${error}`)
+        setAlert(`Error authenticating: ${error.message}`)
+      })
+      .finally(() => {
+        setSignInState({ loading: false })
       })
   }
 
