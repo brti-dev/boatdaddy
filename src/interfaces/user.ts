@@ -1,4 +1,6 @@
-import { Role, Provider } from 'src/interfaces/user'
+export type Role = 'DRIVER' | 'RIDER' | 'ADMIN'
+
+export type Provider = 'GOOGLE' | 'MOCK' | 'PASSWORD'
 
 export type Identity = {
   name?: string

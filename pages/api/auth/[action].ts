@@ -88,14 +88,6 @@ async function getAuth(
       const jwtoken = jwt.sign(credentials, JWT_SECRET)
       credentials.jwt = jwtoken
 
-      // Set a cookie called jwt with the value as the signed token
-      // res.cookie('jwt', jwtoken, {
-      //     httpOnly: true,
-      //     secure: true,
-      //     sameSite: 'none',
-      //     // domain: process.env.COOKIE_DOMAIN,
-      // });
-
       return { credentials }
 
     case 'user':

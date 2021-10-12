@@ -7,7 +7,6 @@ import { prisma } from 'src/prisma'
 import { Context } from 'src/graphql/context'
 import { typeDefs, resolvers } from 'src/graphql'
 import { getSession } from 'src/graphql/auth'
-// import {} from 'src/graphql/generated/'
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -16,13 +15,13 @@ const apolloServer = new ApolloServer({
 
   // Globally-available variables
   context: async ({ req }: { req: NextApiRequest }): Promise<Context> => {
-    const session: any = getSession(req)
+    const session = getSession(req)
     // const session_ = await getSession({ req })
     // const session: Session = session_
     console.log('Session for gql context', session)
 
     return {
-      uid: session?.user?.id,
+      user: { id: session.userId, username: session.username },
       prisma,
     }
   },

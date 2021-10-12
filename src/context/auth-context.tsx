@@ -3,8 +3,7 @@ import { useQuery, gql } from '@apollo/client'
 import process from 'process'
 
 import { Session } from 'src/graphql/generated/globalTypes'
-
-type Provider = 'GOOGLE' | 'MOCK' | 'PASSWORD'
+import { Provider } from 'src/interfaces/user'
 
 /**
  * Object to send in HTTP body request at auth API
@@ -33,21 +32,18 @@ export type AuthResponse = {
 }
 
 const AUTH_QUERY = gql`
-  query About2 {
-    about
+  query Session {
+    provider
+    userId
+    username
+    roles
   }
-  # query Session {
-  #   provider
-  #   username
-  #   email
-  #   id
-  # }
 `
 
 const AuthContext = createContext(undefined)
 
 function AuthProvider(props) {
-  const [data, setData] = useState(null)
+  const [data, setData] = useState<Session>(null)
 
   const authResult = useQuery(AUTH_QUERY)
   console.log('session result', authResult)
@@ -56,14 +52,13 @@ function AuthProvider(props) {
     setData(authResult?.data)
   }, [authResult])
 
-  const login = async (reqBodyObject: AuthBody) => {
+  const login = async (params: AuthBody) => {
     const AUTH_ENDPOINT = process.env.NEXT_PUBLIC_AUTH_ENDPOINT
-    console.log(`login to auth endpoint at ${AUTH_ENDPOINT}`)
     const response = await fetch(`${AUTH_ENDPOINT}/login`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reqBodyObject),
+      body: JSON.stringify(params),
     })
     const body = await response.text()
     const result: AuthResponse = JSON.parse(body)
@@ -74,7 +69,11 @@ function AuthProvider(props) {
       throw new Error(result.error)
     }
 
-    setData(result)
+    if (!result?.credentials) {
+      throw new Error('No credentials found')
+    }
+
+    setData(result.credentials)
   }
 
   const register = () => {} // register the user

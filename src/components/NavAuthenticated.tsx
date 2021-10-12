@@ -4,6 +4,7 @@ import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 import { Dialog } from '@reach/dialog'
 import { VisuallyHidden } from '@reach/visually-hidden'
 
+import { useAuth } from 'src/context/auth-context'
 import useAlert from 'src/lib/use-alert'
 import { Form, SubmitRow } from './Form'
 import Button from './Button'
@@ -12,30 +13,25 @@ import CheckButton, { checkButtonContainerClass } from './CheckButton'
 import formClasses from 'styles/components/form.module.scss'
 
 export default function NavAuthenticated() {
-  const session: any = {}
-
+  const auth = useAuth()
   const router = useRouter()
 
   const signOut = () => {
     router.push('/logout')
   }
 
-  return <div>{JSON.stringify(session, null, 2)}</div>
+  const image = null
+
+  return <div>{JSON.stringify(auth.data, null, 2)}</div>
 
   return (
     <Menu>
-      <MenuButton
-        as={Avatar}
-        alt={session.user.name}
-        src={session.user.image ?? null}
-      >
-        {session.user.name.slice(0, 1)}
+      <MenuButton as={Avatar} alt={auth.data.username} src={image}>
+        {auth.username.slice(0, 1)}
       </MenuButton>
       <MenuList>
         <MenuItem onSelect={() => router.push('/rides')}>My Rides</MenuItem>
-        <MenuItem
-          onSelect={() => router.push(`/@${session.user.identity?.username}`)}
-        >
+        <MenuItem onSelect={() => router.push(`/@${auth.data.username}`)}>
           Profile
         </MenuItem>
         <MenuItem onSelect={() => router.push('/account')}>

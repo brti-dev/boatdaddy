@@ -1,22 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { AuthenticationError, ForbiddenError } from 'apollo-server-micro'
-import { AuthChecker, registerEnumType } from 'type-graphql'
-import {
-  Field,
-  ObjectType,
-  Int,
-  Mutation,
-  Authorized,
-  Resolver,
-  ID,
-  Query,
-  Arg,
-  Ctx,
-} from 'type-graphql'
 import { Min, Max } from 'class-validator'
 
 import { Context, AuthorizedContext } from './context'
+import { Session } from './generated/globalTypes'
 
 const USER_LEVELS = {
   guest: 0,
@@ -25,7 +13,7 @@ const USER_LEVELS = {
   admin: 3,
 }
 
-let { JWT_SECRET } = process.env
+let JWT_SECRET = process.env.JWT_SECRET
 if (!JWT_SECRET) {
   if (process.env.NODE_ENV !== 'production') {
     JWT_SECRET = '__tempjwtsecretfordevonly__'
@@ -37,55 +25,55 @@ if (!JWT_SECRET) {
   }
 }
 
-enum Provider {
-  Google = 'GOOGLE',
-  Password = 'PASSWORD',
-  Mock = 'MOCK',
-}
-registerEnumType(Provider, {
-  name: 'Auth Providers',
-  description: 'Authorization providers, including third party APIs',
-})
+// enum Provider {
+//   Google = 'GOOGLE',
+//   Password = 'PASSWORD',
+//   Mock = 'MOCK',
+// }
+// registerEnumType(Provider, {
+//   name: 'Auth Providers',
+//   description: 'Authorization providers, including third party APIs',
+// })
 
-@ObjectType()
-class Session {
-  @Field(type => Provider)
-  provider: Provider
+// @ObjectType()
+// class Session {
+//   @Field(type => Provider)
+//   provider: Provider
 
-  @Field()
-  username: string
+//   @Field()
+//   username: string
 
-  @Field()
-  email: string
+//   @Field()
+//   email: string
 
-  @Field(type => Int)
-  id: number
+//   @Field(type => Int)
+//   id: number
 
-  // @Field()
-  // isLoggedIn: boolean
-}
+//   // @Field()
+//   // isLoggedIn: boolean
+// }
 
-@Resolver(Session)
-export class SessionResolver {
-  // constructor(ctx: Context) {}
+// @Resolver(Session)
+// export class SessionResolver {
+//   // constructor(ctx: Context) {}
 
-  @Query(returns => Session, { nullable: true })
-  async session(@Ctx() ctx: Context): Promise<Session | null> {
-    const user = await ctx.prisma.user.findUnique({
-      where: { id: ctx.uid },
-      select: { username: true, email: true, id: true },
-    })
+//   @Query(returns => Session, { nullable: true })
+//   async session(@Ctx() ctx: Context): Promise<Session | null> {
+//     const user = await ctx.prisma.user.findUnique({
+//       where: { id: ctx.uid },
+//       select: { username: true, email: true, id: true },
+//     })
 
-    if (!user || Object.keys(user).length === 0) {
-      return null
-      //`The requested resource (username '${username}') could not be found`,
-    }
+//     if (!user || Object.keys(user).length === 0) {
+//       return null
+//       //`The requested resource (username '${username}') could not be found`,
+//     }
 
-    return { provider: Provider.Mock, ...user }
-  }
-}
+//     return { provider: Provider.Mock, ...user }
+//   }
+// }
 
-const authChecker: AuthChecker<Context> = ({ context }) => {
+const authChecker = ({ context }) => {
   const { uid } = context
   return !!uid
 }
@@ -103,10 +91,10 @@ function getJwt(req: NextApiRequest) {
   return token
 }
 
-function getSession(req: NextApiRequest): Session | {} {
+function getSession(req: NextApiRequest): Session | null {
   const token = getJwt(req)
   if (!token) {
-    return {}
+    return null
   }
 
   try {
@@ -116,7 +104,7 @@ function getSession(req: NextApiRequest): Session | {} {
   } catch (error) {
     console.error(error)
 
-    return {}
+    return null
   }
 }
 

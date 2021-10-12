@@ -3,6 +3,7 @@ import { gql } from 'apollo-server-micro'
 // const schema = require('../../schema.gql')
 // import { SessionResolver } from './auth'
 // import { ImageResolver } from './image'
+import { getSession } from './auth'
 import profile from './profile'
 // import { authChecker } from './auth'
 import { GraphQlDateTime } from './datetime'
@@ -70,6 +71,7 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     about: () => ABOUT,
+    auth: resolveSession(),
     foo: () => 'foo',
     profile: profile.get,
   },

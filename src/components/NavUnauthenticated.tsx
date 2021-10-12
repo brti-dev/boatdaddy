@@ -95,6 +95,9 @@ export default function NavUnauthenticated() {
 
     auth
       .login(body)
+      .then(() => {
+        closeSignIn()
+      })
       .catch(error => {
         setAlert(`Error authenticating: ${error.message}`)
       })

@@ -1,10 +1,15 @@
 import { PrismaClient } from '@prisma/client'
 
+type User = {
+  id: number
+  username: string
+}
+
 export interface Context {
-  uid: number | null
+  user: User | null
   prisma: PrismaClient
 }
 
 export interface AuthorizedContext extends Context {
-  uid: number
+  user: User
 }
