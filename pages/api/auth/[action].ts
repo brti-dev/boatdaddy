@@ -59,28 +59,21 @@ async function getAuth(
 
       // Find user in db, and register if not found
       // const foundUser = await userResolver.get(null, { email: credentials.email })
-      // if (foundUser) {
-      //   credentials.id = foundUser.id
-      //   credentials.level = foundUser.level
-      // } else {
-      //   logger.info('User registration', credentials)
-      //   try {
-      //     credentials.level = 'customer'
-      //     const savedUser = await userResolver.add(null, { input: credentials })
-      //     credentials.id = savedUser.id
-      //   } catch (error) {
-      //     logger.error(error)
-      //     let statusCode = 400
-
-      //     if (error.extensions.code === 'BAD_USER_INPUT') {
-      //       statusCode = 403
-      //     }
-
-      //     res.status(statusCode).send(error)
-
-      //     return
-      //   }
-      // }
+      const foundUser = { id: 1, roles: ['RIDER', 'DRIVER'] }
+      if (foundUser) {
+        credentials.id = foundUser.id
+        credentials.roles = foundUser.roles
+      } else {
+        console.log('User registration', credentials)
+        try {
+          credentials.roles = ['RIDER']
+          // const savedUser = await userResolver.add(null, { input: credentials })
+          const savedUser = { id: 22 }
+          credentials.id = savedUser.id
+        } catch (error) {
+          throw error
+        }
+      }
 
       // await userResolver.updateActivity(credentials.id)
 

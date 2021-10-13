@@ -79,26 +79,26 @@ export default function NavUnauthenticated() {
   const submitPasswordSignIn = async event => {
     event.preventDefault()
 
-    const form: AuthBody = {
+    const params: AuthBody = {
       provider: 'PASSWORD',
       token: 'foobar',
       email: event.target.email.value,
       password: event.target.password.value,
     }
 
-    submitSignIn(form)
+    submitSignIn(params)
   }
 
-  const submitSignIn = (body: AuthBody) => {
+  const submitSignIn = (params: AuthBody) => {
     setSignInState({ loading: true })
     setAlert(null)
 
     auth
-      .login(body)
+      .login(params)
       .then(() => {
         closeSignIn()
       })
-      .catch(error => {
+      .catch((error: Error) => {
         setAlert(`Error authenticating: ${error.message}`)
       })
       .finally(() => {
