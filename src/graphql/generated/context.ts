@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 type User = {
   id: number
-  username: string
 }
 
 export interface Context {

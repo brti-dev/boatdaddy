@@ -4,9 +4,9 @@ import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 
 import { prisma } from 'src/prisma'
-import { Context } from 'src/graphql/context'
+import { Context } from 'src/graphql/generated/context'
 import { typeDefs, resolvers } from 'src/graphql'
-import { getSession } from 'src/graphql/auth'
+import { getSession } from 'src/auth'
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -16,12 +16,10 @@ const apolloServer = new ApolloServer({
   // Globally-available variables
   context: async ({ req }: { req: NextApiRequest }): Promise<Context> => {
     const session = getSession(req)
-    // const session_ = await getSession({ req })
-    // const session: Session = session_
     console.log('Session for gql context', session)
 
     return {
-      user: { id: session.userId, username: session.username },
+      user: { id: session.userId },
       prisma,
     }
   },

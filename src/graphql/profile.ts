@@ -1,4 +1,4 @@
-import { Context, AuthorizedContext } from './context'
+import { Context, AuthorizedContext } from './generated/context'
 import { Profile } from './generated/Profile'
 
 const get = async (_, { username }, ctx: Context): Promise<Profile> => {

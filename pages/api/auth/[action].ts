@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 
-import { JWT_SECRET, getSession } from 'src/graphql/auth'
+import { JWT_SECRET, getSession } from 'src/auth'
 import { AuthBody, AuthResponse } from 'src/context/auth-context'
 
 async function getAuth(
@@ -78,6 +78,7 @@ async function getAuth(
       // await userResolver.updateActivity(credentials.id)
 
       // Use credentials object as JWT, encrypt it using a secret key
+      // Frontend should save in localstorage
       const jwtoken = jwt.sign(credentials, JWT_SECRET)
       credentials.jwt = jwtoken
 

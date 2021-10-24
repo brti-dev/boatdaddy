@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import process from 'process'
 
-import { Session } from 'src/graphql/generated/globalTypes'
-import { Provider } from 'src/interfaces/user'
+import { Session } from 'src/interfaces/user'
+import { Provider, Roles } from 'src/interfaces/user'
 
 /**
  * Object to send in HTTP body request at auth API
@@ -69,11 +69,26 @@ function AuthProvider(props) {
       throw new Error(result.error)
     }
 
-    if (!result?.credentials) {
+    const { credentials } = result
+
+    if (!credentials) {
       throw new Error('No credentials found')
     }
 
-    setData(result.credentials)
+    // TODO: Get user data from credentials (email, jwt, name, provider)
+    // ....
+    const user = {
+      userId: 1,
+      username: 'mrberti',
+      roles: ['RIDER', 'DRIVER', 'ADMIN'] as Roles,
+    }
+
+    const session: Session = {
+      provider: credentials.provider,
+      ...user,
+    }
+
+    setData(session)
   }
 
   const register = () => {} // register the user

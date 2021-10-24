@@ -15,10 +15,6 @@ if (!JWT_SECRET) {
     )
   }
 }
-const authChecker = ({ context }) => {
-  const { uid } = context
-  return !!uid
-}
 
 function getJwt(req: NextApiRequest) {
   const header = req.headers.authorization
