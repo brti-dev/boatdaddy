@@ -59,7 +59,6 @@ export const typeDefs = gql`
   type Query {
     about: String!
     auth: Session!
-    foo: String!
     profile(username: String!): Profile
   }
 
@@ -71,6 +70,7 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     about: () => ABOUT,
+    auth: (_, { session }) => session,
     profile: profile.get,
   },
   DateTime: GraphQlDateTime,

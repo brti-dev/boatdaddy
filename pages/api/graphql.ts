@@ -19,7 +19,7 @@ const apolloServer = new ApolloServer({
     console.log('Session for gql context', session)
 
     return {
-      user: { id: session.userId },
+      session,
       prisma,
     }
   },

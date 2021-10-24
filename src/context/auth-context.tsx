@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
-import process from 'process'
 
 import { Session } from 'src/interfaces/user'
 import { Provider, Roles } from 'src/interfaces/user'
+import useLocalStorage from 'src/lib/use-local-storage'
 
 /**
  * Object to send in HTTP body request at auth API
@@ -45,12 +45,17 @@ const AuthContext = createContext(undefined)
 function AuthProvider(props) {
   const [data, setData] = useState<Session>(null)
 
+  const [jwt, setJwt] = useLocalStorage<string>('jwt', null)
+  console.log('jwt from localstorage:', jwt)
+
   const authResult = useQuery(AUTH_QUERY)
   console.log('session result', authResult)
 
   useEffect(() => {
-    setData(authResult?.data)
-  }, [authResult])
+    if (!jwt) {
+      return
+    }
+  }, [data])
 
   const login = async (params: AuthBody) => {
     const AUTH_ENDPOINT = process.env.NEXT_PUBLIC_AUTH_ENDPOINT
@@ -70,10 +75,16 @@ function AuthProvider(props) {
     }
 
     const { credentials } = result
-
     if (!credentials) {
       throw new Error('No credentials found')
     }
+
+    const { jwt } = credentials
+    if (!jwt) {
+      throw new Error('Missing JWT from credentials')
+    }
+
+    setJwt(jwt)
 
     // TODO: Get user data from credentials (email, jwt, name, provider)
     // ....

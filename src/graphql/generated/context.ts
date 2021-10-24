@@ -1,14 +1,11 @@
 import { PrismaClient } from '@prisma/client'
-
-type User = {
-  id: number
-}
+import { Session } from 'src/interfaces/user'
 
 export interface Context {
-  user: User | null
+  session: Session | null
   prisma: PrismaClient
 }
 
 export interface AuthorizedContext extends Context {
-  user: User
+  session: Session
 }
