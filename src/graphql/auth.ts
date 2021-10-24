@@ -1,29 +1,10 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import jwt from 'jsonwebtoken'
-import { AuthenticationError, ForbiddenError } from 'apollo-server-micro'
-import { Min, Max } from 'class-validator'
+// import { NextApiRequest, NextApiResponse } from 'next'
+// import jwt from 'jsonwebtoken'
+// import { AuthenticationError, ForbiddenError } from 'apollo-server-micro'
+// import { Min, Max } from 'class-validator'
 
-import { Context, AuthorizedContext } from './context'
-import { Session } from './generated/globalTypes'
-
-const USER_LEVELS = {
-  guest: 0,
-  customer: 1,
-  manager: 2,
-  admin: 3,
-}
-
-let JWT_SECRET = process.env.JWT_SECRET
-if (!JWT_SECRET) {
-  if (process.env.NODE_ENV !== 'production') {
-    JWT_SECRET = '__tempjwtsecretfordevonly__'
-    console.warn('Missing env var JWT_SECRET. Using unsafe secret for dev env.')
-  } else {
-    throw new AuthenticationError(
-      'Missing env var JWT_SECRET. Authentication cannot proceed.'
-    )
-  }
-}
+// import { Context, AuthorizedContext } from './context'
+// import { Session } from 'src/interfaces/user'
 
 // enum Provider {
 //   Google = 'GOOGLE',
@@ -78,94 +59,50 @@ const authChecker = ({ context }) => {
   return !!uid
 }
 
-function getJwt(req: NextApiRequest) {
-  const header = req.headers.authorization
+// function mustBeLoggedIn(resolver) {
+//   return (root, args, { user }) => {
+//     if (!user || !user.isLoggedIn) {
+//       throw new AuthenticationError('Must be signed in')
+//     }
 
-  if (typeof header === 'undefined') {
-    return null
-  }
+//     return resolver(root, args, { user })
+//   }
+// }
 
-  const bearer = header.split(' ')
-  const token = bearer[1]
+// function mustBeManager(resolver) {
+//   return (root, args, { user }) => {
+//     if (!user || USER_LEVELS[user.level] < USER_LEVELS.manager) {
+//       throw new ForbiddenError('Not authorized to perform this action')
+//     }
 
-  return token
-}
+//     return resolver(root, args, { user })
+//   }
+// }
 
-function getSession(req: NextApiRequest): Session | null {
-  const token = getJwt(req)
-  if (!token) {
-    return null
-  }
+// function mustBeAdmin(resolver) {
+//   return (root, args, { user }) => {
+//     if (!user || USER_LEVELS[user.level] < USER_LEVELS.admin) {
+//       throw new ForbiddenError('Not authorized to perform this action')
+//     }
 
-  try {
-    const credentials = jwt.verify(token, JWT_SECRET)
+//     return resolver(root, args, { user })
+//   }
+// }
 
-    return credentials
-  } catch (error) {
-    console.error(error)
+// /**
+//  * A NON-RESOLVER function to check user actions
+//  *
+//  * @param {object} owner A user object; Must have `id` prop
+//  * @param {object} user A user object; Must have `id` and `level` props
+//  * logging purposes only
+//  */
+// function verifyIsOwner(owner, user, action) {
+//   if (
+//     owner.id !== user.id &&
+//     getUserLevel(user.level) < getUserLevel('manager')
+//   ) {
+//     throw new ForbiddenError('Not authorized to perform this action')
+//   }
+// }
 
-    return null
-  }
-}
-
-// Clear cookie upon logout (With JWT enabled it's handled on frontend)
-// routes.use('/logout', async (req, res) => {
-//     res.clearCookie('jwt');
-//     res.json({ status: 'ok', user: getUser(req) });
-// });
-
-function getUserLevel(levelString) {
-  if (USER_LEVELS[levelString]) {
-    return USER_LEVELS[levelString]
-  }
-
-  return 0
-}
-
-function mustBeLoggedIn(resolver) {
-  return (root, args, { user }) => {
-    if (!user || !user.isLoggedIn) {
-      throw new AuthenticationError('Must be signed in')
-    }
-
-    return resolver(root, args, { user })
-  }
-}
-
-function mustBeManager(resolver) {
-  return (root, args, { user }) => {
-    if (!user || USER_LEVELS[user.level] < USER_LEVELS.manager) {
-      throw new ForbiddenError('Not authorized to perform this action')
-    }
-
-    return resolver(root, args, { user })
-  }
-}
-
-function mustBeAdmin(resolver) {
-  return (root, args, { user }) => {
-    if (!user || USER_LEVELS[user.level] < USER_LEVELS.admin) {
-      throw new ForbiddenError('Not authorized to perform this action')
-    }
-
-    return resolver(root, args, { user })
-  }
-}
-
-/**
- * A NON-RESOLVER function to check user actions
- *
- * @param {object} owner A user object; Must have `id` prop
- * @param {object} user A user object; Must have `id` and `level` props
- * logging purposes only
- */
-function verifyIsOwner(owner, user, action) {
-  if (
-    owner.id !== user.id &&
-    getUserLevel(user.level) < getUserLevel('manager')
-  ) {
-    throw new ForbiddenError('Not authorized to perform this action')
-  }
-}
-
-export { JWT_SECRET, authChecker, getSession }
+export { authChecker }
