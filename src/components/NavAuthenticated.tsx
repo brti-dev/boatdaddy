@@ -1,21 +1,37 @@
 import { useRouter } from 'next/router'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
+import { gql, useQuery } from '@apollo/client'
 
 import { useAuth } from 'src/context/auth-context'
 import Avatar from './Avatar'
+
+const PROFILE_QUERY = gql`
+  query Profile($username: String!) {
+    profile(username: $username) {
+      image
+      name
+    }
+  }
+`
 
 export default function NavAuthenticated() {
   const auth = useAuth()
   console.log('Nav auth data', auth.data)
   const router = useRouter()
 
+  const { data, loading, error } = useQuery(PROFILE_QUERY, {
+    variables: { username: auth.data.username },
+  })
+
+  if (loading) {
+    return <>...</>
+  }
+
   const signOut = () => {
     router.push('/logout')
   }
 
-  const image = null
-
-  const name = auth.data.name
+  const { image, name } = data
 
   const firstInitial = name.slice(0, 1)
   const secondInitial = name.includes(' ')
@@ -30,7 +46,7 @@ export default function NavAuthenticated() {
       </MenuButton>
       <MenuList>
         <MenuItem onSelect={() => router.push('/rides')}>My Rides</MenuItem>
-        <MenuItem onSelect={() => router.push(`/users/${auth.data.id}`)}>
+        <MenuItem onSelect={() => router.push(`/users/${auth.data.userId}`)}>
           Profile
         </MenuItem>
         <MenuItem onSelect={() => router.push('/account')}>

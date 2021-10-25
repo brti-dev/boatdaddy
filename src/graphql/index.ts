@@ -58,7 +58,7 @@ export const typeDefs = gql`
 
   type Query {
     about: String!
-    auth: Session!
+    auth: Session
     profile(username: String!): Profile
   }
 

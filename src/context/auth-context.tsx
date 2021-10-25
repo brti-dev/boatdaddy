@@ -32,11 +32,13 @@ export type AuthResponse = {
 }
 
 const AUTH_QUERY = gql`
-  query Session {
-    provider
-    userId
-    username
-    roles
+  query {
+    auth {
+      provider
+      userId
+      username
+      roles
+    }
   }
 `
 
@@ -100,6 +102,8 @@ function AuthProvider(props) {
     }
 
     setData(session)
+
+    return null
   }
 
   const register = () => {} // register the user
@@ -113,7 +117,12 @@ function AuthProvider(props) {
   return <AuthContext.Provider value={value} {...props} />
 }
 
-function useAuth() {
+function useAuth(): {
+  data: Session
+  login: (params: AuthBody) => Promise<null>
+  logout: () => void
+  register: () => void
+} {
   const context = useContext(AuthContext)
   if (context === undefined) {
     throw new Error(`useAuth must be used within a AuthProvider`)
