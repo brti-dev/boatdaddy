@@ -3,7 +3,10 @@ import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 import { gql, useQuery } from '@apollo/client'
 
 import { useAuth } from 'src/context/auth-context'
+import { Profile } from 'src/graphql/generated/Profile'
 import Avatar from './Avatar'
+
+type ProfileQuery = { data?: Profile; loading?: any; error?: any }
 
 const PROFILE_QUERY = gql`
   query Profile($username: String!) {
@@ -19,7 +22,7 @@ export default function NavAuthenticated() {
   console.log('Nav auth data', auth.data)
   const router = useRouter()
 
-  const { data, loading, error } = useQuery(PROFILE_QUERY, {
+  const { data, loading, error }: ProfileQuery = useQuery(PROFILE_QUERY, {
     variables: { username: auth.data.username },
   })
 
@@ -31,7 +34,7 @@ export default function NavAuthenticated() {
     router.push('/logout')
   }
 
-  const { image, name } = data
+  const { image, name } = data.profile
 
   const firstInitial = name.slice(0, 1)
   const secondInitial = name.includes(' ')

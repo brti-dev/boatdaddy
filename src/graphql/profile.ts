@@ -1,23 +1,29 @@
 import { Context, AuthorizedContext } from './generated/context'
-import { Profile } from './generated/Profile'
+import { Profile_profile, ProfileVariables } from './generated/Profile'
 
-const get = async (_, { username }, ctx: Context): Promise<Profile> => {
+const get = async (
+  _,
+  vars: ProfileVariables,
+  ctx: Context
+): Promise<Profile_profile> => {
+  const { username } = vars
+
+  const birthday = new Date('1980-01-01')
+
   return {
-    profile: {
-      __typename: 'Profile',
-      aboutBoat: 'Its a mother fucking boat',
-      bio: "I'm on a boat",
-      birthday: new Date('1980-01-01').toString(),
-      boatImage: null,
-      hasBoat: true,
-      image: null,
-      isDaddy: true,
-      name: 'John Daddy',
-      userId: 1,
-      username,
-      createdAt: null,
-      updatedAt: null,
-    },
+    __typename: 'Profile',
+    aboutBoat: 'Its a mother fucking boat',
+    bio: "I'm on a boat",
+    birthday,
+    boatImage: null,
+    hasBoat: true,
+    image: null,
+    isDaddy: true,
+    name: 'John Daddy',
+    userId: 1,
+    username,
+    createdAt: null,
+    updatedAt: null,
   }
   // const user = await ctx.prisma.user.findUnique({
   //   where: { username },
