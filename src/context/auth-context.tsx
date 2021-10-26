@@ -47,8 +47,24 @@ const AuthContext = createContext(undefined)
 function AuthProvider(props) {
   const [data, setData] = useState<Session>(null)
 
-  const [jwt, setJwt] = useLocalStorage<string>('jwt', null)
+  const [jwt, setJwt] = useState<string>(null)
   console.log('jwt from localstorage:', jwt)
+
+  useEffect(() => {
+    const jwtFromLocalStorage = localStorage.getItem('jwt')
+
+    if (jwtFromLocalStorage) {
+      setJwt(jwtFromLocalStorage)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!jwt) {
+      return
+    }
+
+    localStorage.setItem('jwt', jwt)
+  }, [jwt])
 
   const authResult = useQuery(AUTH_QUERY)
   console.log('session result', authResult)
@@ -57,6 +73,8 @@ function AuthProvider(props) {
     if (!jwt) {
       return
     }
+
+    // do something with authResult... ...
   }, [data])
 
   const login = async (params: AuthBody) => {

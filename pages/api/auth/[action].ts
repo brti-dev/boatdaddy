@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 
 import { JWT_SECRET, getSession } from 'src/auth'
+import { Session } from 'src/interfaces/user'
 import { AuthBody, AuthResponse } from 'src/context/auth-context'
 
 async function getAuth(
@@ -10,6 +11,19 @@ async function getAuth(
   req: NextApiRequest
 ): Promise<AuthResponse> {
   switch (action) {
+    case 'test_jwt':
+      if (!JWT_SECRET) {
+        throw new Error('Error: Missing JWT_SECRET')
+      }
+
+      const t_jwtoken = jwt.sign('foo', JWT_SECRET)
+      console.log('signed jwt', t_jwtoken)
+
+      const t_data = jwt.verify(t_jwtoken, JWT_SECRET)
+      console.log('verified jwt', t_data)
+
+      break
+
     case 'login':
       if (!JWT_SECRET) {
         throw new Error('Missing JWT_SECRET. Authentication refused.')
@@ -59,27 +73,38 @@ async function getAuth(
 
       // Find user in db, and register if not found
       // const foundUser = await userResolver.get(null, { email: credentials.email })
-      const foundUser = { id: 1, roles: ['RIDER', 'DRIVER'] }
+      const foundUser = {
+        id: 1,
+        username: 'mrberti',
+        roles: ['RIDER', 'DRIVER', 'ADMIN'],
+      }
       if (foundUser) {
-        credentials.id = foundUser.id
+        credentials.userId = foundUser.id
         credentials.roles = foundUser.roles
+        credentials.username = foundUser.username
       } else {
         console.log('User registration', credentials)
         try {
           credentials.roles = ['RIDER']
           // const savedUser = await userResolver.add(null, { input: credentials })
           const savedUser = { id: 22 }
-          credentials.id = savedUser.id
+          credentials.userId = savedUser.id
         } catch (error) {
           throw error
         }
       }
 
-      // await userResolver.updateActivity(credentials.id)
+      // await userResolver.updateActivity(credentials.userId)
 
       // Use credentials object as JWT, encrypt it using a secret key
       // Frontend should save in localstorage
-      const jwtoken = jwt.sign(credentials, JWT_SECRET)
+      const sessionForToken: Session = {
+        provider,
+        userId: credentials.userId,
+        username: credentials.username,
+        roles: credentials.roles,
+      }
+      const jwtoken = jwt.sign(sessionForToken, JWT_SECRET)
       credentials.jwt = jwtoken
 
       return { credentials }

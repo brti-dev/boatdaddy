@@ -14,7 +14,7 @@ const apolloServer = new ApolloServer({
   // tracing: process.env.NODE_ENV === 'development',
 
   // Globally-available variables
-  context: async ({ req }: { req: NextApiRequest }): Promise<Context> => {
+  context: ({ req }: { req: NextApiRequest }): Context => {
     const session = getSession(req)
     console.log('Session for gql context', session)
 
