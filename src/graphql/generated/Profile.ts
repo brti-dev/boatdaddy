@@ -1,4 +1,3 @@
-/* tslint:disable */
 export interface Profile_profile {
   __typename: 'Profile'
   aboutBoat: string | null

@@ -14,7 +14,7 @@ const ABOUT_QUERY = gql`
 `
 
 export default function About() {
-  const { data }: { data: AboutType } = useQuery(ABOUT_QUERY)
+  const { data } = useQuery<AboutType>(ABOUT_QUERY)
 
   return (
     <Layout title="About Boat Daddy">
