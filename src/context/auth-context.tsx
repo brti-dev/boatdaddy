@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { useLazyQuery, gql } from '@apollo/client'
 
 import { Session } from 'src/interfaces/user'
 import { Provider, Roles } from 'src/interfaces/user'
+import { Auth } from 'src/graphql/generated/Auth'
 import useLocalStorage from 'src/lib/use-local-storage'
 
 /**
@@ -47,35 +48,47 @@ const AuthContext = createContext(undefined)
 function AuthProvider(props) {
   const [data, setData] = useState<Session>(null)
 
-  const [jwt, setJwt] = useState<string>(null)
-  console.log('jwt from localstorage:', jwt)
+  const [jwt, setJwt] = useLocalStorage<string>('jwt', '')
 
-  useEffect(() => {
-    const jwtFromLocalStorage = localStorage.getItem('jwt')
+  const [getAuth, auth] = useLazyQuery<Auth>(AUTH_QUERY)
 
-    if (jwtFromLocalStorage) {
-      setJwt(jwtFromLocalStorage)
-    }
-  }, [])
-
+  // If token persists in localStorage, query API for user session
+  // Authorization with bearer token is automatically attached to the request
   useEffect(() => {
     if (!jwt) {
       return
     }
 
-    localStorage.setItem('jwt', jwt)
+    getAuth()
   }, [jwt])
 
-  const authResult = useQuery(AUTH_QUERY)
-  console.log('session result', authResult)
-
   useEffect(() => {
-    if (!jwt) {
+    if (!auth.data) {
       return
     }
 
-    // do something with authResult... ...
-  }, [data])
+    if (!auth.data.auth) {
+      setData(null)
+
+      return
+    }
+
+    console.log('auth data fetched', auth.data)
+    // TODO: Get user data from credentials (email, jwt, name, provider)
+    // ....
+    const user = {
+      userId: 1,
+      username: 'mrberti',
+      roles: ['RIDER', 'DRIVER', 'ADMIN'] as Roles,
+    }
+
+    const session: Session = {
+      provider: auth.data.auth.provider,
+      ...user,
+    }
+
+    setData(session)
+  }, [auth])
 
   const login = async (params: AuthBody) => {
     const AUTH_ENDPOINT = process.env.NEXT_PUBLIC_AUTH_ENDPOINT
@@ -105,23 +118,6 @@ function AuthProvider(props) {
     }
 
     setJwt(jwt)
-
-    // TODO: Get user data from credentials (email, jwt, name, provider)
-    // ....
-    const user = {
-      userId: 1,
-      username: 'mrberti',
-      roles: ['RIDER', 'DRIVER', 'ADMIN'] as Roles,
-    }
-
-    const session: Session = {
-      provider: credentials.provider,
-      ...user,
-    }
-
-    setData(session)
-
-    return null
   }
 
   const register = () => {} // register the user
