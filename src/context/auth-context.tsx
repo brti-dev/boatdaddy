@@ -73,7 +73,6 @@ function AuthProvider(props) {
       return
     }
 
-    console.log('auth data fetched', auth.data)
     // TODO: Get user data from credentials (email, jwt, name, provider)
     // ....
     const user = {

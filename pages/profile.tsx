@@ -140,7 +140,6 @@ function Profile() {
   const result = useQuery<ProfileQuery, ProfileVariables>(PROFILE_QUERY, {
     variables: { username },
   })
-  console.log({ result })
   const { data, error, loading } = result
 
   if (error) {

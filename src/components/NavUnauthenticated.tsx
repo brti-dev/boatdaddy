@@ -43,7 +43,6 @@ type SignInNewState = {
 
 export default function NavUnauthenticated() {
   const auth = useAuth()
-  console.log({ auth })
 
   const [signInState, setSignInState] = useReducer(
     (state: SignInState, newState: SignInNewState) => ({

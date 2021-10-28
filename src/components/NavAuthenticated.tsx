@@ -21,7 +21,6 @@ const PROFILE_QUERY = gql`
 
 export default function NavAuthenticated() {
   const auth = useAuth()
-  console.log('Nav auth data', auth.data)
   const router = useRouter()
 
   const signOut = () => {
