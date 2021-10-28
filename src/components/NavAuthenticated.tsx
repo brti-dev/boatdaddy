@@ -23,10 +23,12 @@ export default function NavAuthenticated() {
   const auth = useAuth()
   const router = useRouter()
 
+  const { username } = auth.data
+
   const { data, loading, error } = useQuery<ProfileQuery, ProfileVariables>(
     PROFILE_QUERY,
     {
-      variables: { username: auth.data.username },
+      variables: { username },
     }
   )
 
@@ -49,7 +51,7 @@ export default function NavAuthenticated() {
       </MenuButton>
       <MenuList>
         <MenuItem onSelect={() => router.push('/rides')}>My Rides</MenuItem>
-        <MenuItem onSelect={() => router.push(`/users/${auth.data.userId}`)}>
+        <MenuItem onSelect={() => router.push(`/@${username}`)}>
           Profile
         </MenuItem>
         <MenuItem onSelect={() => router.push('/account')}>

@@ -22,8 +22,8 @@ const get = async (
     name: 'John Daddy',
     userId: 1,
     username,
-    createdAt: null,
-    updatedAt: null,
+    createdAt: new Date('2021-06-01'),
+    updatedAt: new Date('2021-06-02'),
   }
   // const user = await ctx.prisma.user.findUnique({
   //   where: { username },

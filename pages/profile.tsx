@@ -128,15 +128,7 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
   )
 }
 
-function Profile() {
-  const { query } = useRouter()
-
-  const username = query?.username?.slice(1) as string
-
-  if (!username) {
-    return null
-  }
-
+function ProfileLayout({ username }) {
   const result = useQuery<ProfileQuery, ProfileVariables>(PROFILE_QUERY, {
     variables: { username },
   })
@@ -156,6 +148,18 @@ function Profile() {
       </main>
     </Layout>
   )
+}
+
+function Profile() {
+  const { query } = useRouter()
+
+  const username = query?.username?.slice(1) as string
+
+  if (!username) {
+    return <ErrorPage title="Error" message="Please enter a username" />
+  }
+
+  return <ProfileLayout username={username} />
 }
 
 export default Profile
