@@ -23,10 +23,6 @@ export default function NavAuthenticated() {
   const auth = useAuth()
   const router = useRouter()
 
-  const signOut = () => {
-    router.push('/logout')
-  }
-
   const { data, loading, error } = useQuery<ProfileQuery, ProfileVariables>(
     PROFILE_QUERY,
     {
@@ -59,7 +55,7 @@ export default function NavAuthenticated() {
         <MenuItem onSelect={() => router.push('/account')}>
           Account Settings
         </MenuItem>
-        <MenuItem onSelect={() => signOut()}>Sign Out</MenuItem>
+        <MenuItem onSelect={auth.logout}>Sign Out</MenuItem>
       </MenuList>
     </Menu>
   )

@@ -120,7 +120,12 @@ function AuthProvider(props) {
   }
 
   const register = () => {} // register the user
-  const logout = () => {} // clear the token in localStorage and the user data
+
+  const logout = () => {
+    // clear the token in localStorage and the user data
+    setJwt('')
+    setData(null)
+  }
 
   const value = useMemo(
     () => ({ data, login, logout, register }),
