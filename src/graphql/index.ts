@@ -4,7 +4,7 @@ import { gql } from 'apollo-server-micro'
 // import { SessionResolver } from './auth'
 // import { ImageResolver } from './image'
 import { getSession } from 'src/auth'
-import profile from './profile'
+import user from './user'
 // import { authChecker } from './auth'
 import { GraphQlDateTime } from './datetime'
 import { Context } from 'src/interfaces/api/context'
@@ -57,10 +57,21 @@ export const typeDefs = gql`
     roles: [Role]
   }
 
+  type User {
+    id: Int!
+    username: String!
+    email: String!
+    emailVerified: DateTime
+    image: String
+    createdAt: DateTime
+    updatedAt: DateTime
+    profile: Profile
+  }
+
   type Query {
     about: String!
     auth: Session
-    profile(username: String!): Profile
+    user(username: String, id: Int): User
   }
 
   type Mutation {
@@ -72,7 +83,7 @@ export const resolvers = {
   Query: {
     about: () => ABOUT,
     auth: (_, __, ctx: Context) => ctx.session,
-    profile: profile.get,
+    user: user.get,
   },
   DateTime: GraphQlDateTime,
 }
