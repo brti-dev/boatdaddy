@@ -7,7 +7,7 @@ import { getSession } from 'src/auth'
 import profile from './profile'
 // import { authChecker } from './auth'
 import { GraphQlDateTime } from './datetime'
-import { Context } from './generated/context'
+import { Context } from 'src/interfaces/api/context'
 
 const ABOUT = 'Boat Daddy API 1.0'
 

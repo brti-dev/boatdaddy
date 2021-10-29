@@ -4,7 +4,7 @@ import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 
 import { prisma } from 'src/prisma'
-import { Context } from 'src/graphql/generated/context'
+import { Context } from 'src/interfaces/api/context'
 import { typeDefs, resolvers } from 'src/graphql'
 import { getSession } from 'src/auth'
 

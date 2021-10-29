@@ -1,16 +1,12 @@
 import { useEffect, useReducer, useRef } from 'react'
-import { useRouter } from 'next/router'
-import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 import { Dialog } from '@reach/dialog'
 import { VisuallyHidden } from '@reach/visually-hidden'
 
 import useAlert from 'src/lib/use-alert'
 import { Form, SubmitRow } from './Form'
 import Button from './Button'
-import Avatar from './Avatar'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
-import formClasses from 'styles/components/form.module.scss'
-import { useAuth, AuthBody, AuthResponse } from 'src/context/auth-context'
+import { useAuth, AuthBody } from 'src/context/auth-context'
 
 const GoogleIcon = () => (
   <svg

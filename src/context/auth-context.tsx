@@ -3,7 +3,7 @@ import { useLazyQuery, gql } from '@apollo/client'
 
 import { Session } from 'src/interfaces/user'
 import { Provider, Roles } from 'src/interfaces/user'
-import { Auth } from 'src/graphql/generated/Auth'
+import { Auth } from 'src/interfaces/api/Auth'
 import useLocalStorage from 'src/lib/use-local-storage'
 
 /**

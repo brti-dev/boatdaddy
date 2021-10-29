@@ -91,13 +91,6 @@ model Session {
   updatedAt    DateTime @default(now()) @map(name: "updated_at")
   user User @relation(fields: [userId], references: [id])
 
-	// method: String
-	// givenName: String
-	// name: String
-	// email: Email
-	// id: Int
-	// level: UserLevel
-
   @@map(name: "sessions")
 }
 

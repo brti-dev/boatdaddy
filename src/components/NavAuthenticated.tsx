@@ -4,10 +4,9 @@ import { gql, useQuery } from '@apollo/client'
 
 import { useAuth } from 'src/context/auth-context'
 import {
-  Profile_profile,
   Profile as ProfileQuery,
   ProfileVariables,
-} from 'src/graphql/generated/Profile'
+} from 'src/interfaces/api/Profile'
 import Avatar from './Avatar'
 
 const PROFILE_QUERY = gql`
