@@ -3,38 +3,15 @@ import intervalToDuration from 'date-fns/intervalToDuration'
 import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
 import ContentLoader from 'react-content-loader'
-import { useQuery, gql } from '@apollo/client'
 import { Image } from 'cloudinary-react'
 
-import {
-  Profile_profile,
-  Profile as ProfileQuery,
-  ProfileVariables,
-} from 'src/graphql/generated/Profile'
+import { User } from 'src/interfaces/user'
+import useUser from 'src/lib/use-user'
 import Layout from 'src/components/Layout'
 import Button from 'src/components/Button'
 import ErrorPage from 'src/components/ErrorPage'
 import ProfileImage from 'src/components/ProfileImage'
 import classes from 'styles/profile.module.scss'
-
-const PROFILE_QUERY = gql`
-  query Profile($username: String!) {
-    profile(username: $username) {
-      aboutBoat
-      bio
-      birthday
-      boatImage
-      createdAt
-      hasBoat
-      image
-      isDaddy
-      name
-      updatedAt
-      userId
-      username
-    }
-  }
-`
 
 const Loader = () => (
   <ContentLoader
@@ -54,8 +31,8 @@ const Loader = () => (
   </ContentLoader>
 )
 
-function ProfileView({ profile }: { profile: Profile_profile }) {
-  let birthday = parseISO(profile.birthday)
+function ProfileView({ user }: { user: User }) {
+  let birthday = parseISO(user.profile.birthday)
   let age: number
   try {
     const { years } = intervalToDuration({
@@ -69,7 +46,7 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
 
   let memberSince: string
   try {
-    memberSince = formatDistance(parseISO(profile.createdAt), new Date())
+    memberSince = formatDistance(parseISO(user.createdAt), new Date())
   } catch (error) {
     memberSince = '?'
   }
@@ -77,34 +54,34 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
   return (
     <div className={classes.profile}>
       <div className={classes.heading}>
-        <ProfileImage src={profile.image} />
+        <ProfileImage src={user.image} />
         <ul>
           <li>
-            <strong>{profile.name}</strong>
+            <strong>{user.profile.name}</strong>
           </li>
           <li>{age ?? '?'} years old</li>
           <li>Member for {memberSince}</li>
         </ul>
       </div>
-      {profile.isDaddy && profile.bio && (
+      {user.profile.isDaddy && user.profile.bio && (
         <>
           <h2>👨 Bio</h2>
-          <p>{profile.bio}</p>
+          <p>{user.profile.bio}</p>
         </>
       )}
-      {profile.hasBoat && profile.aboutBoat && (
+      {user.profile.hasBoat && user.profile.aboutBoat && (
         <>
           <h2>🛥️ Boat</h2>
-          <p>{profile.aboutBoat}</p>
+          <p>{user.profile.aboutBoat}</p>
         </>
       )}
-      {profile.hasBoat && profile.boatImage && (
+      {user.profile.hasBoat && user.profile.boatImage && (
         <Image
           className="fuu"
           cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-          publicId={profile.userId}
+          publicId={user.id}
           secure
-          alt={profile.username}
+          alt={user.username}
           dpr="auto"
           quality="auto"
           width={900}
@@ -112,7 +89,7 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
           gravity="auto"
         />
       )}
-      {profile.hasBoat && (
+      {user.profile.hasBoat && (
         <div>
           <Button
             variant="contained"
@@ -120,7 +97,7 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
             to="/hail"
             className={classes.hailButton}
           >
-            Hail a Ride with {profile.username}
+            Hail a Ride with {user.username}
           </Button>
         </div>
       )}
@@ -129,10 +106,7 @@ function ProfileView({ profile }: { profile: Profile_profile }) {
 }
 
 function ProfileLayout({ username }) {
-  const result = useQuery<ProfileQuery, ProfileVariables>(PROFILE_QUERY, {
-    variables: { username },
-  })
-  const { data, error, loading } = result
+  const { data, error, loading } = useUser({ username })
 
   if (error) {
     console.error(error)
@@ -144,7 +118,7 @@ function ProfileLayout({ username }) {
     <Layout>
       <main>
         <h1>{username}</h1>
-        {data?.profile ? <ProfileView profile={data.profile} /> : <Loader />}
+        {data ? <ProfileView user={data} /> : <Loader />}
       </main>
     </Layout>
   )

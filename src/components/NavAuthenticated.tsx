@@ -1,41 +1,24 @@
 import { useRouter } from 'next/router'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
-import { gql, useQuery } from '@apollo/client'
 
 import { useAuth } from 'src/context/auth-context'
-import {
-  Profile as ProfileQuery,
-  ProfileVariables,
-} from 'src/interfaces/api/Profile'
+import useUser from 'src/lib/use-user'
 import Avatar from './Avatar'
-
-const PROFILE_QUERY = gql`
-  query Profile($username: String!) {
-    profile(username: $username) {
-      image
-      name
-    }
-  }
-`
 
 export default function NavAuthenticated() {
   const auth = useAuth()
   const router = useRouter()
+  const user = useUser()
 
-  const { username } = auth.data
-
-  const { data, loading, error } = useQuery<ProfileQuery, ProfileVariables>(
-    PROFILE_QUERY,
-    {
-      variables: { username },
-    }
-  )
-
-  if (loading) {
+  if (user.loading) {
     return <>...</>
   }
 
-  const { image, name } = data.profile
+  const {
+    username,
+    image,
+    profile: { name },
+  } = user.data
 
   const firstInitial = name.slice(0, 1)
   const secondInitial = name.includes(' ')
