@@ -1,9 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useLazyQuery, gql } from '@apollo/client'
 
-import { Session } from 'src/interfaces/user'
-import { Provider, Roles } from 'src/interfaces/user'
-import { Auth } from 'src/interfaces/api/Auth'
+import { Session, Provider, Roles } from 'src/interfaces/user'
+import { Auth_data } from 'src/interfaces/api/Auth'
 import useLocalStorage from 'src/lib/use-local-storage'
 
 /**
@@ -50,7 +49,7 @@ function AuthProvider(props) {
 
   const [jwt, setJwt] = useLocalStorage<string>('jwt', '')
 
-  const [getAuth, auth] = useLazyQuery<Auth>(AUTH_QUERY)
+  const [getAuth, auth] = useLazyQuery<Auth_data>(AUTH_QUERY)
 
   // If token persists in localStorage, query API for user session
   // Authorization with bearer token is automatically attached to the request

@@ -1,12 +1,12 @@
 import { Session, Provider, Role } from 'src/interfaces/user'
 
-export interface Auth_auth {
+export interface Auth {
   provider: Provider
   userId: number
   username: string
   roles: Role[] | []
 }
 
-export interface Auth {
-  auth: Auth_auth | null
+export interface Auth_data {
+  auth: Auth | null
 }

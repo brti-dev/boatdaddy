@@ -16,7 +16,6 @@ export interface Profile {
   name: string
   updatedAt: any
   userId: number
-  username: string
 }
 
 export type User = {
@@ -26,8 +25,8 @@ export type User = {
   emailVerified?: string
   image?: string
   roles?: Roles
-  createdAt: string
-  updatedAt: string
+  createdAt: any
+  updatedAt: any
   profile?: Profile
 }
 

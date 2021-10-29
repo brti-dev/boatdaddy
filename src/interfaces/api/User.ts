@@ -1,19 +1,14 @@
 import { User as UserType } from '../user'
 
-export type User_user = {
+export type User = {
   __typename: 'User'
 } & UserType
 
-export interface User {
-  user: User_user | null
+export interface User_data {
+  user: User | null
 }
 
-interface UserVariablesUsername {
-  username: string
+export type UserVariables = {
+  username?: string
+  id?: number
 }
-
-interface UserVariablesId {
-  id: number
-}
-
-export type UserVariables = UserVariablesUsername | UserVariablesId
