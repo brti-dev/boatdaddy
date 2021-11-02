@@ -1,9 +1,7 @@
-import { useSession } from 'next-auth/client'
-import { Session } from 'src/session'
+import { useUser } from 'src/context/user-context'
 
 export default function AdminDashboard() {
-  const [session_] = useSession()
-  const session: Session = session_
+  const { data } = useUser()
   // session is always non-null inside this page, all the way down the React tree.
   return 'Welcome to super secret dashboard, Daddy'
 }
