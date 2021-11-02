@@ -6,7 +6,7 @@ import ContentLoader from 'react-content-loader'
 import { Image } from 'cloudinary-react'
 
 import { User } from 'src/interfaces/user'
-import useUser from 'src/lib/use-user'
+import { getUser } from 'src/user'
 import Layout from 'src/components/Layout'
 import Button from 'src/components/Button'
 import ErrorPage from 'src/components/ErrorPage'
@@ -106,7 +106,7 @@ function ProfileView({ user }: { user: User }) {
 }
 
 function ProfileLayout({ username }) {
-  const { data, error, loading } = useUser({ username })
+  const { data, error, loading } = getUser({ username })
 
   if (error) {
     console.error(error)

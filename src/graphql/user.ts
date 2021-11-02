@@ -9,14 +9,14 @@ const get = async (_, vars: UserVariables, ctx: Context): Promise<User> => {
   return {
     __typename: 'User',
     id: 1,
-    username,
+    username: 'john_daddy',
     email: 'john_daddy@boatdaddy.app',
     createdAt: new Date(2021, 6, 1),
     updatedAt: new Date(2021, 6, 2),
     profile: {
       name: 'John Daddy',
-      aboutBoat: 'Its a mother fucking boat',
-      bio: "I'm on a boat",
+      aboutBoat: 'Take a good long look at this mother fucking boat',
+      bio: "Aw shit get your towels ready because it's about to go down",
       birthday,
       boatImage: null,
       hasBoat: true,

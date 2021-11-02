@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
 import { useAuth } from 'src/context/auth-context'
-import useUser from 'src/lib/use-user'
+import { useUser } from 'src/context/user-context'
 import Avatar from './Avatar'
 
 export default function NavAuthenticated() {
@@ -10,8 +10,16 @@ export default function NavAuthenticated() {
   const router = useRouter()
   const user = useUser()
 
+  console.log('user', user)
+
   if (user.loading) {
     return <>...</>
+  }
+
+  if (user.error) {
+    console.error('An error ocurred when fetching auth user', user.error)
+
+    return <>?</>
   }
 
   const {

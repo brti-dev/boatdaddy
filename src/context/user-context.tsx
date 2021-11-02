@@ -1,17 +1,33 @@
 import { createContext, useContext } from 'react'
 
+import { User } from 'src/interfaces/user'
 import { useAuth } from './auth-context'
+import { getUser } from 'src/user'
 
-const UserContext = createContext(undefined)
+const UserContext =
+  createContext<{ data: User; loading: boolean; error: any }>(undefined)
 
+/**
+ * Context provider wrapper component at <AppProviders>
+ * This component will provide details about the authenticated user
+ */
 function UserProvider(props) {
-  const { data, error, loading } = useAuth()
+  const { data: auth } = useAuth()
+  const user = auth?.userId ? getUser({ id: auth.userId }) : null
+  const data = user?.data || null
+  const loading = user?.loading || false
+  const error = user?.error || null
 
-  const user = data?.user ?? null
+  if (error) {
+    console.error(error)
+  }
 
-  return <UserContext.Provider value={[user, loading, error]} {...props} />
+  return <UserContext.Provider value={{ data, loading, error }} {...props} />
 }
 
+/**
+ * Hook to access context
+ */
 function useUser() {
   const context = useContext(UserContext)
   if (context === undefined) {
