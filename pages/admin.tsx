@@ -1,8 +1,10 @@
-import { useUser } from 'src/context/user-context'
+import Layout from 'src/components/Layout'
 
 export default function AdminDashboard() {
-  const { data } = useUser()
-  // session is always non-null inside this page, all the way down the React tree.
-  return 'Welcome to super secret dashboard, Daddy'
+  return (
+    <Layout>
+      <p>Welcome to super secret dashboard, Daddy</p>
+    </Layout>
+  )
 }
 AdminDashboard.admin = true

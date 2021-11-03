@@ -26,6 +26,7 @@ const get = async (_, vars: UserVariables, ctx: Context): Promise<User> => {
       updatedAt: new Date(2021, 6, 1),
       userId: 1,
     },
+    roles: ['RIDER', 'DRIVER', 'ADMIN'],
   }
   // const user = await ctx.prisma.user.findUnique({
   //   where: { username },

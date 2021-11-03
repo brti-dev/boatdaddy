@@ -2,12 +2,13 @@ import { ApolloProvider } from '@apollo/client'
 
 import { useApollo } from 'src/graphql/apollo'
 import { AuthProvider, useAuth } from 'src/context/auth-context'
-import { UserProvider } from 'src/context/user-context'
+import { UserProvider, useUser } from 'src/context/user-context'
 import ErrorPage from 'src/components/ErrorPage'
 import Layout from 'src/components/Layout'
 
 import 'normalize.css'
 import 'styles/global.scss'
+import Loading from 'src/components/Loading'
 
 /**
  * @prop Component - The active page; when navigating between routes, Component will change to the new page. Therefore, any props you send to Component will be received by the page.
@@ -53,10 +54,15 @@ function MyApp({ Component, pageProps }) {
  * Wrapper component for session requirement to access child components
  */
 function Auth({ children }) {
-  const { data } = useAuth()
+  const { data: auth } = useAuth()
+  const { data: user, loading } = useUser()
 
-  if (data) {
+  if (auth && user) {
     return children
+  }
+
+  if (loading) {
+    return <Loading fullscreen />
   }
 
   return (

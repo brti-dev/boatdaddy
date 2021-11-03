@@ -1,8 +1,8 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useEffect, useMemo } from 'react'
 
 import { User } from 'src/interfaces/user'
 import { useAuth } from './auth-context'
-import { getUser } from 'src/user'
+import { getUserLazy } from 'src/user'
 
 const UserContext =
   createContext<{ data: User; loading: boolean; error: any }>(undefined)
@@ -13,16 +13,17 @@ const UserContext =
  */
 function UserProvider(props) {
   const { data: auth } = useAuth()
-  const user = auth?.userId ? getUser({ id: auth.userId }) : null
-  const data = user?.data || null
-  const loading = user?.loading || false
-  const error = user?.error || null
+  const [getUser, user] = getUserLazy()
 
-  if (error) {
-    console.error(error)
-  }
+  useEffect(() => {
+    if (auth?.userId) {
+      getUser({ id: auth.userId })
+    }
+  }, [auth])
 
-  return <UserContext.Provider value={{ data, loading, error }} {...props} />
+  const value = useMemo(() => user, [user])
+
+  return <UserContext.Provider value={value} {...props} />
 }
 
 /**

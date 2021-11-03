@@ -1,4 +1,4 @@
-import { useQuery, gql } from '@apollo/client'
+import { useQuery, useLazyQuery, gql } from '@apollo/client'
 
 import { User } from 'src/interfaces/user'
 import { UserVariables, User_data } from 'src/interfaces/api/User'
@@ -64,4 +64,23 @@ export function getUser(variables: UserVariables): {
   )
 
   return { data: data?.user, error, loading }
+}
+
+export function getUserLazy(): [
+  (variables: UserVariables) => void,
+  {
+    data: User
+    error: any
+    loading: boolean
+  }
+] {
+  const [getUser, { data, error, loading, called }] = useLazyQuery<
+    User_data,
+    UserVariables
+  >(USER_QUERY)
+
+  return [
+    (variables: UserVariables) => getUser({ variables }),
+    { data: data?.user, error, loading: !called ? true : loading },
+  ]
 }
