@@ -1,19 +1,28 @@
 import { useReducer, SyntheticEvent, ChangeEvent } from 'react'
 import { useMutation, gql } from '@apollo/client'
 
-import { User, Identity, USERNAME_TESTS } from 'src/session'
+import { USERNAME_TESTS } from 'src/user'
+import { User } from 'src/interfaces/user'
 import useAlert from 'src/lib/use-alert'
-import scrollToTop from 'src/lib/scroll-to-top'
 import { Form, FormGroup, TextInput } from 'src/components/Form'
 import CheckButton, {
   checkButtonContainerClass,
 } from 'src/components/CheckButton'
 import Button from 'src/components/Button'
-import ErrorPage from 'src/components/ErrorPage'
-import { CreateSignatureMutation } from 'src/graphql/generated/CreateSignatureMutation'
+import { CreateSignatureMutation } from 'src/interfaces/api/CreateSignatureMutation'
 
 type FormStateIdentity = {
-  identity: Identity | null
+  data: {
+    name: string
+    email: string
+    username: string
+    birthday: string
+    isDaddy: boolean
+    bio: string
+    hasBoat: boolean
+    aboutBoat: string
+    boatImage: string
+  }
 }
 type FormStateLoading = {
   loading: boolean
@@ -61,7 +70,7 @@ async function uploadImage(
   return response.json()
 }
 
-export default function AccountEdit({ account }: { account: User }) {
+export default function AccountEdit({ user }: { user: User }) {
   const [createSignature] =
     useMutation<CreateSignatureMutation>(SIGNATURE_MUTATION)
 
@@ -81,7 +90,17 @@ export default function AccountEdit({ account }: { account: User }) {
       ...newState,
     }),
     {
-      identity: account?.identity ?? { name: account.name },
+      data: {
+        name: user.profile.name,
+        email: user.email,
+        username: user.username,
+        birthday: user.profile.birthday,
+        isDaddy: user.profile.isDaddy,
+        bio: user.profile.bio,
+        hasBoat: user.profile.hasBoat,
+        aboutBoat: user.profile.aboutBoat,
+        boatImage: user.profile.boatImage,
+      },
       loading: false,
       error: null,
     }
@@ -109,7 +128,7 @@ export default function AccountEdit({ account }: { account: User }) {
       })
     }
 
-    setState({ identity: { ...state.identity, [name]: value } })
+    setState({ data: { ...state.data, [name]: value } })
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
@@ -125,7 +144,7 @@ export default function AccountEdit({ account }: { account: User }) {
     }
 
     // Check user age
-    const birthYear = Number(state.identity.birthday.slice(0, 4))
+    const birthYear = Number(state.data.birthday.slice(0, 4))
     const date = new Date()
     const thisYear = date.getFullYear()
     const userAge = thisYear - birthYear
@@ -141,7 +160,7 @@ export default function AccountEdit({ account }: { account: User }) {
       return
     }
 
-    if (state.identity.isDaddy && userAge < 30) {
+    if (state.data.isDaddy && userAge < 30) {
       setState({
         error: {
           inputName: 'birthday',
@@ -154,30 +173,37 @@ export default function AccountEdit({ account }: { account: User }) {
 
     setState({ loading: true })
 
-    const fetchMethod = !account.identity ? 'PUT' : 'POST'
-    fetch(API_ENDPOINT, {
-      method: fetchMethod,
-      body: JSON.stringify(state.identity),
-    })
-      .then(async res => {
-        if (!res.ok) {
-          const json = await res.json()
-          throw new Error(json.message ?? 'Something went wrong')
-        }
+    console.log('mutate', state.data)
+    ;(i =>
+      new Promise(function (resolve) {
+        return setTimeout(resolve, i)
+      }))(1000).then(() => setState({ loading: false }))
 
-        return res.json()
-      })
-      .then(data => {
-        setAlert({ message: 'Account updated', severity: 'success' })
-        scrollToTop()
-      })
-      .catch(err => {
-        setAlert({
-          message: err.message ?? 'Something went wrong',
-          severity: 'error',
-        })
-      })
-      .finally(() => setState({ loading: false }))
+    // TODO ... ...
+    // const fetchMethod = 'POST'
+    // fetch(API_ENDPOINT, {
+    //   method: fetchMethod,
+    //   body: JSON.stringify(state.data),
+    // })
+    //   .then(async res => {
+    //     if (!res.ok) {
+    //       const json = await res.json()
+    //       throw new Error(json.message ?? 'Something went wrong')
+    //     }
+
+    //     return res.json()
+    //   })
+    //   .then(() => {
+    //     setAlert({ message: 'Account updated', severity: 'success' })
+    //     scrollToTop()
+    //   })
+    //   .catch(err => {
+    //     setAlert({
+    //       message: err.message ?? 'Something went wrong',
+    //       severity: 'error',
+    //     })
+    //   })
+    //   .finally(() => setState({ loading: false }))
   }
 
   const isError = (name: string) => state.error?.inputName === name
@@ -190,7 +216,7 @@ export default function AccountEdit({ account }: { account: User }) {
         input={
           <TextInput
             name="name"
-            value={account.identity?.name ?? account.name}
+            value={state.data.name}
             required
             placeholder="Given name or nickname"
             onChange={handleChange}
@@ -204,7 +230,7 @@ export default function AccountEdit({ account }: { account: User }) {
         input={
           <TextInput
             name="email"
-            value={account.email}
+            value={state.data.email}
             disabled
             onChange={handleChange}
           />
@@ -215,7 +241,7 @@ export default function AccountEdit({ account }: { account: User }) {
         input={
           <TextInput
             name="username"
-            value={account.identity?.username}
+            value={state.data.username}
             required
             placeholder="Choose a username that begins with a letter"
             onChange={handleChange}
@@ -230,7 +256,7 @@ export default function AccountEdit({ account }: { account: User }) {
           <TextInput
             type="date"
             name="birthday"
-            value={account.identity?.birthday?.toString().slice(0, 10)}
+            value={state.data.birthday?.toString().slice(0, 10)}
             id="sessionform__birthday"
             required
             onChange={handleChange}
@@ -243,11 +269,11 @@ export default function AccountEdit({ account }: { account: User }) {
         <CheckButton
           name="isDaddy"
           value="true"
-          checked={!!account.identity?.isDaddy}
+          checked={!!state.data.isDaddy}
           onChange={checked =>
             setState({
-              identity: {
-                ...state.identity,
+              data: {
+                ...state.data,
                 isDaddy: checked,
               },
             })
@@ -258,11 +284,11 @@ export default function AccountEdit({ account }: { account: User }) {
         <CheckButton
           name="hasBoat"
           value="true"
-          checked={!!account.identity?.hasBoat}
+          checked={!!state.data.hasBoat}
           onChange={checked =>
             setState({
-              identity: {
-                ...state.identity,
+              data: {
+                ...state.data,
                 hasBoat: checked,
               },
             })
@@ -272,13 +298,13 @@ export default function AccountEdit({ account }: { account: User }) {
         </CheckButton>
       </div>
       <FormGroup
-        className={!state.identity?.isDaddy && 'visually-hidden'}
+        className={!state.data?.isDaddy && 'visually-hidden'}
         label="About you👨"
         input={
           <TextInput
             type="date"
             name="bio"
-            value={account.identity?.bio}
+            value={state.data.bio}
             multiline
             rows={2}
             onChange={handleChange}
@@ -288,13 +314,13 @@ export default function AccountEdit({ account }: { account: User }) {
         helperText={isError('bio') ? state.error.message : null}
       />
       <FormGroup
-        className={!state.identity?.hasBoat && 'visually-hidden'}
+        className={!state.data?.hasBoat && 'visually-hidden'}
         label="About your boat🛥️"
         input={
           <TextInput
             type="date"
             name="aboutBoat"
-            value={account.identity?.aboutBoat}
+            value={state.data.aboutBoat}
             multiline
             rows={2}
             onChange={handleChange}
@@ -306,11 +332,11 @@ export default function AccountEdit({ account }: { account: User }) {
       <input
         type="hidden"
         name="boatImage"
-        value={account.identity?.boatImage}
+        value={state.data.boatImage}
         onChange={event => handleChange(event, event.target.value)}
       />
       <FormGroup
-        className={!state.identity?.hasBoat && 'visually-hidden'}
+        className={!state.data?.hasBoat && 'visually-hidden'}
         label="Add an image of your boat"
         input={
           <input
@@ -332,9 +358,9 @@ export default function AccountEdit({ account }: { account: User }) {
         }
         error={isError('boatImage')}
       />
-      {state.identity?.hasBoat && state.identity?.boatImage && (
+      {state.data?.hasBoat && state.data?.boatImage && (
         <div>
-          <img src={state.identity.boatImage} alt="Your boat" />
+          <img src={state.data.boatImage} alt="Your boat" />
         </div>
       )}
       <Button
