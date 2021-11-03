@@ -24,6 +24,7 @@ const USER_QUERY = gql`
         createdAt
         updatedAt
       }
+      roles
     }
   }
 `

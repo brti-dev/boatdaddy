@@ -46,9 +46,7 @@ const AuthContext = createContext(undefined)
 
 function AuthProvider(props) {
   const [data, setData] = useState<Session>(null)
-
   const [jwt, setJwt] = useLocalStorage<string>('jwt', '')
-
   const [getAuth, auth] = useLazyQuery<Auth_data>(AUTH_QUERY)
 
   // If token persists in localStorage, query API for user session

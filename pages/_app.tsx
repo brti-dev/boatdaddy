@@ -1,12 +1,10 @@
-import { useEffect } from 'react'
 import { ApolloProvider } from '@apollo/client'
-import { useRouter } from 'next/router'
 
 import { useApollo } from 'src/graphql/apollo'
 import { AuthProvider, useAuth } from 'src/context/auth-context'
 import { UserProvider } from 'src/context/user-context'
 import ErrorPage from 'src/components/ErrorPage'
-import Loading from 'src/components/Loading'
+import Layout from 'src/components/Layout'
 
 import 'normalize.css'
 import 'styles/global.scss'
@@ -55,20 +53,33 @@ function MyApp({ Component, pageProps }) {
  * Wrapper component for session requirement to access child components
  */
 function Auth({ children }) {
-  const router = useRouter()
   const { data } = useAuth()
-
-  useEffect(() => {
-    if (!data) router.push('/login') // If not authenticated, force log in
-  }, [data])
 
   if (data) {
     return children
   }
 
-  // Session is being fetched, or no user.
-  // If no user, useEffect() will redirect.
-  return <Loading fullscreen />
+  return (
+    <Layout title="Please sign in">
+      <p>Please sign in to continue</p>
+    </Layout>
+  )
+}
+
+/**
+ * Wrapper component for ADMIN role authorization access for child components
+ * @example Use of authorization requirement at /pages/admin
+ */
+function Admin({ children }) {
+  const { data } = useAuth()
+  const isAdmin = !!data?.roles?.includes('ADMIN')
+  console.log('Check Admin', data, 'roles', data?.roles, 'isAdmin', isAdmin)
+
+  if (isAdmin) {
+    return children
+  }
+
+  return <Unauthorized />
 }
 
 function Unauthorized() {
@@ -137,22 +148,6 @@ function Unauthorized() {
 
 //   return <ProfileEdit />
 // }
-
-/**
- * Wrapper component for ADMIN role authorization access for child components
- * @example Use of authorization requirement at /pages/admin
- */
-function Admin({ children }) {
-  const { data } = useAuth()
-  const isAdmin = !!data?.roles?.includes('ADMIN')
-  console.log('Check Admin', data, 'roles', data?.roles, 'isAdmin', isAdmin)
-
-  if (isAdmin) {
-    return children
-  }
-
-  return <Unauthorized />
-}
 
 // Only uncomment this method if you have blocking data requirements for
 // every single page in your application. This disables the ability to

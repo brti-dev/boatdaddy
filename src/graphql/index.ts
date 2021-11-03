@@ -66,6 +66,7 @@ export const typeDefs = gql`
     createdAt: DateTime
     updatedAt: DateTime
     profile: Profile
+    roles: [Role]!
   }
 
   type Query {

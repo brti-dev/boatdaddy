@@ -10,8 +10,6 @@ export default function NavAuthenticated() {
   const router = useRouter()
   const user = useUser()
 
-  console.log('user', user)
-
   if (user.loading) {
     return <>...</>
   }
@@ -25,6 +23,7 @@ export default function NavAuthenticated() {
   const {
     username,
     image,
+    roles,
     profile: { name },
   } = user.data
 
@@ -47,6 +46,9 @@ export default function NavAuthenticated() {
         <MenuItem onSelect={() => router.push('/account')}>
           Account Settings
         </MenuItem>
+        {roles.includes('ADMIN') && (
+          <MenuItem onSelect={() => router.push('/admin')}>Admin</MenuItem>
+        )}
         <MenuItem onSelect={auth.logout}>Sign Out</MenuItem>
       </MenuList>
     </Menu>
