@@ -4,8 +4,8 @@ import { User } from 'src/interfaces/user'
 import { UserVariables, User_data } from 'src/interfaces/api/User'
 
 const USER_QUERY = gql`
-  query User($username: String, $id: Int) {
-    user(username: $username, id: $id) {
+  query User($username: String, $id: Int, $email: String) {
+    user(username: $username, id: $id, email: $email) {
       id
       username
       email
@@ -84,3 +84,18 @@ export function getUserLazy(): [
     { data: data?.user, error, loading: !called ? true : loading },
   ]
 }
+
+// export async function getUserAsync(
+//   variables: UserVariables
+// ): Promise<User | null> {
+//   const user = await prisma.user.findUnique({
+//     where: variables,
+//     include: { profile: true },
+//   })
+
+//   if (!user || Object.keys(user).length === 0) {
+//     return null
+//   }
+
+//   return user
+// }

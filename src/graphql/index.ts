@@ -1,9 +1,6 @@
 import { gql } from 'apollo-server-micro'
 
-// const schema = require('../../schema.gql')
-// import { SessionResolver } from './auth'
 // import { ImageResolver } from './image'
-import { getSession } from 'src/auth'
 import user from './user'
 // import { authChecker } from './auth'
 import { GraphQlDateTime } from './datetime'
@@ -29,6 +26,12 @@ export const typeDefs = gql`
     MOCK
   }
 
+  type DeleteResult {
+    success: Boolean!
+    numberDeleted: Int!
+    message: String
+  }
+
   type ImageSignature {
     signature: String!
     timestamp: Int!
@@ -50,6 +53,17 @@ export const typeDefs = gql`
     username: String!
   }
 
+  input ProfileInput {
+    aboutBoat: String
+    bio: String
+    birthday: DateTime
+    boatImage: String
+    hasBoat: Boolean
+    image: String
+    isDaddy: Boolean
+    name: String
+  }
+
   type Session {
     provider: Provider!
     userId: Int!
@@ -69,14 +83,32 @@ export const typeDefs = gql`
     roles: [Role]!
   }
 
+  input UserInput {
+    "Must be a valid email address"
+    email: String
+    "When the email was verified"
+    emailVerified: DateTime
+    "The location of a profile image for avatar"
+    image: String
+    "Full name"
+    name: String
+    "A user handle; Username must: begin with a letter, be at least three characters long, be 25 characters or less, not contain any space characters"
+    username: String
+    profile: ProfileInput
+    roles: [Role]
+  }
+
   type Query {
     about: String!
     auth: Session
-    user(username: String, id: Int): User
+    user(username: String, id: Int, email: String): User
   }
 
   type Mutation {
     createImageSignature: ImageSignature!
+    userAdd(input: UserInput): User!
+    userUpdate(input: UserInput): User!
+    userDelete(id: Int): DeleteResult!
   }
 `
 

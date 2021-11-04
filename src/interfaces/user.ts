@@ -11,7 +11,6 @@ export interface Profile {
   boatImage: string | null
   createdAt: any
   hasBoat: boolean
-  image: string | null
   isDaddy: boolean
   name: string
   updatedAt: any
@@ -22,7 +21,7 @@ export type User = {
   id: number
   username: string
   email: string
-  emailVerified?: string
+  emailVerified?: any
   image?: string
   roles?: Roles
   createdAt: any

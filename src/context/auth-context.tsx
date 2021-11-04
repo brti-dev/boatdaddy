@@ -87,8 +87,7 @@ function AuthProvider(props) {
   }, [auth])
 
   const login = async (params: AuthBody) => {
-    const AUTH_ENDPOINT = process.env.NEXT_PUBLIC_AUTH_ENDPOINT
-    const response = await fetch(`${AUTH_ENDPOINT}/login`, {
+    const response = await fetch(`/api/auth/login`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

@@ -5,6 +5,13 @@ import { OAuth2Client } from 'google-auth-library'
 import { JWT_SECRET, getSession } from 'src/auth'
 import { Session } from 'src/interfaces/user'
 import { AuthBody, AuthResponse } from 'src/context/auth-context'
+import userResolver from 'src/api/user'
+
+const MOCK_FOUND_USER = {
+  id: 1,
+  username: 'mrberti',
+  roles: ['RIDER', 'DRIVER', 'ADMIN'],
+}
 
 async function getAuth(
   action: string,
@@ -59,7 +66,7 @@ async function getAuth(
             credentials = {
               ...credentials,
               name: 'Boat Daddy',
-              email: 'daddy@boatdaddy.app',
+              email: 'john_daddy@boatdaddy.app',
             }
             break
 
@@ -72,12 +79,9 @@ async function getAuth(
       }
 
       // Find user in db, and register if not found
-      // const foundUser = await userResolver.get(null, { email: credentials.email })
-      const foundUser = {
-        id: 1,
-        username: 'mrberti',
-        roles: ['RIDER', 'DRIVER', 'ADMIN'],
-      }
+      // const foundUser = MOCK_FOUND_USER
+      const foundUser = await userResolver.get({ email: credentials.email })
+
       if (foundUser) {
         credentials.userId = foundUser.id
         credentials.roles = foundUser.roles
@@ -86,8 +90,8 @@ async function getAuth(
         console.log('User registration', credentials)
         try {
           credentials.roles = ['RIDER']
-          // const savedUser = await userResolver.add(null, { input: credentials })
-          const savedUser = { id: 22 }
+          const savedUser = await userResolver.add(credentials)
+          // const savedUser = { id: 22 }
           credentials.userId = savedUser.id
         } catch (error) {
           throw error
