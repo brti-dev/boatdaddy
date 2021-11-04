@@ -1,13 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getSession } from 'next-auth/client'
+// import { getSession } from 'next-auth/client'
 
-import { Session, USERNAME_TESTS } from 'src/session'
+// import { Session, USERNAME_TESTS } from 'src/session'
 import { prisma } from 'src/prisma'
 
 export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  return
   const session_ = await getSession({ req })
   const session: Session = session_
   const {
