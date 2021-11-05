@@ -1,8 +1,6 @@
 import { Profile as ProfileType } from '../user'
 
-export type Profile = {
-  __typename: 'Profile'
-} & ProfileType
+export type Profile = ProfileType
 
 export interface Profile_data {
   profile: Profile | null

@@ -1,8 +1,6 @@
 import { User as UserType, Roles } from '../user'
 
-export type User = {
-  __typename: string
-} & UserType
+export type User = UserType
 
 export interface User_data {
   user: User | null
@@ -15,7 +13,7 @@ export type UserVariables = {
 }
 
 export interface UserAddInput {
-  username: string
+  username?: string
   email: string
   emailVerified?: any
   image?: string

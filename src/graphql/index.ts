@@ -106,9 +106,8 @@ export const typeDefs = gql`
 
   type Mutation {
     createImageSignature: ImageSignature!
-    userAdd(input: UserInput): User!
-    userUpdate(input: UserInput): User!
-    userDelete(id: Int): DeleteResult!
+    # userUpdate(input: UserInput): User!
+    # userDelete(id: Int): DeleteResult!
   }
 `
 
@@ -117,6 +116,11 @@ export const resolvers = {
     about: () => ABOUT,
     auth: (_, __, ctx: Context) => ctx.session,
     user: user.get,
+  },
+  Mutation: {
+    userAdd: user.add,
+    // userUpdate: user.update,
+    // userDelete: user.delete,
   },
   DateTime: GraphQlDateTime,
 }

@@ -84,18 +84,3 @@ export function getUserLazy(): [
     { data: data?.user, error, loading: !called ? true : loading },
   ]
 }
-
-// export async function getUserAsync(
-//   variables: UserVariables
-// ): Promise<User | null> {
-//   const user = await prisma.user.findUnique({
-//     where: variables,
-//     include: { profile: true },
-//   })
-
-//   if (!user || Object.keys(user).length === 0) {
-//     return null
-//   }
-
-//   return user
-// }
