@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useState, useEffect, useReducer, useRef } from 'react'
 import { Dialog } from '@reach/dialog'
 import { VisuallyHidden } from '@reach/visually-hidden'
 
@@ -37,8 +37,60 @@ type SignInNewState = {
   show?: 'signin' | 'signup'
 }
 
+function loadGoogleOauth(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // Load OAuth Google client library
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_ID
+    const globalWindow = window as any
+
+    try {
+      if (!clientId) {
+        throw new Error('No Google Client ID loaded into env')
+      }
+      if (!globalWindow.gapi) {
+        throw new Error('Google API client library not loaded into window')
+      }
+
+      globalWindow.gapi.load('auth2', () => {
+        if (globalWindow.gapi.auth2.getAuthInstance()) {
+          resolve()
+        } else {
+          globalWindow.gapi.auth2.init({ client_id: clientId }).then(() => {
+            resolve()
+          })
+        }
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
 export default function NavUnauthenticated() {
   const auth = useAuth()
+
+  // Populate as the variables and libraries are loaded
+  const [enabledLoginMethods, setEnabledLoginMethods] = useState({
+    MOCK: true,
+    GOOGLE: false,
+  })
+  console.log(enabledLoginMethods)
+
+  useEffect(() => {
+    let mounted = true
+
+    loadGoogleOauth()
+      .then(() => {
+        if (mounted) {
+          setEnabledLoginMethods({ ...enabledLoginMethods, GOOGLE: true })
+        }
+      })
+      .catch(error => console.error(error))
+
+    return function cleanup() {
+      mounted = false
+    }
+  }, [])
 
   const [signInState, setSignInState] = useReducer(
     (state: SignInState, newState: SignInNewState) => ({
@@ -61,12 +113,21 @@ export default function NavUnauthenticated() {
   }, [signInState])
 
   const googleLogin = async () => {
-    const globalWindow = window as any
-    const auth2 = globalWindow.gapi.auth2.getAuthInstance()
-    const googleUser = await auth2.signIn()
-    const googleToken = googleUser.getAuthResponse().id_token
+    console.log('Google login...')
+    try {
+      const globalWindow = window as any
+      const auth2 = globalWindow.gapi.auth2.getAuthInstance()
+      console.log('auth2', auth2)
+      const googleUser = await auth2.signIn()
+      console.log('Google user', googleUser)
+      const googleToken = googleUser.getAuthResponse().id_token
 
-    submitSignIn({ provider: 'GOOGLE', token: googleToken })
+      console.log('Google credentials', googleToken)
+
+      submitSignIn({ provider: 'GOOGLE', token: googleToken })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const mockLogin = () => submitSignIn({ provider: 'MOCK', token: 'foobar' })
@@ -148,6 +209,7 @@ export default function NavUnauthenticated() {
             <Button
               variant="outlined"
               loading={signInState.loading}
+              disabled={!enabledLoginMethods.MOCK}
               onClick={mockLogin}
               style={{ justifyContent: 'center' }}
             >
@@ -156,6 +218,7 @@ export default function NavUnauthenticated() {
             <Button
               variant="outlined"
               loading={signInState.loading}
+              disabled={!enabledLoginMethods.GOOGLE}
               onClick={googleLogin}
               style={{ justifyContent: 'center' }}
             >

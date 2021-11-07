@@ -4,17 +4,19 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {
-    render() {
-        return (
-            <Html lang="en">
-                <Head />
-                <body>
-                    <Main />
-                    <NextScript />
-                </body>
-            </Html>
-        )
-    }
+  render() {
+    return (
+      <Html lang="en">
+        <Head>
+          <script src="https://apis.google.com/js/api:client.js"></script>
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    )
+  }
 }
 
 export default MyDocument
