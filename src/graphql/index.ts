@@ -107,7 +107,7 @@ export const typeDefs = gql`
   type Mutation {
     createImageSignature: ImageSignature!
     userUpdate(id: Int!, input: UserInput!): User!
-    # userDelete(id: Int): DeleteResult!
+    userDelete(id: Int): DeleteResult!
   }
 `
 
