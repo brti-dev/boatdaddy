@@ -21,6 +21,10 @@ export interface UserAddInput {
   profile: ProfileAddInput
 }
 
+export interface UserDeleteInput_input {
+  id: number
+}
+
 export interface UserUpdateInput {
   username?: string
   email?: string
@@ -28,6 +32,11 @@ export interface UserUpdateInput {
   image?: string
   roles?: Roles
   profile?: ProfileUpdateInput
+}
+
+export interface UserUpdateInput_input {
+  id: number
+  input: UserUpdateInput
 }
 
 export interface ProfileAddInput {

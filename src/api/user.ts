@@ -3,7 +3,14 @@
  * Abstracted for auth API and GraphQL.
  */
 import { User } from 'src/interfaces/user'
-import { UserVariables, User_data, UserAddInput } from 'src/interfaces/api/User'
+import {
+  UserVariables,
+  User_data,
+  UserAddInput,
+  UserUpdateInput,
+} from 'src/interfaces/api/User'
+import { DeleteResult } from 'src/interfaces/api/globalTypes'
+import { USERNAME_TESTS } from 'src/user'
 import { prisma } from 'src/prisma'
 
 const MOCK_USER = {
@@ -30,9 +37,7 @@ const MOCK_USER = {
 async function makeUsername({ email }): Promise<string> {
   const [usernameFromEmail, ...rest] = email.split('@')
 
-  const exists = await prisma.user.findUnique({
-    where: { username: usernameFromEmail },
-  })
+  const exists = await get({ username: usernameFromEmail })
   if (!exists) {
     return usernameFromEmail
   }
@@ -89,4 +94,69 @@ async function doAdd(putOperation) {
   return await prisma.user.create(putOperation)
 }
 
-export default { get, add }
+function verify(input: UserUpdateInput): UserUpdateInput {
+  const name = input.profile.name.trim()
+  if (name === '' || name.length < 2) {
+    throw new Error('Please input a name that is at least two characters')
+  }
+
+  USERNAME_TESTS.map(({ test, message }) => {
+    if (!test(input.username)) {
+      throw new Error(message)
+    }
+  })
+
+  return input
+}
+
+async function update(id: number, input: UserUpdateInput): Promise<User> {
+  try {
+    const data = verify(input)
+
+    const allActor = await prisma.actor.findMany({
+      where: { userId: id },
+    })
+
+    let roles: string[] = []
+
+    if (data.profile.hasBoat) {
+      const driverRole = allActor.filter(actor => actor.role === 'DRIVER')
+      if (!driverRole) {
+        roles.push('DRIVER')
+      }
+    }
+
+    if (roles.length) {
+      const actorResult = await prisma.actor.create({
+        data: { role: 'DRIVER', userId: id },
+      })
+      console.log('Actor', actorResult)
+    }
+
+    const postOperation = {
+      data,
+      where: { id },
+    }
+    const updateResult = await prisma.user.update(postOperation)
+
+    return updateResult
+  } catch (error) {
+    throw error
+  }
+}
+
+async function remove(id: number): Promise<DeleteResult> {
+  const deleteUser = await prisma.user.delete({
+    where: { id },
+  })
+
+  console.log('Delete User result', deleteUser)
+
+  return {
+    success: false,
+    numberDeleted: 0,
+    message: `Delete user id #${id}...`,
+  }
+}
+
+export default { get, add, update, delete: remove }

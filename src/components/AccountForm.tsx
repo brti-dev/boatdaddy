@@ -10,6 +10,7 @@ import CheckButton, {
 } from 'src/components/CheckButton'
 import Button from 'src/components/Button'
 import { CreateSignatureMutation } from 'src/interfaces/api/CreateSignatureMutation'
+import { UserUpdateInput } from 'src/interfaces/api/User'
 
 type FormStateIdentity = {
   data: {
@@ -39,8 +40,9 @@ type UploadImageResponse = {
   secure_url: string
 }
 
-const API_ENDPOINT = '/api/account'
 const CLOUDINARY_API_ENDPOINT = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`
+const RESTRICT_AGE_MIN =
+  Number(process.env.NEXT_PUBLIC_RESTRICTED_AGE_MIN) || 18
 
 const SIGNATURE_MUTATION = gql`
   mutation CreateSignatureMutation {
@@ -70,6 +72,29 @@ async function uploadImage(
   return response.json()
 }
 
+function parseData(user: User) {
+  return {
+    name: user.profile.name || '',
+    email: user.email,
+    username: user.username,
+    birthday: user.profile.birthday || '',
+    isDaddy: user.profile.isDaddy || false,
+    bio: user.profile.bio || '',
+    hasBoat: user.profile.hasBoat || false,
+    aboutBoat: user.profile.aboutBoat || '',
+    boatImage: user.profile.boatImage || '',
+  }
+}
+
+function parseInput(data: UserUpdateInput) {
+  const { email, username, ...profile } = data
+  return {
+    email,
+    username,
+    profile,
+  }
+}
+
 export default function AccountEdit({ user }: { user: User }) {
   const [createSignature] =
     useMutation<CreateSignatureMutation>(SIGNATURE_MUTATION)
@@ -90,17 +115,7 @@ export default function AccountEdit({ user }: { user: User }) {
       ...newState,
     }),
     {
-      data: {
-        name: user.profile.name,
-        email: user.email,
-        username: user.username,
-        birthday: user.profile.birthday,
-        isDaddy: user.profile.isDaddy,
-        bio: user.profile.bio,
-        hasBoat: user.profile.hasBoat,
-        aboutBoat: user.profile.aboutBoat,
-        boatImage: user.profile.boatImage,
-      },
+      data: parseData(user),
       loading: false,
       error: null,
     }
@@ -149,18 +164,18 @@ export default function AccountEdit({ user }: { user: User }) {
     const thisYear = date.getFullYear()
     const userAge = thisYear - birthYear
 
-    if (userAge < 13) {
+    if (userAge < RESTRICT_AGE_MIN) {
       setState({
         error: {
           inputName: 'birthday',
-          message: 'You must be at least 13 years old to register',
+          message: `You must be at least ${RESTRICT_AGE_MIN} years old to register`,
         },
       })
 
       return
     }
 
-    if (state.data.isDaddy && userAge < 30) {
+    if (state.data.isDaddy && userAge < 20) {
       setState({
         error: {
           inputName: 'birthday',
@@ -173,7 +188,9 @@ export default function AccountEdit({ user }: { user: User }) {
 
     setState({ loading: true })
 
-    console.log('mutate', state.data)
+    const vars = { id: user.id, input: parseInput(state.data) }
+
+    console.log('mutate', vars)
     ;(i =>
       new Promise(function (resolve) {
         return setTimeout(resolve, i)

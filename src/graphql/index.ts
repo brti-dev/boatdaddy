@@ -106,7 +106,7 @@ export const typeDefs = gql`
 
   type Mutation {
     createImageSignature: ImageSignature!
-    # userUpdate(input: UserInput): User!
+    userUpdate(id: Int!, input: UserInput!): User!
     # userDelete(id: Int): DeleteResult!
   }
 `
@@ -118,9 +118,9 @@ export const resolvers = {
     user: user.get,
   },
   Mutation: {
-    userAdd: user.add,
-    // userUpdate: user.update,
-    // userDelete: user.delete,
+    // userAdd: user.add,
+    userUpdate: user.update,
+    userDelete: user.delete,
   },
   DateTime: GraphQlDateTime,
 }

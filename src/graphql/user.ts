@@ -1,5 +1,12 @@
 import { Context } from 'src/interfaces/api/context'
-import { User, UserAddInput, UserVariables } from 'src/interfaces/api/User'
+import {
+  User,
+  UserAddInput,
+  UserUpdateInput,
+  UserUpdateInput_input,
+  UserDeleteInput_input,
+  UserVariables,
+} from 'src/interfaces/api/User'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import userResolver from 'src/api/user'
 
@@ -8,15 +15,37 @@ const get = async (
   vars: UserVariables,
   ctx: Context
 ): Promise<User | null> => {
-  const getRes = await userResolver.get(vars)
+  const getResult = await userResolver.get(vars)
 
-  return getRes
+  return getResult
 }
 
 const add = async (_, vars: UserAddInput, ctx: Context): Promise<User> => {
-  const addRes = userResolver.add(vars)
+  const addResult = await userResolver.add(vars)
 
-  return addRes
+  return addResult
 }
 
-export default { get, add }
+const update = async (
+  _,
+  vars: UserUpdateInput_input,
+  ctx: Context
+): Promise<User> => {
+  const { id, input } = vars
+  const updateResult = await userResolver.update(id, input)
+
+  return updateResult
+}
+
+const remove = async (
+  _,
+  vars: UserDeleteInput_input,
+  ctx: Context
+): Promise<DeleteResult> => {
+  const { id } = vars
+  const deleteResult = userResolver.delete(id)
+
+  return deleteResult
+}
+
+export default { get, add, update, delete: remove }
