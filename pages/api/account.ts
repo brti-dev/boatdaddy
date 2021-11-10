@@ -8,12 +8,17 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  res.redirect(301, '/api/graphql')
+
+  // This API method has been deprecated and replaced with GraphQL
   return
+
   // const session_ = await getSession({ req })
   // const session: Session = session_
   // const {
   //   name: name_,
   //   username,
+  //   email,
   //   birthday,
   //   isDaddy,
   //   hasBoat,
@@ -35,7 +40,7 @@ export default async function handle(
   //   }
   // })
 
-  // const data = {
+  // const data: any = {
   //   name,
   //   username,
   //   birthday: new Date(birthday),
@@ -44,6 +49,10 @@ export default async function handle(
   //   bio,
   //   aboutBoat,
   //   boatImage,
+  // }
+
+  // if (email) {
+  //   data.email = email
   // }
 
   // // res.status(200).json({ reqBody: req.body, reqOperation: operation })
