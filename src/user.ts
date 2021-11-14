@@ -15,6 +15,8 @@ const USER_QUERY = gql`
   ${userDataFragment}
 `
 
+export const EMAIL_TEST = /[^@]+@[^@]+\.[^@]+/
+
 export const USERNAME_TESTS = [
   {
     test: (value: string) => /^[a-z]/i.test(value),

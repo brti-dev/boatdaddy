@@ -10,7 +10,7 @@ import {
   UserUpdateInput,
 } from 'src/interfaces/api/User'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
-import { USERNAME_TESTS } from 'src/user'
+import { USERNAME_TESTS, EMAIL_TEST } from 'src/user'
 import { prisma } from 'src/prisma'
 
 const MOCK_USER = {
@@ -50,6 +50,27 @@ async function makeUsername({ email }): Promise<string> {
   const usernameRandom = `user-${randomNumber.slice(0, 5)}`
 
   return usernameRandom
+}
+
+function verify(
+  input: UserUpdateInput | UserAddInput
+): UserUpdateInput | UserAddInput {
+  const name = input.profile.name.trim()
+  if (name === '' || name.length < 2) {
+    throw new Error('Please input a name that is at least two characters')
+  }
+
+  USERNAME_TESTS.map(({ test, message }) => {
+    if (!test(input.username)) {
+      throw new Error(message)
+    }
+  })
+
+  if (!EMAIL_TEST.test(input.email)) {
+    throw new Error('Please input a valid email address')
+  }
+
+  return input
 }
 
 async function get(variables: UserVariables): Promise<User | null> {
@@ -114,21 +135,6 @@ async function add(input: UserAddInput): Promise<User> {
 
 async function doAdd(createOperation) {
   return await prisma.user.create(createOperation)
-}
-
-function verify(input: UserUpdateInput): UserUpdateInput {
-  const name = input.profile.name.trim()
-  if (name === '' || name.length < 2) {
-    throw new Error('Please input a name that is at least two characters')
-  }
-
-  USERNAME_TESTS.map(({ test, message }) => {
-    if (!test(input.username)) {
-      throw new Error(message)
-    }
-  })
-
-  return input
 }
 
 async function update(id: number, input: UserUpdateInput): Promise<User> {
