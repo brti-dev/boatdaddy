@@ -1,10 +1,11 @@
-import { useReducer, SyntheticEvent, ChangeEvent } from 'react'
+import { SyntheticEvent, ChangeEvent, useEffect } from 'react'
 import { useMutation, gql } from '@apollo/client'
 
-import { USERNAME_TESTS } from 'src/user'
 import { User } from 'src/interfaces/user'
+import userDataFragment from 'src/graphql/fragments/user-data'
+import { USERNAME_TESTS } from 'src/user'
 import useAlert from 'src/lib/use-alert'
-import { Form, FormGroup, TextInput } from 'src/components/Form'
+import { Form, FormGroup, TextInput, useForm } from 'src/components/Form'
 import CheckButton, {
   checkButtonContainerClass,
 } from 'src/components/CheckButton'
@@ -12,30 +13,6 @@ import Button from 'src/components/Button'
 import { CreateSignatureMutation } from 'src/interfaces/api/CreateSignatureMutation'
 import { UserUpdateInput } from 'src/interfaces/api/User'
 
-type FormStateIdentity = {
-  data: {
-    name: string
-    email: string
-    username: string
-    birthday: string
-    isDaddy: boolean
-    bio: string
-    hasBoat: boolean
-    aboutBoat: string
-    boatImage: string
-  }
-}
-type FormStateLoading = {
-  loading: boolean
-}
-type FormStateError = {
-  error: null | {
-    inputName?: string
-    message?: string
-  }
-}
-type FormState = FormStateIdentity & FormStateLoading & FormStateError
-type FormNewState = FormStateIdentity | FormStateLoading | FormStateError
 type UploadImageResponse = {
   secure_url: string
 }
@@ -51,6 +28,15 @@ const SIGNATURE_MUTATION = gql`
       timestamp
     }
   }
+`
+
+const ACCOUNT_MUTATION = gql`
+  mutation userUpdate($id: Int!, $input: UserUpdateInput!) {
+    userUpdate(id: $id, input: $input) {
+      ...userData
+    }
+  }
+  ${userDataFragment}
 `
 
 async function uploadImage(
@@ -109,17 +95,9 @@ export default function AccountEdit({ user }: { user: User }) {
     }
   }
 
-  const [state, setState] = useReducer(
-    (state: FormState, newState: FormNewState) => ({
-      ...state,
-      ...newState,
-    }),
-    {
-      data: parseData(user),
-      loading: false,
-      error: null,
-    }
-  )
+  const [submitUpdate, { data, error, loading }] = useMutation(ACCOUNT_MUTATION)
+
+  const { form: state, setForm: setState, isError } = useForm(parseData(user))
 
   const [Alert, setAlert] = useAlert(null)
 
@@ -186,44 +164,16 @@ export default function AccountEdit({ user }: { user: User }) {
       return
     }
 
-    setState({ loading: true })
+    const variables = { id: user.id, input: parseInput(state.data) }
 
-    const vars = { id: user.id, input: parseInput(state.data) }
+    console.log('mutate', variables)
 
-    console.log('mutate', vars)
-    ;(i =>
-      new Promise(function (resolve) {
-        return setTimeout(resolve, i)
-      }))(1000).then(() => setState({ loading: false }))
-
-    // TODO ... ...
-    // const fetchMethod = 'POST'
-    // fetch(API_ENDPOINT, {
-    //   method: fetchMethod,
-    //   body: JSON.stringify(state.data),
-    // })
-    //   .then(async res => {
-    //     if (!res.ok) {
-    //       const json = await res.json()
-    //       throw new Error(json.message ?? 'Something went wrong')
-    //     }
-
-    //     return res.json()
-    //   })
-    //   .then(() => {
-    //     setAlert({ message: 'Account updated', severity: 'success' })
-    //     scrollToTop()
-    //   })
-    //   .catch(err => {
-    //     setAlert({
-    //       message: err.message ?? 'Something went wrong',
-    //       severity: 'error',
-    //     })
-    //   })
-    //   .finally(() => setState({ loading: false }))
+    submitUpdate({ variables })
   }
 
-  const isError = (name: string) => state.error?.inputName === name
+  useEffect(() => {
+    setAlert(error)
+  }, [error])
 
   return (
     <Form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
@@ -382,7 +332,7 @@ export default function AccountEdit({ user }: { user: User }) {
       )}
       <Button
         type="submit"
-        loading={state.loading}
+        loading={loading}
         variant="contained"
         color="primary"
         style={{ textAlign: 'center', justifyContent: 'center' }}
