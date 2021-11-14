@@ -101,7 +101,7 @@ async function add(input: UserAddInput): Promise<User> {
   }
 
   const addResult = await doAdd(createOperation)
-  console.log('user add', addResult)
+  console.log('add user result', addResult)
 
   if (!addResult.id) {
     return null

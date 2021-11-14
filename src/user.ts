@@ -4,31 +4,15 @@ import { print } from 'graphql'
 import { User } from 'src/interfaces/user'
 import { UserVariables, User_data } from 'src/interfaces/api/User'
 import graphQlFetch from './graphql/fetch'
+import userDataFragment from 'src/graphql/fragments/user-data'
 
 const USER_QUERY = gql`
   query User($username: String, $id: Int, $email: String) {
     user(username: $username, id: $id, email: $email) {
-      id
-      username
-      email
-      emailVerified
-      image
-      createdAt
-      updatedAt
-      profile {
-        name
-        birthday
-        isDaddy
-        bio
-        hasBoat
-        aboutBoat
-        boatImage
-        createdAt
-        updatedAt
-      }
-      roles
+      ...userData
     }
   }
+  ${userDataFragment}
 `
 
 export const USERNAME_TESTS = [
