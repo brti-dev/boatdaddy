@@ -17,7 +17,7 @@ export interface UserAddInput {
   email: string
   emailVerified?: any
   image?: string
-  roles: Roles
+  roles?: Roles
   profile: ProfileAddInput
 }
 

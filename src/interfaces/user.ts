@@ -23,7 +23,7 @@ export type User = {
   email: string
   emailVerified?: any
   image?: string
-  roles?: Roles
+  roles: Roles
   createdAt: any
   updatedAt: any
   profile?: Profile
@@ -33,5 +33,5 @@ export type Session = {
   provider: Provider
   userId: number
   username: string
-  roles: Roles | null
+  roles: Roles
 }

@@ -2,7 +2,7 @@
  * Common backend CRUD operations for users.
  * Abstracted for auth API and GraphQL.
  */
-import { User } from 'src/interfaces/user'
+import { User, Roles } from 'src/interfaces/user'
 import {
   UserVariables,
   User_data,
@@ -35,6 +35,10 @@ const MOCK_USER = {
 }
 
 async function makeUsername({ email }): Promise<string> {
+  if (!email || !email.includes('@')) {
+    throw new Error(`Cannot make username from invalid email`)
+  }
+
   const [usernameFromEmail, ...rest] = email.split('@')
 
   const exists = await get({ username: usernameFromEmail })
@@ -69,29 +73,47 @@ async function get(variables: UserVariables): Promise<User | null> {
 }
 
 async function add(input: UserAddInput): Promise<User> {
+  console.log('add user', input)
   if (!input.username) {
     input.username = await makeUsername(input)
   }
-  const roles = [{ role: 'RIDER' }]
-  if (input.profile.hasBoat) {
-    roles.push({ role: 'DRIVER' })
-  }
 
-  const putOperation = {
+  const newUser = verify(input)
+
+  const roles: Roles = ['RIDER']
+  if (newUser.profile.hasBoat) {
+    roles.push('DRIVER')
+  }
+  const rolesCreate = roles.map(role => ({ role: role }))
+
+  const { profile, ...userData } = newUser
+
+  const createOperation = {
     data: {
-      ...input,
+      ...userData,
+      profile: {
+        create: { ...profile },
+      },
+      actor: {
+        create: rolesCreate,
+      },
     },
   }
 
-  const addResult = await doAdd(putOperation)
-
+  const addResult = await doAdd(createOperation)
   console.log('user add', addResult)
 
-  return addResult
+  if (!addResult.id) {
+    return null
+  }
+
+  const newUserFinal = { ...addResult, roles }
+
+  return newUserFinal
 }
 
-async function doAdd(putOperation) {
-  return await prisma.user.create(putOperation)
+async function doAdd(createOperation) {
+  return await prisma.user.create(createOperation)
 }
 
 function verify(input: UserUpdateInput): UserUpdateInput {
@@ -137,7 +159,7 @@ async function update(id: number, input: UserUpdateInput): Promise<User> {
       data,
       where: { id },
     }
-    const updateResult = await prisma.user.update(postOperation)
+    const updateResult = (await prisma.user.update(postOperation)) as User
 
     return updateResult
   } catch (error) {

@@ -83,6 +83,17 @@ export const typeDefs = gql`
     roles: [Role]!
   }
 
+  input UserAddInput {
+    "Must be a valid email address"
+    email: String!
+    "The location of a profile image for avatar"
+    image: String
+    "Full name"
+    name: String!
+    "A user handle; Username must: begin with a letter, be at least three characters long, be 25 characters or less, not contain any space characters"
+    username: String!
+  }
+
   input UserInput {
     "Must be a valid email address"
     email: String
@@ -106,6 +117,7 @@ export const typeDefs = gql`
 
   type Mutation {
     createImageSignature: ImageSignature!
+    userAdd(input: UserAddInput): User!
     userUpdate(id: Int!, input: UserInput!): User!
     userDelete(id: Int): DeleteResult!
   }
@@ -118,7 +130,7 @@ export const resolvers = {
     user: user.get,
   },
   Mutation: {
-    // userAdd: user.add,
+    userAdd: user.add,
     userUpdate: user.update,
     userDelete: user.delete,
   },

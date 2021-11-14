@@ -59,7 +59,7 @@ model Identity {
 model Profile {
   id Int @id @default(autoincrement())
   name String
-  birthday DateTime @db.Date
+  birthday DateTime? @db.Date
   isDaddy Boolean
   hasBoat Boolean
   bio String?

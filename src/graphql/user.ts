@@ -10,6 +10,15 @@ import {
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import userResolver from 'src/api/user'
 
+type SimpleUserAddInput = {
+  input: {
+    email: string
+    image?: string
+    name: string
+    username: string
+  }
+}
+
 const get = async (
   _,
   vars: UserVariables,
@@ -20,8 +29,18 @@ const get = async (
   return getResult
 }
 
-const add = async (_, vars: UserAddInput, ctx: Context): Promise<User> => {
-  const addResult = await userResolver.add(vars)
+const add = async (
+  _,
+  { input }: SimpleUserAddInput,
+  ctx: Context
+): Promise<User> => {
+  const user = {
+    ...input,
+    profile: { name: input.name, hasBoat: false, isDaddy: false },
+  }
+  delete user.name
+
+  const addResult = await userResolver.add(user)
 
   return addResult
 }
