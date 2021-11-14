@@ -18,10 +18,10 @@ type HookState = {
 function parseErrors(errors) {
   if (errors && errors[0]) {
     const error = errors[0]
-    if (error.extensions.code === 'BAD_USER_INPUT') {
-      const details = error.extensions.exception.errors.join('\n ')
-      return `${error.message}: ${details}`
-    }
+    // if (error.extensions.code === 'BAD_USER_INPUT') {
+    //   const details = error.extensions.exception.errors.join('\n ')
+    //   return `${error.message}: ${details}`
+    // }
 
     return `${error.extensions.code}: ${error.message}`
   }
@@ -77,7 +77,10 @@ export function useQuery(
 export function useMutation(
   query: string,
   onSuccess: (state?: object, error?: string) => void = null
-) {
+): [
+  (variables: any) => void,
+  { loading: boolean; error: string | null; data: any }
+] {
   const [state, setState] = useState({
     loading: false,
     error: null,
@@ -89,10 +92,12 @@ export function useMutation(
 
     try {
       const result = await graphQlFetch(query, variables)
+      console.log('mutation result', result)
+
       setState({
         loading: false,
         data: result.data,
-        error: parseErrors(result),
+        error: parseErrors(result.errors),
       })
 
       if (onSuccess) {
