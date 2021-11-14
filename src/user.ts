@@ -1,7 +1,9 @@
 import { useQuery, useLazyQuery, gql } from '@apollo/client'
+import { print } from 'graphql'
 
 import { User } from 'src/interfaces/user'
 import { UserVariables, User_data } from 'src/interfaces/api/User'
+import graphQlFetch from './graphql/fetch'
 
 const USER_QUERY = gql`
   query User($username: String, $id: Int, $email: String) {
@@ -83,4 +85,16 @@ export function getUserLazy(): [
     (variables: UserVariables) => getUser({ variables }),
     { data: data?.user, error, loading: !called ? true : loading },
   ]
+}
+
+export async function getUserAsync(
+  variables: UserVariables
+): Promise<User | null> {
+  const res = await graphQlFetch(print(USER_QUERY), variables)
+
+  if (res?.data?.user) {
+    return res.data.user
+  }
+
+  return null
 }

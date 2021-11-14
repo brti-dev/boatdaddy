@@ -37,6 +37,11 @@ async function graphQlFetch(
   variables = {},
   cookie: string = null
 ) {
+  const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
+  if (!apiEndpoint) {
+    throw new Error('API endpoint not set in env')
+  }
+
   const headers: any = { 'Content-Type': 'application/json' }
 
   const jwt = localStorage.getItem('jwt')
@@ -48,7 +53,7 @@ async function graphQlFetch(
     headers.Cookie = cookie
   }
 
-  const response = await fetch(process.env.NEXT_PUBLIC_API_ENDPOINT, {
+  const response = await fetch(apiEndpoint, {
     method: 'POST',
     credentials: 'include',
     headers,
