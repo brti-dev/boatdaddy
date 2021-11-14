@@ -94,7 +94,7 @@ export const typeDefs = gql`
     username: String!
   }
 
-  input UserInput {
+  input UserUpdateInput {
     "Must be a valid email address"
     email: String
     "When the email was verified"
@@ -118,7 +118,7 @@ export const typeDefs = gql`
   type Mutation {
     createImageSignature: ImageSignature!
     userAdd(input: UserAddInput): User!
-    userUpdate(id: Int!, input: UserInput!): User!
+    userUpdate(id: Int!, input: UserUpdateInput!): User!
     userDelete(id: Int): DeleteResult!
   }
 `

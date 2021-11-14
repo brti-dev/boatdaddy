@@ -66,7 +66,7 @@ function verify(
     }
   })
 
-  if (!EMAIL_TEST.test(input.email)) {
+  if (input.email && !EMAIL_TEST.test(input.email)) {
     throw new Error('Please input a valid email address')
   }
 
@@ -139,21 +139,19 @@ async function doAdd(createOperation) {
 
 async function update(id: number, input: UserUpdateInput): Promise<User> {
   try {
-    const data = verify(input)
+    console.log('update user', id, input)
+    const userData = verify(input)
 
+    let roles: Roles = []
     const allActor = await prisma.actor.findMany({
       where: { userId: id },
     })
-
-    let roles: string[] = []
-
-    if (data.profile.hasBoat) {
+    if (userData.profile.hasBoat) {
       const driverRole = allActor.filter(actor => actor.role === 'DRIVER')
       if (!driverRole) {
         roles.push('DRIVER')
       }
     }
-
     if (roles.length) {
       const actorResult = await prisma.actor.create({
         data: { role: 'DRIVER', userId: id },
@@ -161,13 +159,27 @@ async function update(id: number, input: UserUpdateInput): Promise<User> {
       console.log('Actor', actorResult)
     }
 
-    const postOperation = {
+    const { profile, ...data } = userData
+    const userUpdate = {
       data,
       where: { id },
     }
-    const updateResult = (await prisma.user.update(postOperation)) as User
+    const updateResult = await prisma.user.update(userUpdate)
 
-    return updateResult
+    const profileUpdate = {
+      data: { ...profile },
+      where: { userId: id },
+    }
+    const updateProfileResult = await prisma.profile.update(profileUpdate)
+
+    console.log('update user result', {
+      ...updateResult,
+      profile: { updateProfileResult },
+    })
+
+    const updatedUser = get({ id })
+
+    return updatedUser
   } catch (error) {
     throw error
   }
