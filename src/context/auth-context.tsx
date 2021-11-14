@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { useLazyQuery, gql } from '@apollo/client'
 
-import { Session, Provider, Roles } from 'src/interfaces/user'
+import { Session, Provider } from 'src/interfaces/user'
 import { Auth_data } from 'src/interfaces/api/Auth'
 import useLocalStorage from 'src/lib/use-local-storage'
+import { getUserAsync } from 'src/user'
+import graphQlFetch from 'src/graphql/fetch'
 
 /**
  * Object to send in HTTP body request at auth API
@@ -31,7 +32,7 @@ export type AuthResponse = {
   error?: string
 }
 
-const AUTH_QUERY = gql`
+const AUTH_QUERY = `
   query {
     auth {
       provider
@@ -47,7 +48,6 @@ const AuthContext = createContext(undefined)
 function AuthProvider(props) {
   const [data, setData] = useState<Session>(null)
   const [jwt, setJwt] = useLocalStorage<string>('jwt', '')
-  const [getAuth, auth] = useLazyQuery<Auth_data>(AUTH_QUERY)
 
   // If token persists in localStorage, query API for user session
   // Authorization with bearer token is automatically attached to the request
@@ -56,35 +56,34 @@ function AuthProvider(props) {
       return
     }
 
-    getAuth()
-  }, [jwt])
+    const fetchData = async () => {
+      const authRes = await graphQlFetch(AUTH_QUERY)
+      if (!authRes.data) {
+        return
+      }
 
-  useEffect(() => {
-    if (!auth.data) {
-      return
+      if (!authRes.data.auth) {
+        setData(null)
+
+        return
+      }
+
+      const user = await getUserAsync({ id: authRes.data.auth.userId })
+
+      if (!user) {
+        return
+      }
+
+      const session: Session = {
+        provider: authRes.data.auth.provider,
+        userId: user.id,
+        ...user,
+      }
+
+      setData(session)
     }
-
-    if (!auth.data.auth) {
-      setData(null)
-
-      return
-    }
-
-    // TODO: Get user data from credentials (email, jwt, name, provider)
-    // ....
-    const user = {
-      userId: 1,
-      username: 'mrberti',
-      roles: ['RIDER', 'DRIVER', 'ADMIN'] as Roles,
-    }
-
-    const session: Session = {
-      provider: auth.data.auth.provider,
-      ...user,
-    }
-
-    setData(session)
-  }, [auth])
+    fetchData()
+  }, [])
 
   const login = async (params: AuthBody) => {
     const response = await fetch(`/api/auth/login`, {
