@@ -40,7 +40,7 @@ export const typeDefs = gql`
   type Profile {
     aboutBoat: String
     bio: String
-    birthday: DateTime!
+    birthday: DateTime
     boatImage: String
     createdAt: DateTime!
     hasBoat: Boolean!

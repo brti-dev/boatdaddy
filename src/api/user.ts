@@ -128,9 +128,9 @@ async function add(input: UserAddInput): Promise<User> {
     return null
   }
 
-  const newUserFinal = { ...addResult, roles }
+  const savedUser = await get({ id: addResult.id })
 
-  return newUserFinal
+  return savedUser
 }
 
 async function doAdd(createOperation) {
