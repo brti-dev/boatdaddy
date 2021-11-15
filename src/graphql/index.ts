@@ -1,6 +1,6 @@
 import { gql } from 'apollo-server-micro'
 
-// import { ImageResolver } from './image'
+import image from './image'
 import user from './user'
 // import { authChecker } from './auth'
 import { GraphQlDateTime } from './datetime'
@@ -133,6 +133,7 @@ export const resolvers = {
     userAdd: user.add,
     userUpdate: user.update,
     userDelete: user.delete,
+    createImageSignature: image.createImageSignature,
   },
   DateTime: GraphQlDateTime,
 }
