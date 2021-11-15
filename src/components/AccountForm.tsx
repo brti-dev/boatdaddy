@@ -10,7 +10,7 @@ import CheckButton, {
   checkButtonContainerClass,
 } from 'src/components/CheckButton'
 import Button from 'src/components/Button'
-import { CreateSignatureMutation } from 'src/interfaces/api/CreateSignatureMutation'
+import { CreateSignature_mutation } from 'src/interfaces/api/Image'
 import { UserUpdateInput } from 'src/interfaces/api/User'
 
 type UploadImageResponse = {
@@ -83,15 +83,40 @@ function parseInput(data: UserUpdateInput) {
 
 export default function AccountEdit({ user }: { user: User }) {
   const [createSignature] =
-    useMutation<CreateSignatureMutation>(SIGNATURE_MUTATION)
+    useMutation<CreateSignature_mutation>(SIGNATURE_MUTATION)
 
-  const handleCreate = async data => {
-    const { data: signatureData } = await createSignature()
-    if (signatureData) {
-      console.log(signatureData)
+  const handleImageUpload = async (imageFile: File) => {
+    const uploadErrorMessage = 'Could not upload image to the cloud'
+
+    setState({ loading: true })
+
+    try {
+      const { data: signatureData } = await createSignature()
+      if (!signatureData) {
+        console.error(
+          'Could not get signature data from API. See network result.'
+        )
+        throw new Error(uploadErrorMessage)
+      }
+
       const { signature, timestamp } = signatureData.createImageSignature
-      const imageData = await uploadImage(data.image[0], signature, timestamp)
-      console.log(imageData)
+      const imageData = await uploadImage(imageFile, signature, timestamp)
+
+      if (!imageData.secure_url) {
+        console.error(
+          'Could not get secure_url from imageData result',
+          imageData
+        )
+        throw new Error(uploadErrorMessage)
+      }
+
+      return imageData.secure_url
+    } catch (error) {
+      console.error(error)
+      const message = String(error)
+      setAlert({ message, severity: 'error' })
+    } finally {
+      setState({ loading: false })
     }
   }
 
@@ -113,6 +138,7 @@ export default function AccountEdit({ user }: { user: User }) {
     value: string | number | boolean | null
   ) => {
     const { name } = event.target as HTMLInputElement
+    console.log('change', name, value)
 
     if (name === 'username') {
       USERNAME_TESTS.map(({ test, message }) => {
@@ -185,7 +211,7 @@ export default function AccountEdit({ user }: { user: User }) {
   }, [state.error])
 
   return (
-    <Form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
+    <Form onSubmit={handleSubmit} style={{ maxWidth: 400 }}>
       <Alert />
       <FormGroup
         label="Name"
@@ -313,7 +339,11 @@ export default function AccountEdit({ user }: { user: User }) {
       />
       <FormGroup
         className={!state.data?.hasBoat && 'visually-hidden'}
-        label="Add an image of your boat"
+        label={
+          state.data?.boatImage
+            ? 'Click to upload a new boat image'
+            : 'Click to upload an image of your boat'
+        }
         input={
           <input
             type="file"
@@ -323,11 +353,18 @@ export default function AccountEdit({ user }: { user: User }) {
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               if (event?.target?.files?.[0]) {
                 const file = event.target.files[0]
+
+                // Read file data and temporarily insert image placeholder
                 const reader = new FileReader()
                 reader.onloadend = () => {
-                  handleChange(event, reader.result as string)
+                  const imageData = reader.result as string
+                  handleChange(event, imageData)
                 }
                 reader.readAsDataURL(file)
+
+                handleImageUpload(file).then(imageUrl => {
+                  handleChange(event, imageUrl)
+                })
               }
             }}
           />
@@ -341,6 +378,7 @@ export default function AccountEdit({ user }: { user: User }) {
       )}
       <Button
         type="submit"
+        disabled={loading}
         loading={loading}
         variant="contained"
         color="primary"
