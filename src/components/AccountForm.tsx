@@ -97,7 +97,14 @@ export default function AccountEdit({ user }: { user: User }) {
 
   const [submitUpdate, { data, error, loading }] = useMutation(ACCOUNT_MUTATION)
 
-  const { form: state, setForm: setState, isError } = useForm(parseData(user))
+  const {
+    form: state,
+    setForm: setState,
+    handleChange: doHandleChange,
+    isError,
+  } = useForm(parseData(user))
+
+  console.log(state)
 
   const [Alert, setAlert] = useAlert(null)
 
@@ -106,10 +113,6 @@ export default function AccountEdit({ user }: { user: User }) {
     value: string | number | boolean | null
   ) => {
     const { name } = event.target as HTMLInputElement
-
-    if (state.error?.inputName === name) {
-      setState({ error: null })
-    }
 
     if (name === 'username') {
       USERNAME_TESTS.map(({ test, message }) => {
@@ -121,13 +124,13 @@ export default function AccountEdit({ user }: { user: User }) {
       })
     }
 
-    setState({ data: { ...state.data, [name]: value } })
+    doHandleChange(event, value)
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
 
-    if (state.error) {
+    if (!!state.error) {
       setAlert({
         message: 'Please fix the errors below before submitting',
         severity: 'error',
@@ -146,7 +149,7 @@ export default function AccountEdit({ user }: { user: User }) {
       setState({
         error: {
           inputName: 'birthday',
-          message: `You must be at least ${RESTRICT_AGE_MIN} years old to register`,
+          message: `You must be at least ${RESTRICT_AGE_MIN} years old to use this app`,
         },
       })
 
@@ -174,6 +177,12 @@ export default function AccountEdit({ user }: { user: User }) {
   useEffect(() => {
     setAlert(error)
   }, [error])
+
+  useEffect(() => {
+    if (!state.error) {
+      setAlert(null)
+    }
+  }, [state.error])
 
   return (
     <Form onSubmit={handleSubmit} style={{ maxWidth: 500 }}>
