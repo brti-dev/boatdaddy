@@ -2,6 +2,8 @@ import { SyntheticEvent, ChangeEvent, useEffect } from 'react'
 import { useMutation, gql } from '@apollo/client'
 
 import { User } from 'src/interfaces/user'
+import { CreateSignature_mutation } from 'src/interfaces/api/Image'
+import { UserUpdateInput } from 'src/interfaces/api/User'
 import userDataFragment from 'src/graphql/fragments/user-data'
 import { USERNAME_TESTS } from 'src/user'
 import useAlert from 'src/lib/use-alert'
@@ -10,11 +12,11 @@ import CheckButton, {
   checkButtonContainerClass,
 } from 'src/components/CheckButton'
 import Button from 'src/components/Button'
-import { CreateSignature_mutation } from 'src/interfaces/api/Image'
-import { UserUpdateInput } from 'src/interfaces/api/User'
+import BoatImage from 'src/components/BoatImage'
 
 type UploadImageResponse = {
   secure_url: string
+  public_id: string
 }
 
 const CLOUDINARY_API_ENDPOINT = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`
@@ -42,13 +44,15 @@ const ACCOUNT_MUTATION = gql`
 async function uploadImage(
   image: File,
   signature: string,
-  timestamp: number
+  timestamp: number,
+  userId: number
 ): Promise<UploadImageResponse> {
   const formData = new FormData()
   formData.append('file', image)
   formData.append('signature', signature)
   formData.append('timestamp', timestamp.toString())
   formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_KEY ?? '')
+  // formData.append('public_id', `boats/${userId}`)
 
   const response = await fetch(CLOUDINARY_API_ENDPOINT, {
     method: 'POST',
@@ -100,21 +104,29 @@ export default function AccountEdit({ user }: { user: User }) {
       }
 
       const { signature, timestamp } = signatureData.createImageSignature
-      const imageData = await uploadImage(imageFile, signature, timestamp)
+      const imageData = await uploadImage(
+        imageFile,
+        signature,
+        timestamp,
+        user.id
+      )
+      console.log('Image upload data', imageData)
 
-      if (!imageData.secure_url) {
+      if (!imageData.public_id) {
         console.error(
-          'Could not get secure_url from imageData result',
+          'Could not get public_id from imageData result',
           imageData
         )
         throw new Error(uploadErrorMessage)
       }
 
-      return imageData.secure_url
+      return `cloudinaryPublicId=${imageData.public_id}`
     } catch (error) {
       console.error(error)
       const message = String(error)
-      setAlert({ message, severity: 'error' })
+      setState({ error: { message, inputName: 'boatImage' } })
+
+      return ''
     } finally {
       setState({ loading: false })
     }
@@ -362,8 +374,9 @@ export default function AccountEdit({ user }: { user: User }) {
                 }
                 reader.readAsDataURL(file)
 
-                handleImageUpload(file).then(imageUrl => {
-                  handleChange(event, imageUrl)
+                handleImageUpload(file).then(imageSrc => {
+                  console.log('image upload src', imageSrc)
+                  handleChange(event, imageSrc)
                 })
               }
             }}
@@ -373,7 +386,7 @@ export default function AccountEdit({ user }: { user: User }) {
       />
       {state.data?.hasBoat && state.data?.boatImage && (
         <div>
-          <img src={state.data.boatImage} alt="Your boat" />
+          <BoatImage src={state.data.boatImage} alt="Your boat" />
         </div>
       )}
       <Button

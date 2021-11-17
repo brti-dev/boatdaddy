@@ -3,7 +3,6 @@ import intervalToDuration from 'date-fns/intervalToDuration'
 import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
 import ContentLoader from 'react-content-loader'
-import { Image } from 'cloudinary-react'
 
 import { User } from 'src/interfaces/user'
 import { getUser } from 'src/user'
@@ -11,6 +10,7 @@ import Layout from 'src/components/Layout'
 import Button from 'src/components/Button'
 import ErrorPage from 'src/components/ErrorPage'
 import ProfileImage from 'src/components/ProfileImage'
+import BoatImage from 'src/components/BoatImage'
 import classes from 'styles/profile.module.scss'
 
 const Loader = () => (
@@ -76,21 +76,18 @@ function ProfileView({ user }: { user: User }) {
         </>
       )}
       {user.profile.hasBoat && user.profile.boatImage && (
-        <Image
-          className="fuu"
-          cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-          publicId={user.id}
-          secure
-          alt={user.username}
+        <BoatImage
+          src={user.profile.boatImage}
+          alt={`${user.username}'s boat`}
           dpr="auto"
           quality="auto"
           width={900}
-          height={Math.floor((9 / 16) * 900)}
+          // height={Math.floor((9 / 16) * 900)}
           gravity="auto"
         />
       )}
       {user.profile.hasBoat && (
-        <div>
+        <div className={classes.hail}>
           <Button
             variant="contained"
             color="secondary"
