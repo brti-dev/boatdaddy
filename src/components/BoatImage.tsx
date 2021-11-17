@@ -1,5 +1,4 @@
 import { Image } from 'cloudinary-react'
-import { GiPaperBoat as BoatIcon } from 'react-icons/gi'
 
 export default function BoatImage({
   src,

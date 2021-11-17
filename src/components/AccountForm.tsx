@@ -1,4 +1,4 @@
-import { SyntheticEvent, ChangeEvent, useEffect } from 'react'
+import { SyntheticEvent, ChangeEvent, useEffect, useRef } from 'react'
 import { useMutation, gql } from '@apollo/client'
 
 import { User } from 'src/interfaces/user'
@@ -7,12 +7,11 @@ import { UserUpdateInput } from 'src/interfaces/api/User'
 import userDataFragment from 'src/graphql/fragments/user-data'
 import { USERNAME_TESTS } from 'src/user'
 import useAlert from 'src/lib/use-alert'
-import { Form, FormGroup, TextInput, useForm } from 'src/components/Form'
-import CheckButton, {
-  checkButtonContainerClass,
-} from 'src/components/CheckButton'
-import Button from 'src/components/Button'
-import BoatImage from 'src/components/BoatImage'
+import { Form, FormGroup, TextInput, useForm } from './Form'
+import CheckButton, { checkButtonContainerClass } from './CheckButton'
+import Button from './Button'
+import BoatImage from './BoatImage'
+import ProfileImage from './ProfileImage'
 
 type UploadImageResponse = {
   secure_url: string
@@ -67,6 +66,7 @@ function parseData(user: User) {
     name: user.profile.name || '',
     email: user.email,
     username: user.username,
+    image: user.image,
     birthday: user.profile.birthday || '',
     isDaddy: user.profile.isDaddy || false,
     bio: user.profile.bio || '',
@@ -77,10 +77,11 @@ function parseData(user: User) {
 }
 
 function parseInput(data: UserUpdateInput) {
-  const { email, username, ...profile } = data
+  const { email, username, image, ...profile } = data
   return {
     email,
     username,
+    image,
     profile,
   }
 }
@@ -149,6 +150,8 @@ export default function AccountEdit({ user }: { user: User }) {
     event: ChangeEvent<HTMLInputElement>,
     value: string | number | boolean | null
   ) => {
+    setAlert(null)
+
     const { name } = event.target as HTMLInputElement
     console.log('change', name, value)
 
@@ -163,6 +166,25 @@ export default function AccountEdit({ user }: { user: User }) {
     }
 
     doHandleChange(event, value)
+  }
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event?.target?.files?.[0]) {
+      const file = event.target.files[0]
+
+      // Read file data and temporarily insert image placeholder
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const imageData = reader.result as string
+        handleChange(event, imageData)
+      }
+      reader.readAsDataURL(file)
+
+      handleImageUpload(file).then(imageSrc => {
+        console.log('image upload src', imageSrc)
+        handleChange(event, imageSrc)
+      })
+    }
   }
 
   const handleSubmit = async (event: SyntheticEvent) => {
@@ -209,7 +231,10 @@ export default function AccountEdit({ user }: { user: User }) {
 
     console.log('mutate', variables)
 
-    submitUpdate({ variables })
+    submitUpdate({ variables }).then(res => {
+      console.log('Submit res', res)
+      setAlert({ message: 'Account saved', severity: 'success' })
+    })
   }
 
   useEffect(() => {
@@ -222,9 +247,51 @@ export default function AccountEdit({ user }: { user: User }) {
     }
   }, [state.error])
 
+  const profileImgRef = useRef(null)
+  const boatImgRef = useRef(null)
+
   return (
-    <Form onSubmit={handleSubmit} style={{ maxWidth: 400 }}>
+    <Form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
       <Alert />
+      <input
+        type="hidden"
+        name="image"
+        value={state.data.image}
+        onChange={event => handleChange(event, event.target.value)}
+      />
+      <FormGroup
+        label="Profile picture"
+        input={
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            className="visually-hidden"
+            onChange={handleFileChange}
+            ref={profileImgRef}
+          />
+        }
+      />
+      <div style={{ marginTop: '-1em' }}>
+        {state.data?.image ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
+            <ProfileImage src={state.data.image} alt="Your profile picture" />
+            <Button
+              variant="outlined"
+              onClick={() => profileImgRef.current.click()}
+            >
+              Upload new
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="outlined"
+            onClick={() => profileImgRef.current.click()}
+          >
+            Add a picture
+          </Button>
+        )}
+      </div>
       <FormGroup
         label="Name"
         input={
@@ -351,44 +418,36 @@ export default function AccountEdit({ user }: { user: User }) {
       />
       <FormGroup
         className={!state.data?.hasBoat && 'visually-hidden'}
-        label={
-          state.data?.boatImage
-            ? 'Click to upload a new boat image'
-            : 'Click to upload an image of your boat'
-        }
+        label="Boat picture"
         input={
           <input
             type="file"
             name="boatImage"
             accept="image/*"
             className="visually-hidden"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              if (event?.target?.files?.[0]) {
-                const file = event.target.files[0]
-
-                // Read file data and temporarily insert image placeholder
-                const reader = new FileReader()
-                reader.onloadend = () => {
-                  const imageData = reader.result as string
-                  handleChange(event, imageData)
-                }
-                reader.readAsDataURL(file)
-
-                handleImageUpload(file).then(imageSrc => {
-                  console.log('image upload src', imageSrc)
-                  handleChange(event, imageSrc)
-                })
-              }
-            }}
+            onChange={handleFileChange}
+            ref={boatImgRef}
           />
         }
         error={isError('boatImage')}
       />
-      {state.data?.hasBoat && state.data?.boatImage && (
-        <div>
+      <div
+        style={{
+          marginTop: '-1em',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1em',
+        }}
+      >
+        {state.data?.hasBoat && state.data?.boatImage && (
           <BoatImage src={state.data.boatImage} alt="Your boat" />
+        )}
+        <div>
+          <Button variant="outlined" onClick={() => boatImgRef.current.click()}>
+            Upload picture
+          </Button>
         </div>
-      )}
+      </div>
       <Button
         type="submit"
         disabled={loading}
