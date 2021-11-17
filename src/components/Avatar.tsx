@@ -1,6 +1,7 @@
 import React from 'react'
 
 import classes from 'styles/components/avatar.module.scss'
+import ProfileImage from './ProfileImage'
 
 export type AvatarProps = {
   alt?: string
@@ -35,7 +36,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
       ref={ref}
       {...rest}
     >
-      {src ? <img src={src} alt={alt} /> : children}
+      {src ? <ProfileImage src={src} alt={alt} size={40} /> : children}
     </div>
   )
 })

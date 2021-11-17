@@ -1,13 +1,14 @@
 .image,
 .image > img {
-  width: 120px;
-  height: 120px;
+  width: var(--size);
+  height: var(--size);
   background-color: var(--color-primary);
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .noImage {
   font-size: 4em;
-  line-height: 120px;
+  line-height: var(--size);
   text-align: center;
 }
