@@ -115,7 +115,7 @@ function ProfileLayout({ username }) {
     <Layout>
       <main>
         <h1>{username}</h1>
-        {data ? <ProfileView user={data} /> : <Loader />}
+        {!data || loading ? <Loader /> : <ProfileView user={data} />}
       </main>
     </Layout>
   )
