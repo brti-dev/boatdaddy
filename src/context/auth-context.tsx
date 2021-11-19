@@ -57,7 +57,7 @@ function AuthProvider(props) {
     }
 
     const fetchData = async () => {
-      const authRes = await graphQlFetch(AUTH_QUERY)
+      const authRes = await graphQlFetch<Auth_data>(AUTH_QUERY)
       if (!authRes.data) {
         return
       }

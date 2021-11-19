@@ -76,7 +76,10 @@ export function getUserLazy(): [
 export async function getUserAsync(
   variables: UserVariables
 ): Promise<User | null> {
-  const res = await graphQlFetch(print(USER_QUERY), variables)
+  const res = await graphQlFetch<User_data, UserVariables>(
+    print(USER_QUERY),
+    variables
+  )
 
   if (res?.data?.user) {
     return res.data.user

@@ -1,4 +1,11 @@
-import { DocumentNode } from 'graphql'
+import { DocumentNode, GraphQLFormattedError } from 'graphql'
+
+export type GraphQLResponse<D> = {
+  data?: D
+  errors?: GraphQLFormattedError
+}
+
+type OperationVariables = Record<string, any>
 
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d')
 
@@ -15,7 +22,7 @@ function jsonDateReviver(key, value) {
  *
  * @returns {string} A stringified summary of the first error encountered
  */
-function parseErrors(errors): string {
+function parseErrors(errors: GraphQLFormattedError): string {
   if (errors && errors[0]) {
     const error = errors[0]
     if (error.extensions.code === 'BAD_USER_INPUT') {
@@ -23,7 +30,7 @@ function parseErrors(errors): string {
       return `${error.message}: ${details}`
     }
 
-    return `${error.extensions.code}: ${error.message}`
+    return `${error.extensions}: ${error.message}`
   }
 
   return null
@@ -32,11 +39,11 @@ function parseErrors(errors): string {
 /**
  * Common utility function to handle API calls
  */
-async function graphQlFetch(
+async function graphQlFetch<TData = any, TVariables = OperationVariables>(
   query: string | DocumentNode,
-  variables = {},
-  cookie: string = null
-) {
+  variables?: TVariables,
+  cookie?: string
+): Promise<GraphQLResponse<TData>> {
   const apiEndpoint = process.env.NEXT_PUBLIC_API_ENDPOINT
   if (!apiEndpoint) {
     throw new Error('API endpoint not set in env')
@@ -60,14 +67,14 @@ async function graphQlFetch(
     body: JSON.stringify({ query, variables }),
   })
   const body = await response.text()
-  const result = JSON.parse(body, jsonDateReviver)
+  const result: GraphQLResponse<TData> = JSON.parse(body, jsonDateReviver)
 
-  if (!result) {
+  if (!result || !result.data) {
     throw new Error('GraphQL fetch returned an empty result')
   }
 
-  if (result.error) {
-    throw new Error(parseErrors(result.error))
+  if (result.errors) {
+    throw new Error(parseErrors(result.errors))
   }
 
   return result
