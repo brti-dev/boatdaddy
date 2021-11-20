@@ -57,11 +57,11 @@ function AuthProvider(props) {
     }
 
     const fetchData = async () => {
+      console.log('JWT effect; Querying auth...')
       const authRes = await graphQlFetch<Auth_data>(AUTH_QUERY)
       if (!authRes.data) {
         return
       }
-
       if (!authRes.data.auth) {
         setData(null)
 
@@ -69,7 +69,6 @@ function AuthProvider(props) {
       }
 
       const user = await getUserAsync({ id: authRes.data.auth.userId })
-
       if (!user) {
         return
       }
@@ -79,11 +78,10 @@ function AuthProvider(props) {
         userId: user.id,
         ...user,
       }
-
       setData(session)
     }
     fetchData()
-  }, [])
+  }, [jwt])
 
   const login = async (params: AuthBody) => {
     const response = await fetch(`/api/auth/login`, {

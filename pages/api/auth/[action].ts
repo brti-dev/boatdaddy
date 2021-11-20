@@ -54,12 +54,21 @@ async function getAuth(
             const ticket = await client.verifyIdToken({ idToken: token })
             const payload = ticket.getPayload()
             console.log('Google auth', payload)
-            const { name, email } = payload
+            const {
+              name,
+              email,
+              email_verified: emailVerified,
+              picture: image,
+            } = payload
+
             credentials = {
               ...credentials,
               name,
               email,
+              emailVerified,
+              image,
             }
+
             break
 
           case 'MOCK':
@@ -83,14 +92,17 @@ async function getAuth(
       const foundUser = await userResolver.get({ email: credentials.email })
 
       if (foundUser) {
+        console.log('Found user', foundUser)
         credentials.userId = foundUser.id
         credentials.roles = foundUser.roles
         credentials.username = foundUser.username
       } else {
         console.log('User registration', credentials)
+        const { name, provider, ...newUser } = credentials
+        newUser.profile = { name }
         try {
           credentials.roles = ['RIDER']
-          const savedUser = await userResolver.add(credentials)
+          const savedUser = await userResolver.add(newUser)
           // const savedUser = { id: 22 }
           credentials.userId = savedUser.id
         } catch (error) {

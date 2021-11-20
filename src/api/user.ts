@@ -55,6 +55,10 @@ async function makeUsername({ email }): Promise<string> {
 function verify(
   input: UserUpdateInput | UserAddInput
 ): UserUpdateInput | UserAddInput {
+  if (!input.profile?.name) {
+    throw new Error('Profile name is required')
+  }
+
   const name = input.profile.name.trim()
   if (name === '' || name.length < 2) {
     throw new Error('Please input a name that is at least two characters')
@@ -68,6 +72,10 @@ function verify(
 
   if (input.email && !EMAIL_TEST.test(input.email)) {
     throw new Error('Please input a valid email address')
+  }
+
+  if (input.emailVerified === true) {
+    input.emailVerified = new Date()
   }
 
   return input
@@ -100,6 +108,13 @@ async function add(input: UserAddInput): Promise<User> {
   }
 
   const newUser = verify(input)
+
+  if (!newUser.profile.isDaddy) {
+    newUser.profile.isDaddy = false
+  }
+  if (!newUser.profile.hasBoat) {
+    newUser.profile.hasBoat = false
+  }
 
   const roles: Roles = ['RIDER']
   if (newUser.profile.hasBoat) {

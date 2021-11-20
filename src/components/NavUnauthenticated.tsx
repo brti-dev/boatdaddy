@@ -122,10 +122,16 @@ export default function NavUnauthenticated() {
       console.log('Google user', googleUser)
       const googleToken = googleUser.getAuthResponse().id_token
 
-      console.log('Google credentials', googleToken)
+      if (!googleToken) {
+        throw new Error('Could not get Google token')
+      }
 
       submitSignIn({ provider: 'GOOGLE', token: googleToken })
     } catch (error) {
+      setAlert({
+        message: 'There was an error signing in with Google',
+        severity: 'error',
+      })
       console.error(error)
     }
   }
@@ -155,7 +161,11 @@ export default function NavUnauthenticated() {
         closeSignIn()
       })
       .catch((error: Error) => {
-        setAlert(`Error authenticating: ${error.message}`)
+        console.error(error)
+        setAlert({
+          message: 'There was an error authenticating your credentials',
+          severity: 'error',
+        })
       })
       .finally(() => {
         setSignInState({ loading: false })
