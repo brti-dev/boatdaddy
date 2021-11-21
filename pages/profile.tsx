@@ -63,19 +63,19 @@ function ProfileView({ user }: { user: User }) {
           <li>Member for {memberSince}</li>
         </ul>
       </div>
-      {user.profile.isDaddy && user.profile.bio && (
+      {user.profile.isBoatDaddy && user.profile.bio && (
         <>
           <h2>👨 Bio</h2>
           <p>{user.profile.bio}</p>
         </>
       )}
-      {user.profile.hasBoat && user.profile.aboutBoat && (
+      {user.profile.isBoatDaddy && user.profile.aboutBoat && (
         <>
           <h2>🛥️ Boat</h2>
           <p>{user.profile.aboutBoat}</p>
         </>
       )}
-      {user.profile.hasBoat && user.profile.boatImage && (
+      {user.profile.isBoatDaddy && user.profile.boatImage && (
         <BoatImage
           src={user.profile.boatImage}
           alt={`${user.username}'s boat`}
@@ -86,7 +86,7 @@ function ProfileView({ user }: { user: User }) {
           gravity="auto"
         />
       )}
-      {user.profile.hasBoat && (
+      {user.profile.isBoatDaddy && (
         <div className={classes.hail}>
           <Button
             variant="contained"

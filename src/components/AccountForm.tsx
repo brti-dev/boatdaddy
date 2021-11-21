@@ -66,11 +66,10 @@ function parseData(user: User) {
     name: user.profile.name || '',
     email: user.email,
     username: user.username,
-    image: user.image,
+    image: user.image || '',
     birthday: user.profile.birthday || '',
-    isDaddy: user.profile.isDaddy || false,
+    isBoatDaddy: user.profile.isBoatDaddy || false,
     bio: user.profile.bio || '',
-    hasBoat: user.profile.hasBoat || false,
     aboutBoat: user.profile.aboutBoat || '',
     boatImage: user.profile.boatImage || '',
   }
@@ -216,7 +215,7 @@ export default function AccountEdit({ user }: { user: User }) {
       return
     }
 
-    if (state.data.isDaddy && userAge < 20) {
+    if (state.data.isBoatDaddy && userAge < 20) {
       setState({
         error: {
           inputName: 'birthday',
@@ -346,40 +345,41 @@ export default function AccountEdit({ user }: { user: User }) {
         error={isError('birthday')}
         helperText={isError('birthday') ? state.error.message : null}
       />
+      <div>{state.data.isBoatDaddy ? 'YES daddy' : 'NO daddy'}</div>
       <div className={checkButtonContainerClass}>
         <CheckButton
-          name="isDaddy"
+          name="isBoatDaddy"
           value="true"
-          checked={!!state.data.isDaddy}
+          checked={state.data.isBoatDaddy ? true : false}
           onChange={checked =>
             setState({
               data: {
                 ...state.data,
-                isDaddy: checked,
+                isBoatDaddy: checked,
               },
             })
           }
         >
-          👨 I'm a daddy
+          🧑 I'm a Boat Daddy
         </CheckButton>
         <CheckButton
-          name="hasBoat"
-          value="true"
-          checked={!!state.data.hasBoat}
+          name="isBoatDaddy"
+          value="false"
+          checked={state.data.isBoatDaddy ? false : true}
           onChange={checked =>
             setState({
               data: {
                 ...state.data,
-                hasBoat: checked,
+                isBoatDaddy: checked ? false : true,
               },
             })
           }
         >
-          🛥️ I have a boat
+          🕵 I'm looking for a Boat Daddy
         </CheckButton>
       </div>
       <FormGroup
-        className={!state.data?.isDaddy && 'visually-hidden'}
+        className={!state.data?.isBoatDaddy && 'visually-hidden'}
         label="About you👨"
         input={
           <TextInput
@@ -395,7 +395,7 @@ export default function AccountEdit({ user }: { user: User }) {
         helperText={isError('bio') ? state.error.message : null}
       />
       <FormGroup
-        className={!state.data?.hasBoat && 'visually-hidden'}
+        className={!state.data?.isBoatDaddy && 'visually-hidden'}
         label="About your boat🛥️"
         input={
           <TextInput
@@ -417,7 +417,7 @@ export default function AccountEdit({ user }: { user: User }) {
         onChange={event => handleChange(event, event.target.value)}
       />
       <FormGroup
-        className={!state.data?.hasBoat && 'visually-hidden'}
+        className={!state.data?.isBoatDaddy && 'visually-hidden'}
         label="Boat picture"
         input={
           <input
@@ -439,14 +439,19 @@ export default function AccountEdit({ user }: { user: User }) {
           gap: '1em',
         }}
       >
-        {state.data?.hasBoat && state.data?.boatImage && (
+        {state.data?.isBoatDaddy && state.data?.boatImage && (
           <BoatImage src={state.data.boatImage} alt="Your boat" />
         )}
-        <div>
-          <Button variant="outlined" onClick={() => boatImgRef.current.click()}>
-            Upload picture
-          </Button>
-        </div>
+        {state.data?.isBoatDaddy && (
+          <div>
+            <Button
+              variant="outlined"
+              onClick={() => boatImgRef.current.click()}
+            >
+              Upload picture
+            </Button>
+          </div>
+        )}
       </div>
       <Button
         type="submit"
