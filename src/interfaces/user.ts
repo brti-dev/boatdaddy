@@ -10,8 +10,7 @@ export interface Profile {
   birthday: any
   boatImage: string | null
   createdAt: any
-  hasBoat: boolean
-  isDaddy: boolean
+  isBoatDaddy: boolean
   name: string
   updatedAt: any
   userId: number

@@ -106,15 +106,12 @@ async function add(input: UserAddInput): Promise<User> {
 
   const newUser = verify(input)
 
-  if (!newUser.profile.isDaddy) {
-    newUser.profile.isDaddy = false
-  }
-  if (!newUser.profile.hasBoat) {
-    newUser.profile.hasBoat = false
+  if (!newUser.profile.isBoatDaddy) {
+    newUser.profile.isBoatDaddy = false
   }
 
   const roles: Roles = ['RIDER']
-  if (newUser.profile.hasBoat) {
+  if (newUser.profile.isBoatDaddy) {
     roles.push('DRIVER')
   }
   const rolesCreate = roles.map(role => ({ role: role }))
@@ -158,7 +155,7 @@ async function update(id: number, input: UserUpdateInput): Promise<User> {
     const allActor = await prisma.actor.findMany({
       where: { userId: id },
     })
-    if (userData.profile.hasBoat) {
+    if (userData.profile.isBoatDaddy) {
       const driverRole = allActor.filter(actor => actor.role === 'DRIVER')
       if (!driverRole) {
         roles.push('DRIVER')

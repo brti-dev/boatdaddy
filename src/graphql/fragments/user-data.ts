@@ -9,9 +9,8 @@ export default `fragment userData on User {
   profile {
     name
     birthday
-    isDaddy
+    isBoatDaddy
     bio
-    hasBoat
     aboutBoat
     boatImage
     createdAt

@@ -60,8 +60,7 @@ model Profile {
   id Int @id @default(autoincrement())
   name String
   birthday DateTime? @db.Date
-  isDaddy Boolean
-  hasBoat Boolean
+  isBoatDaddy Boolean
   bio String?
   aboutBoat String?
   boatImage String?

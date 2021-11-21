@@ -43,10 +43,9 @@ export const typeDefs = gql`
     birthday: DateTime
     boatImage: String
     createdAt: DateTime!
-    hasBoat: Boolean!
     id: Int!
     image: String
-    isDaddy: Boolean!
+    isBoatDaddy: Boolean!
     name: String!
     updatedAt: DateTime!
     userId: Int!
@@ -58,9 +57,8 @@ export const typeDefs = gql`
     bio: String
     birthday: DateTime
     boatImage: String
-    hasBoat: Boolean
     image: String
-    isDaddy: Boolean
+    isBoatDaddy: Boolean
     name: String
   }
 

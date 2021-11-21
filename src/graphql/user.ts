@@ -31,8 +31,7 @@ const MOCK_USER = {
     bio: "Aw shit get your towels ready because it's about to go down",
     birthday: new Date('1980-01-01'),
     boatImage: null,
-    hasBoat: true,
-    isDaddy: true,
+    isBoatDaddy: true,
     createdAt: new Date(2021, 6, 1),
     updatedAt: new Date(2021, 6, 1),
     userId: 1,
@@ -107,7 +106,7 @@ const add = async (
 ): Promise<User> => {
   const user = {
     ...input,
-    profile: { name: input.name, hasBoat: false, isDaddy: false },
+    profile: { name: input.name, isBoatDaddy: false },
   }
   delete user.name
 
