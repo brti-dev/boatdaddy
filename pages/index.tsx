@@ -18,7 +18,7 @@ export default function Home() {
       <main>
         <p className={classes.heading}>
           <strong>Boat Daddy</strong> is the boat hailing app that connects you
-          to daddies on boats nearby right now.
+          to daddies on boats nearby.
         </p>
         <div className={classes.hero}>
           <Button to="/hail" variant="contained" color="secondary">

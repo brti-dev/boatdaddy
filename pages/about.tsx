@@ -23,7 +23,7 @@ export default function About() {
         <figure className={classes.hero}>
           <figcaption>
             <strong>Boat Daddy</strong> is the boat hailing app that connects
-            you to boats and daddies nearby right now.
+            you to daddies on boats nearby.
           </figcaption>
           <Image
             src="/img/hero_landscape.jpg"
@@ -39,6 +39,12 @@ export default function About() {
           app was willed into being by co-founder and CEO Maranda Cox in June of
           2021 when she used it to hail her very own Boat Daddy somewhere in the
           Shengsi Islands off the coast of China's Zhejiang Province.
+        </p>
+        <p>
+          Anyone can be a{' '}
+          <strong className={classes.styledFont}>boat daddy</strong>. We pride
+          ourselves in our inclusivity. We want to make your dreams come true,
+          whether its connecting to a daddy or fellow boat lover.
         </p>
         <h2>Attribution</h2>
         <p>{photoAttribution}</p>
