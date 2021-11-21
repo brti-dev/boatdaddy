@@ -53,7 +53,7 @@ async function getAuth(
             const client = new OAuth2Client()
             const ticket = await client.verifyIdToken({ idToken: token })
             const payload = ticket.getPayload()
-            console.log('Google auth', payload)
+            console.log('Google auth payload', payload)
             const {
               name,
               email,
@@ -97,14 +97,16 @@ async function getAuth(
         credentials.roles = foundUser.roles
         credentials.username = foundUser.username
       } else {
-        console.log('User registration', credentials)
+        console.log('User registration...', credentials)
         const { name, provider, ...newUser } = credentials
         newUser.profile = { name }
         try {
           credentials.roles = ['RIDER']
           const savedUser = await userResolver.add(newUser)
+          console.log('Registration result', savedUser)
           // const savedUser = { id: 22 }
           credentials.userId = savedUser.id
+          credentials.username = savedUser.username
         } catch (error) {
           throw error
         }

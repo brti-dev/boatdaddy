@@ -37,6 +37,7 @@ function getSession(req: NextApiRequest): Session | null {
 
   try {
     const credentials = jwt.verify(token, JWT_SECRET) as Session
+    console.log('Credentials from token', credentials)
 
     return credentials
   } catch (error) {

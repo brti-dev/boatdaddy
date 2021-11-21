@@ -111,6 +111,7 @@ export const typeDefs = gql`
 
   type Query {
     about: String!
+    allUsers: [User!]!
     auth: Session
     user(username: String, id: Int, email: String): User
   }
@@ -118,22 +119,25 @@ export const typeDefs = gql`
   type Mutation {
     createImageSignature: ImageSignature!
     userAdd(input: UserAddInput): User!
-    userUpdate(id: Int!, input: UserUpdateInput!): User!
     userDelete(id: Int): DeleteResult!
+    userDbSeed: DeleteResult!
+    userUpdate(id: Int!, input: UserUpdateInput!): User!
   }
 `
 
 export const resolvers = {
   Query: {
     about: () => ABOUT,
+    allUsers: user.getAll,
     auth: (_, __, ctx: Context) => ctx.session,
     user: user.get,
   },
   Mutation: {
-    userAdd: user.add,
-    userUpdate: user.update,
-    userDelete: user.delete,
     createImageSignature: image.createImageSignature,
+    userAdd: user.add,
+    userDbSeed: user.seed,
+    userDelete: user.delete,
+    userUpdate: user.update,
   },
   DateTime: GraphQlDateTime,
 }

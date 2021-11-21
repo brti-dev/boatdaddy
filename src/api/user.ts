@@ -13,27 +13,6 @@ import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import { USERNAME_TESTS, EMAIL_TEST } from 'src/user'
 import { prisma } from 'src/prisma'
 
-const MOCK_USER = {
-  id: 1,
-  username: 'john_daddy',
-  email: 'john_daddy@boatdaddy.app',
-  createdAt: new Date(2021, 6, 1),
-  updatedAt: new Date(2021, 6, 2),
-  profile: {
-    name: 'John Daddy',
-    aboutBoat: 'Take a good long look at this mother fucking boat',
-    bio: "Aw shit get your towels ready because it's about to go down",
-    birthday: new Date('1980-01-01'),
-    boatImage: null,
-    hasBoat: true,
-    isDaddy: true,
-    createdAt: new Date(2021, 6, 1),
-    updatedAt: new Date(2021, 6, 1),
-    userId: 1,
-  },
-  roles: ['RIDER', 'DRIVER', 'ADMIN'],
-}
-
 async function makeUsername({ email }): Promise<string> {
   if (!email || !email.includes('@')) {
     throw new Error(`Cannot make username from invalid email`)
@@ -99,6 +78,24 @@ async function get(variables: UserVariables): Promise<User | null> {
   console.log('user get', user)
 
   return user
+}
+
+async function getAll(): Promise<User[]> {
+  const users = await prisma.user.findMany({
+    include: { profile: true, actor: true },
+  })
+
+  if (!users || users.length === 0) {
+    throw new Error('The requested resource could not be found')
+  }
+
+  return users.map(userData => {
+    const user = { ...userData, roles: [] }
+    user.roles = user.actor.map(act => act.role)
+    delete user.actor
+
+    return user
+  })
 }
 
 async function add(input: UserAddInput): Promise<User> {
@@ -214,4 +211,4 @@ async function remove(id: number): Promise<DeleteResult> {
   }
 }
 
-export default { get, add, update, delete: remove }
+export default { get, getAll, add, update, delete: remove }
