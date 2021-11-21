@@ -1,5 +1,6 @@
-import { SyntheticEvent, ChangeEvent, useEffect, useRef } from 'react'
+import { SyntheticEvent, ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useMutation, gql } from '@apollo/client'
+import { useRouter } from 'next/router'
 
 import { User } from 'src/interfaces/user'
 import { CreateSignature_mutation } from 'src/interfaces/api/Image'
@@ -86,6 +87,8 @@ function parseInput(data: UserUpdateInput) {
 }
 
 export default function AccountEdit({ user }: { user: User }) {
+  const router = useRouter()
+
   const [createSignature] =
     useMutation<CreateSignature_mutation>(SIGNATURE_MUTATION)
 
@@ -141,7 +144,38 @@ export default function AccountEdit({ user }: { user: User }) {
     isError,
   } = useForm(parseData(user))
 
-  console.log(state)
+  // Track changes and user events that leave the page
+  const [hasChanges, setHasChanges] = useState(false)
+  const Router = useRouter()
+  useEffect(() => {
+    const notSaved = hasChanges
+    console.log('notSaved', notSaved)
+    const confirmationMessage = 'Changes you made may not be saved.'
+    const beforeUnloadHandler = (e: BeforeUnloadEvent) => {
+      ;(e || window.event).returnValue = confirmationMessage
+      return confirmationMessage // Gecko + Webkit, Safari, Chrome etc.
+    }
+    const beforeRouteHandler = (url: string) => {
+      if (Router.pathname !== url && !confirm(confirmationMessage)) {
+        // to inform NProgress or something ...
+        Router.events.emit('routeChangeError')
+        // tslint:disable-next-line: no-string-throw
+        throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`
+      }
+    }
+    if (notSaved) {
+      console.log('Not saved add eh')
+      window.addEventListener('beforeunload', beforeUnloadHandler)
+      Router.events.on('routeChangeStart', beforeRouteHandler)
+    } else {
+      window.removeEventListener('beforeunload', beforeUnloadHandler)
+      Router.events.off('routeChangeStart', beforeRouteHandler)
+    }
+    return () => {
+      window.removeEventListener('beforeunload', beforeUnloadHandler)
+      Router.events.off('routeChangeStart', beforeRouteHandler)
+    }
+  }, [hasChanges])
 
   const [Alert, setAlert] = useAlert(null)
 
@@ -149,6 +183,7 @@ export default function AccountEdit({ user }: { user: User }) {
     event: ChangeEvent<HTMLInputElement>,
     value: string | number | boolean | null
   ) => {
+    setHasChanges(true)
     setAlert(null)
 
     const { name } = event.target as HTMLInputElement
@@ -229,6 +264,8 @@ export default function AccountEdit({ user }: { user: User }) {
     const variables = { id: user.id, input: parseInput(state.data) }
 
     console.log('mutate', variables)
+
+    setHasChanges(false)
 
     submitUpdate({ variables }).then(res => {
       console.log('Submit res', res)
