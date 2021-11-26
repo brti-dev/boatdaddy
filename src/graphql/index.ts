@@ -2,6 +2,7 @@ import { gql } from 'apollo-server-micro'
 
 import image from './image'
 import user from './user'
+import ride from './ride'
 // import { authChecker } from './auth'
 import { GraphQlDateTime } from './datetime'
 import { Context } from 'src/interfaces/api/context'
@@ -24,6 +25,16 @@ export const typeDefs = gql`
     PASSWORD
     GOOGLE
     MOCK
+  }
+
+  type Actor {
+    id: Int!
+    role: Role!
+    isActive: Boolean!
+    userId: Int!
+    user: User!
+    ridesAsRider: [Ride]!
+    ridesAsDriver: [Ride]!
   }
 
   type DeleteResult {
@@ -60,6 +71,21 @@ export const typeDefs = gql`
     image: String
     isBoatDaddy: Boolean
     name: String
+  }
+
+  type Ride {
+    id: Int!
+    startedAt: DateTime!
+    finishedAt: DateTime
+    driver: Actor!
+    rider: Actor!
+  }
+
+  input RideAddInput {
+    "User ID of the driver"
+    driverId: Int!
+    "User ID of the rider"
+    riderId: Int!
   }
 
   type Session {
@@ -111,11 +137,13 @@ export const typeDefs = gql`
     about: String!
     allUsers: [User!]!
     auth: Session
+    ride(id: Int): Ride
     user(username: String, id: Int, email: String): User
   }
 
   type Mutation {
     createImageSignature: ImageSignature!
+    rideAdd(input: RideAddInput): Ride!
     userAdd(input: UserAddInput): User!
     userDelete(id: Int): DeleteResult!
     userDbSeed: DeleteResult!
@@ -128,10 +156,12 @@ export const resolvers = {
     about: () => ABOUT,
     allUsers: user.getAll,
     auth: (_, __, ctx: Context) => ctx.session,
+    ride: ride.get,
     user: user.get,
   },
   Mutation: {
     createImageSignature: image.createImageSignature,
+    rideAdd: ride.add,
     userAdd: user.add,
     userDbSeed: user.seed,
     userDelete: user.delete,
