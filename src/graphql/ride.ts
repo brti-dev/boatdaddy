@@ -5,6 +5,7 @@ import {
   Ride,
   RideAddInput_input,
   RideVariables,
+  RideListVariables,
 } from 'src/interfaces/api/ride'
 import { UserInputError } from 'apollo-server-errors'
 
@@ -21,14 +22,18 @@ async function add(
     where: { userId: driverId, role: 'DRIVER' },
   })
   if (!driver) {
-    throw new UserInputError(`No driver data for user ID '${driverId}`)
+    throw new UserInputError(
+      `No driver data for user ID '${driverId}: That user may not exist, or have permission for the role of 'DRIVER'.`
+    )
   }
 
   const rider = await prisma.actor.findFirst({
     where: { userId: riderId, role: 'RIDER' },
   })
   if (!rider) {
-    throw new UserInputError(`No rider data for user ID '${riderId}`)
+    throw new UserInputError(
+      `No rider data for user ID '${riderId}: That user may not exist, or have permission for the role of 'RIDER'.`
+    )
   }
 
   const ride = await prisma.ride.create({
@@ -72,4 +77,13 @@ async function get(_, vars: RideVariables, ctx: Context): Promise<Ride | null> {
   return null
 }
 
-export default { add, get }
+async function list(_, vars: RideListVariables, ctx: Context): Promise<any> {
+  const { session, prisma } = ctx
+  const rides = await prisma.ride.findMany({
+    include: { rider: true, driver: true },
+  })
+
+  return rides
+}
+
+export default { add, get, list }

@@ -14,3 +14,10 @@ export interface RideAddInput_input {
 export interface RideVariables {
   id: number
 }
+
+export interface RideListVariables {
+  id?: number
+  driverId?: number
+  riderId?: number
+  page?: number
+}
