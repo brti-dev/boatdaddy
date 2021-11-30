@@ -25,12 +25,14 @@ export interface UserDeleteInput_input {
   id: number
 }
 
-export interface UserListInput {
-  isBoatDaddy?: boolean
+export type UserList = User[]
+
+export interface UserList_data {
+  userList: UserList
 }
 
-export interface UserListInput_input {
-  input: UserListInput
+export interface UserListVariables {
+  isBoatDaddy?: boolean
 }
 
 export interface UserUpdateInput {

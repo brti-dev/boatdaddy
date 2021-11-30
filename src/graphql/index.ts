@@ -81,6 +81,11 @@ export const typeDefs = gql`
     rider: Actor!
   }
 
+  type RideListPaginated {
+    rides: [Rides]
+    page: Int
+  }
+
   input RideAddInput {
     "User ID of the driver"
     driverId: Int!
@@ -118,6 +123,11 @@ export const typeDefs = gql`
     username: String!
   }
 
+  type UserListPaginated {
+    users: [User]
+    page: Int
+  }
+
   input UserUpdateInput {
     "Must be a valid email address"
     email: String
@@ -138,7 +148,9 @@ export const typeDefs = gql`
     allUsers: [User!]!
     auth: Session
     ride(id: Int): Ride
+    rideList(driverId: number, riderId: number, page: number): RideListPaginated
     user(username: String, id: Int, email: String): User
+    userList(isBoatDaddy: Boolean): UserListPaginated
   }
 
   type Mutation {

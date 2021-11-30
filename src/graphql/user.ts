@@ -6,7 +6,7 @@ import {
   UserUpdateInput_input,
   UserDeleteInput_input,
   UserVariables,
-  UserListInput_input,
+  UserListVariables,
 } from 'src/interfaces/api/user'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import userResolver from 'src/api/user'
@@ -102,10 +102,10 @@ const getAll = async (_, __, ctx: Context): Promise<User[]> => {
 
 const list = async (
   _,
-  { input }: UserListInput_input,
+  variables: UserListVariables,
   ctx: Context
 ): Promise<User[]> => {
-  const { isBoatDaddy } = input
+  const { isBoatDaddy } = variables
   const { prisma } = ctx
 
   if (typeof isBoatDaddy !== undefined) {
@@ -126,7 +126,7 @@ const list = async (
   }
 
   throw new Error(
-    `Could not find the requested resource using the given variables ${input}`
+    `Could not find the requested resource using the given variables ${variables}`
   )
 }
 
