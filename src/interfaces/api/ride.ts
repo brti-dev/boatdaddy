@@ -15,6 +15,10 @@ export interface RideAddInput_input {
   input: RideAddInput
 }
 
+export interface RideDeleteInput_input {
+  id: number
+}
+
 export interface RideVariables {
   id: number
 }

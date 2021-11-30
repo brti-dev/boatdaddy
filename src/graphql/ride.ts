@@ -7,6 +7,7 @@ import {
   RideVariables,
   RideListVariables,
   RideUpdateInput_input,
+  RideDeleteInput_input,
 } from 'src/interfaces/api/ride'
 import { UserInputError } from 'apollo-server-errors'
 
@@ -128,4 +129,27 @@ async function update(
   return updatedRide
 }
 
-export default { add, get, list, update }
+const remove = async (
+  _,
+  vars: RideDeleteInput_input,
+  ctx: Context
+): Promise<DeleteResult> => {
+  const { id } = vars
+  const { prisma } = ctx
+
+  try {
+    const deleteResult = await prisma.ride.delete({ where: { id } })
+
+    console.log('delete Ride', id, deleteResult)
+
+    return {
+      success: true,
+      numberDeleted: 1,
+      message: `Deleted the following record: ${JSON.stringify(deleteResult)}`,
+    }
+  } catch (err) {
+    return { success: false, numberDeleted: 0, message: String(err) }
+  }
+}
+
+export default { add, get, list, update, delete: remove }

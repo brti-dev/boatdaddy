@@ -164,6 +164,7 @@ export const resolvers = {
     createImageSignature: image.createImageSignature,
     rideAdd: ride.add,
     rideUpdate: ride.update,
+    rideDelete: ride.delete,
     userAdd: user.add,
     userDbSeed: user.seed,
     userDelete: user.delete,
