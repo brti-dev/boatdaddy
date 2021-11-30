@@ -163,6 +163,7 @@ export const resolvers = {
   Mutation: {
     createImageSignature: image.createImageSignature,
     rideAdd: ride.add,
+    rideUpdate: ride.update,
     userAdd: user.add,
     userDbSeed: user.seed,
     userDelete: user.delete,

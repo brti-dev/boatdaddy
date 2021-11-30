@@ -29,3 +29,12 @@ export interface RideListVariables {
   riderId?: number
   page?: number
 }
+
+export interface RideUpdateInput {
+  finishedAt?: any
+}
+
+export interface RideUpdateInput_input {
+  id: number
+  input: RideUpdateInput
+}

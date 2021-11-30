@@ -6,6 +6,7 @@ import {
   RideAddInput_input,
   RideVariables,
   RideListVariables,
+  RideUpdateInput_input,
 } from 'src/interfaces/api/ride'
 import { UserInputError } from 'apollo-server-errors'
 
@@ -112,4 +113,19 @@ async function list(_, vars: RideListVariables, ctx: Context): Promise<any[]> {
   return ridesWithUsers
 }
 
-export default { add, get, list }
+async function update(
+  _,
+  vars: RideUpdateInput_input,
+  ctx: Context
+): Promise<Ride> {
+  const { prisma } = ctx
+  const { id, input } = vars
+
+  const updateResult = await prisma.ride.update({ data: input, where: { id } })
+
+  const updatedRide = await get(_, { id }, ctx)
+
+  return updatedRide
+}
+
+export default { add, get, list, update }
