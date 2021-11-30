@@ -157,6 +157,7 @@ export const resolvers = {
     allUsers: user.getAll,
     auth: (_, __, ctx: Context) => ctx.session,
     ride: ride.get,
+    rideList: ride.list,
     user: user.get,
   },
   Mutation: {

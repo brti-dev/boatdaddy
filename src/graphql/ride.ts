@@ -77,13 +77,39 @@ async function get(_, vars: RideVariables, ctx: Context): Promise<Ride | null> {
   return null
 }
 
-async function list(_, vars: RideListVariables, ctx: Context): Promise<any> {
+async function list(_, vars: RideListVariables, ctx: Context): Promise<any[]> {
   const { session, prisma } = ctx
+  const { page, ...where } = vars
+
   const rides = await prisma.ride.findMany({
+    where,
     include: { rider: true, driver: true },
   })
 
-  return rides
+  const users = []
+  const getUser = async (id: number) => {
+    if (users[id]) {
+      return users[id]
+    }
+
+    const user = await userResolver.get(_, { id }, ctx)
+    users[id] = user
+
+    return user
+  }
+
+  const ridesWithUsers = rides.map(async ride => {
+    const promises = [getUser(ride.rider.userId), getUser(ride.driver.userId)]
+    const [rider, driver] = await Promise.all(promises)
+
+    return {
+      ...ride,
+      rider: { ...ride.rider, user: rider },
+      driver: { ...ride.driver, user: driver },
+    }
+  })
+
+  return ridesWithUsers
 }
 
 export default { add, get, list }
