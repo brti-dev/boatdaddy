@@ -159,6 +159,7 @@ export const resolvers = {
     ride: ride.get,
     rideList: ride.list,
     user: user.get,
+    userList: user.list,
   },
   Mutation: {
     createImageSignature: image.createImageSignature,

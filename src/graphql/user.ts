@@ -6,6 +6,7 @@ import {
   UserUpdateInput_input,
   UserDeleteInput_input,
   UserVariables,
+  UserListInput_input,
 } from 'src/interfaces/api/user'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import userResolver from 'src/api/user'
@@ -101,9 +102,33 @@ const getAll = async (_, __, ctx: Context): Promise<User[]> => {
 
 const list = async (
   _,
-  variables: UserListInput_input,
+  { input }: UserListInput_input,
   ctx: Context
-): Promise<User[]> => {}
+): Promise<User[]> => {
+  const { isBoatDaddy } = input
+  const { prisma } = ctx
+
+  if (typeof isBoatDaddy !== undefined) {
+    const users = await prisma.user.findMany({
+      include: {
+        profile: true,
+      },
+      where: {
+        profile: {
+          isBoatDaddy: true,
+        },
+      },
+    })
+
+    const usersWithRoles = users.map(user => userResolver.attachRoles(user))
+
+    return usersWithRoles
+  }
+
+  throw new Error(
+    `Could not find the requested resource using the given variables ${input}`
+  )
+}
 
 const add = async (
   _,
@@ -143,4 +168,4 @@ const remove = async (
   return deleteResult
 }
 
-export default { seed, get, getAll, add, update, delete: remove }
+export default { seed, get, getAll, list, add, update, delete: remove }

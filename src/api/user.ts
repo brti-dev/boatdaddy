@@ -60,24 +60,30 @@ function verify(
   return input
 }
 
-async function get(variables: UserVariables): Promise<User | null> {
-  const userData = await prisma.user.findUnique({
-    where: variables,
-    include: { profile: true, actor: true },
-  })
-
-  if (!userData || Object.keys(userData).length === 0) {
-    return null
-    //`The requested resource (username '${username}') could not be found`,
-  }
-
+function attachRoles(userData): User {
   const user = { ...userData, roles: [] }
   user.roles = user.actor.map(act => act.role)
   delete user.actor
 
+  return user
+}
+
+async function get(variables: UserVariables): Promise<User | null> {
+  const user = await prisma.user.findUnique({
+    where: variables,
+    include: { profile: true, actor: true },
+  })
+
   console.log('user get', user)
 
-  return user
+  if (!user || Object.keys(user).length === 0) {
+    return null
+    //`The requested resource (username '${username}') could not be found`,
+  }
+
+  const userWithRoles = attachRoles(user)
+
+  return userWithRoles
 }
 
 async function getAll(): Promise<User[]> {
@@ -208,4 +214,4 @@ async function remove(id: number): Promise<DeleteResult> {
   }
 }
 
-export default { get, getAll, add, update, delete: remove }
+export default { get, getAll, add, update, delete: remove, attachRoles }

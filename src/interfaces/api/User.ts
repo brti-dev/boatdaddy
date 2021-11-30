@@ -25,6 +25,14 @@ export interface UserDeleteInput_input {
   id: number
 }
 
+export interface UserListInput {
+  isBoatDaddy?: boolean
+}
+
+export interface UserListInput_input {
+  input: UserListInput
+}
+
 export interface UserUpdateInput {
   username?: string
   email?: string
