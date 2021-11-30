@@ -132,7 +132,7 @@ const remove = async (
   ctx: Context
 ): Promise<DeleteResult> => {
   const { id } = vars
-  const deleteResult = userResolver.delete(id)
+  const deleteResult = await userResolver.delete(id)
 
   return deleteResult
 }
