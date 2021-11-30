@@ -6,7 +6,7 @@ import {
   UserUpdateInput_input,
   UserDeleteInput_input,
   UserVariables,
-} from 'src/interfaces/api/User'
+} from 'src/interfaces/api/user'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import userResolver from 'src/api/user'
 
@@ -98,6 +98,12 @@ const getAll = async (_, __, ctx: Context): Promise<User[]> => {
 
   return getAllResult
 }
+
+const list = async (
+  _,
+  variables: UserListInput_input,
+  ctx: Context
+): Promise<User[]> => {}
 
 const add = async (
   _,

@@ -8,7 +8,7 @@ import {
   User_data,
   UserAddInput,
   UserUpdateInput,
-} from 'src/interfaces/api/User'
+} from 'src/interfaces/api/user'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import { USERNAME_TESTS, EMAIL_TEST } from 'src/user'
 import { prisma } from 'src/prisma'
