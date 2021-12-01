@@ -23,6 +23,11 @@ export interface RideVariables {
   id: number
 }
 
+export interface RideList {
+  rides: Ride[]
+  pages: number
+}
+
 export interface RideList_data {
   rideList: Ride[]
 }

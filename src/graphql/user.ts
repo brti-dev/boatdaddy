@@ -168,4 +168,13 @@ const remove = async (
   return deleteResult
 }
 
-export default { seed, get, getAll, list, add, update, delete: remove }
+export default {
+  seed,
+  get,
+  getAll,
+  list,
+  add,
+  update,
+  delete: remove,
+  attachRoles: userResolver.attachRoles,
+}

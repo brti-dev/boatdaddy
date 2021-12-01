@@ -6,6 +6,7 @@ import {
   RideAddInput_input,
   RideVariables,
   RideListVariables,
+  RideList,
   RideUpdateInput_input,
   RideDeleteInput_input,
 } from 'src/interfaces/api/ride'
@@ -79,39 +80,39 @@ async function get(_, vars: RideVariables, ctx: Context): Promise<Ride | null> {
   return null
 }
 
-async function list(_, vars: RideListVariables, ctx: Context): Promise<any[]> {
+async function list(
+  _,
+  vars: RideListVariables,
+  ctx: Context
+): Promise<RideList> {
   const { session, prisma } = ctx
-  const { page, ...where } = vars
+  const { page = 1, ...where } = vars
+
+  console.log('ridelist', `page ${page}`, where)
 
   const rides = await prisma.ride.findMany({
     where,
-    include: { rider: true, driver: true },
+    include: {
+      rider: { include: { user: true } },
+      driver: { include: { user: true } },
+    },
   })
 
-  const users = []
-  const getUser = async (id: number) => {
-    if (users[id]) {
-      return users[id]
-    }
-
-    const user = await userResolver.get(_, { id }, ctx)
-    users[id] = user
-
-    return user
-  }
-
-  const ridesWithUsers = rides.map(async ride => {
-    const promises = [getUser(ride.rider.userId), getUser(ride.driver.userId)]
-    const [rider, driver] = await Promise.all(promises)
-
+  const ridesWithUsers = rides.map(ride => {
     return {
       ...ride,
-      rider: { ...ride.rider, user: rider },
-      driver: { ...ride.driver, user: driver },
+      rider: { ...ride.rider, user: userResolver.attachRoles(ride.rider.user) },
+      driver: {
+        ...ride.driver,
+        user: userResolver.attachRoles(ride.driver.user),
+      },
     }
   })
 
-  return ridesWithUsers
+  return {
+    rides: ridesWithUsers,
+    pages: 1,
+  }
 }
 
 async function update(

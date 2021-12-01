@@ -82,8 +82,8 @@ export const typeDefs = gql`
   }
 
   type RideListPaginated {
-    rides: [Rides]
-    page: Int
+    rides: [Ride]!
+    pages: Int!
   }
 
   input RideAddInput {
@@ -91,6 +91,10 @@ export const typeDefs = gql`
     driverId: Int!
     "User ID of the rider"
     riderId: Int!
+  }
+
+  input RideUpdateInput {
+    finishedAt: DateTime
   }
 
   type Session {
@@ -125,7 +129,7 @@ export const typeDefs = gql`
 
   type UserListPaginated {
     users: [User]
-    page: Int
+    pages: Int
   }
 
   input UserUpdateInput {
@@ -148,15 +152,17 @@ export const typeDefs = gql`
     allUsers: [User!]!
     auth: Session
     ride(id: Int): Ride
-    rideList(driverId: number, riderId: number, page: number): RideListPaginated
+    rideList(driverId: Int, riderId: Int, page: Int): RideListPaginated
     user(username: String, id: Int, email: String): User
     userList(isBoatDaddy: Boolean): UserListPaginated
   }
 
   type Mutation {
     createImageSignature: ImageSignature!
-    rideAdd(input: RideAddInput): Ride!
-    userAdd(input: UserAddInput): User!
+    rideAdd(input: RideAddInput!): Ride!
+    rideDelete(id: Int!): DeleteResult!
+    rideUpdate(id: Int!, input: RideUpdateInput!): Ride!
+    userAdd(input: UserAddInput!): User!
     userDelete(id: Int): DeleteResult!
     userDbSeed: DeleteResult!
     userUpdate(id: Int!, input: UserUpdateInput!): User!

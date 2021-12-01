@@ -25,7 +25,10 @@ export interface UserDeleteInput_input {
   id: number
 }
 
-export type UserList = User[]
+export interface UserList {
+  users: User[]
+  pages: number
+}
 
 export interface UserList_data {
   userList: UserList
