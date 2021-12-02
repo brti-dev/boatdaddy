@@ -80,25 +80,12 @@ async function get(_, vars: RideVariables, ctx: Context): Promise<Ride | null> {
   return null
 }
 
-async function list(
-  _,
-  vars: RideListVariables,
-  ctx: Context
-): Promise<RideList> {
-  const { session, prisma } = ctx
-  const { page = 1, ...where } = vars
+function withUsers(rides): Ride[] {
+  if (!rides || rides.length) {
+    return rides
+  }
 
-  console.log('ridelist', `page ${page}`, where)
-
-  const rides = await prisma.ride.findMany({
-    where,
-    include: {
-      rider: { include: { user: true } },
-      driver: { include: { user: true } },
-    },
-  })
-
-  const ridesWithUsers = rides.map(ride => {
+  return rides.map(ride => {
     return {
       ...ride,
       rider: { ...ride.rider, user: userResolver.attachRoles(ride.rider.user) },
@@ -108,6 +95,60 @@ async function list(
       },
     }
   })
+}
+
+async function getAll(_, __, ctx: Context): Promise<RideList> {
+  const { session, prisma } = ctx
+  const rides = await prisma.ride.findMany({
+    include: {
+      rider: { include: { user: true } },
+      driver: { include: { user: true } },
+    },
+    orderBy: { startedAt: 'asc' },
+  })
+
+  console.log('all rides', rides)
+
+  const ridesWithUsers = withUsers(rides)
+
+  return { rides: ridesWithUsers, pages: 1 }
+}
+
+type RideListWhere = RideListVariables & { rider?: any; driver?: any }
+
+async function list(
+  _,
+  vars: RideListVariables,
+  ctx: Context
+): Promise<RideList> {
+  const { session, prisma } = ctx
+  const { page = 1, ...rest } = vars
+  const where: RideListWhere = rest
+
+  // driverId mask of userId
+  if (where.driverId) {
+    where.driver = { userId: where.driverId }
+    delete where.driverId
+  }
+
+  // riderId mask of userId
+  if (where.riderId) {
+    where.rider = { userId: where.riderId }
+    delete where.riderId
+  }
+
+  const rides = await prisma.ride.findMany({
+    where,
+    include: {
+      rider: { include: { user: true } },
+      driver: { include: { user: true } },
+    },
+    orderBy: { startedAt: 'asc' },
+  })
+
+  console.log('ridelist', `page ${page}`, where, rides)
+
+  const ridesWithUsers = withUsers(rides)
 
   return {
     rides: ridesWithUsers,
@@ -124,6 +165,8 @@ async function update(
   const { id, input } = vars
 
   const updateResult = await prisma.ride.update({ data: input, where: { id } })
+
+  console.log('Update ride', id, updateResult)
 
   const updatedRide = await get(_, { id }, ctx)
 
@@ -153,4 +196,4 @@ const remove = async (
   }
 }
 
-export default { add, get, list, update, delete: remove }
+export default { add, get, getAll, list, update, delete: remove }

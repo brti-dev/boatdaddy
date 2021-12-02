@@ -33,8 +33,9 @@ export interface RideList_data {
 }
 
 export interface RideListVariables {
-  id?: number
+  // User ID of the driver
   driverId?: number
+  // User ID of the rider
   riderId?: number
   page?: number
 }

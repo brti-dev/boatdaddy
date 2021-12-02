@@ -149,7 +149,8 @@ export const typeDefs = gql`
 
   type Query {
     about: String!
-    allUsers: [User!]!
+    allRides: RideListPaginated
+    allUsers: UserListPaginated
     auth: Session
     ride(id: Int): Ride
     rideList(driverId: Int, riderId: Int, page: Int): RideListPaginated
@@ -172,6 +173,7 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     about: () => ABOUT,
+    allRides: ride.getAll,
     allUsers: user.getAll,
     auth: (_, __, ctx: Context) => ctx.session,
     ride: ride.get,
