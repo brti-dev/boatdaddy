@@ -62,7 +62,9 @@ function verify(
 
 function attachRoles(userData): User {
   const user = { ...userData, roles: [] }
-  user.roles = user.actor.map(act => act.role)
+  if (user.actor?.length) {
+    user.roles = user.actor.map(act => act.role)
+  }
   delete user.actor
 
   return user
@@ -91,17 +93,7 @@ async function getAll(): Promise<User[]> {
     include: { profile: true, actor: true },
   })
 
-  if (!users || users.length === 0) {
-    throw new Error('The requested resource could not be found')
-  }
-
-  return users.map(userData => {
-    const user = { ...userData, roles: [] }
-    user.roles = user.actor.map(act => act.role)
-    delete user.actor
-
-    return user
-  })
+  return users.map(user => attachRoles(user))
 }
 
 async function add(input: UserAddInput): Promise<User> {

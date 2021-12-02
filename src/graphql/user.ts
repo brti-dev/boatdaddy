@@ -7,6 +7,7 @@ import {
   UserDeleteInput_input,
   UserVariables,
   UserListVariables,
+  UserList,
 } from 'src/interfaces/api/user'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import userResolver from 'src/api/user'
@@ -94,17 +95,20 @@ const get = async (
   return getResult
 }
 
-const getAll = async (_, __, ctx: Context): Promise<User[]> => {
+const getAll = async (_, __, ctx: Context): Promise<UserList> => {
   const getAllResult = await userResolver.getAll()
 
-  return getAllResult
+  return {
+    users: getAllResult,
+    pages: 1,
+  }
 }
 
 const list = async (
   _,
   variables: UserListVariables,
   ctx: Context
-): Promise<User[]> => {
+): Promise<UserList> => {
   const { isBoatDaddy } = variables
   const { prisma } = ctx
 
@@ -112,6 +116,7 @@ const list = async (
     const users = await prisma.user.findMany({
       include: {
         profile: true,
+        actor: true,
       },
       where: {
         profile: {
@@ -120,9 +125,15 @@ const list = async (
       },
     })
 
+    console.log('User list', variables, users)
+
+    if (!users.length) {
+      return { users: [], pages: 1 }
+    }
+
     const usersWithRoles = users.map(user => userResolver.attachRoles(user))
 
-    return usersWithRoles
+    return { users: usersWithRoles, pages: 1 }
   }
 
   throw new Error(
