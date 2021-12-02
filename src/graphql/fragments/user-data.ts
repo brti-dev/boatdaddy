@@ -11,6 +11,7 @@ export default `fragment userData on User {
     birthday
     isBoatDaddy
     bio
+    boatName
     aboutBoat
     boatImage
     createdAt

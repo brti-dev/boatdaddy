@@ -33,6 +33,7 @@ const MOCK_USER = {
     bio: "Aw shit get your towels ready because it's about to go down",
     birthday: new Date('1980-01-01'),
     boatImage: null,
+    boatName: 'USS Daddy',
     isBoatDaddy: true,
     createdAt: new Date(2021, 6, 1),
     updatedAt: new Date(2021, 6, 1),

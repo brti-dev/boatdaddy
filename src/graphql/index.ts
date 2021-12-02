@@ -53,6 +53,7 @@ export const typeDefs = gql`
     bio: String
     birthday: DateTime
     boatImage: String
+    boatName: String
     createdAt: DateTime!
     id: Int!
     image: String
@@ -68,6 +69,7 @@ export const typeDefs = gql`
     bio: String
     birthday: DateTime
     boatImage: String
+    boatName: String
     image: String
     isBoatDaddy: Boolean
     name: String

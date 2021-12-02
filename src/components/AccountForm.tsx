@@ -73,6 +73,7 @@ function parseData(user: User) {
     bio: user.profile.bio || '',
     aboutBoat: user.profile.aboutBoat || '',
     boatImage: user.profile.boatImage || '',
+    boatName: user.profile.boatName || '',
   }
 }
 
@@ -267,14 +268,16 @@ export default function AccountEdit({ user }: { user: User }) {
 
     setHasChanges(false)
 
-    submitUpdate({ variables }).then(res => {
+    try {
+      const res = await submitUpdate({ variables })
       console.log('Submit res', res)
-      setAlert({ message: 'Account saved', severity: 'success' })
-    })
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   useEffect(() => {
-    setAlert(error)
+    setAlert({ message: String(error), severity: 'error' })
   }, [error])
 
   useEffect(() => {
@@ -430,6 +433,19 @@ export default function AccountEdit({ user }: { user: User }) {
         }
         error={isError('bio')}
         helperText={isError('bio') ? state.error.message : null}
+      />
+      <FormGroup
+        className={!state.data?.isBoatDaddy && 'visually-hidden'}
+        label="Boat Name"
+        input={
+          <TextInput
+            name="boatName"
+            value={state.data.boatName}
+            onChange={handleChange}
+          />
+        }
+        error={isError('boatName')}
+        helperText={isError('boatName') ? state.error.message : null}
       />
       <FormGroup
         className={!state.data?.isBoatDaddy && 'visually-hidden'}

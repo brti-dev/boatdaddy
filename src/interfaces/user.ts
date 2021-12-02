@@ -9,6 +9,7 @@ export interface Profile {
   bio: string | null
   birthday: any
   boatImage: string | null
+  boatName: string | null
   createdAt: any
   isBoatDaddy: boolean
   name: string

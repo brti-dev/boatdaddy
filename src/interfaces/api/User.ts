@@ -57,6 +57,7 @@ export interface ProfileAddInput {
   bio?: string
   birthday?: any
   boatImage?: string
+  boatName?: string
   isBoatDaddy: boolean
   name: string
 }
@@ -66,6 +67,7 @@ export interface ProfileUpdateInput {
   bio?: string
   birthday?: any
   boatImage?: string
+  boatName?: string
   isBoatDaddy?: boolean
   name?: string
 }

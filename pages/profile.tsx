@@ -71,7 +71,14 @@ function ProfileView({ user }: { user: User }) {
       )}
       {user.profile.isBoatDaddy && user.profile.aboutBoat && (
         <>
-          <h2>🛥️ Boat</h2>
+          <h2>
+            🛥️{' '}
+            {user.profile.boatName ? (
+              <q className={classes.boatName}>{user.profile.boatName}</q>
+            ) : (
+              'Boat'
+            )}
+          </h2>
           <p>{user.profile.aboutBoat}</p>
         </>
       )}
