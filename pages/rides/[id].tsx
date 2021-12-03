@@ -12,22 +12,39 @@ const RIDE_QUERY = gql`
     ride(id: $id) {
       startedAt
       finishedAt
-      driver
-      rider
+      driver {
+        user {
+          id
+          username
+          profile {
+            boatName
+          }
+        }
+      }
+      rider {
+        user {
+          id
+          username
+        }
+      }
     }
   }
 `
 
 export default function Ride() {
   const { query } = useRouter()
-  const id = query.id
+  const id = Number(query.id)
 
   const { data, error, loading } = useQuery<Ride_data>(RIDE_QUERY, {
     variables: { id },
   })
 
-  if (error)
-    return <ErrorPage message={error.message ?? 'Something went wrong'} />
+  if (error) {
+    console.error(error)
+
+    return <ErrorPage message="Something went wrong" />
+  }
+
   if (!data || loading) return <Loading fullscreen />
 
   return <Layout>{JSON.stringify(data)}</Layout>

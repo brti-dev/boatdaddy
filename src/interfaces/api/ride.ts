@@ -29,7 +29,7 @@ export interface RideList {
 }
 
 export interface RideList_data {
-  rideList: Ride[]
+  rideList: RideList
 }
 
 export interface RideListVariables {
