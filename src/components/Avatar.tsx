@@ -1,7 +1,7 @@
 import React from 'react'
 
+import Tooltip from 'src/components/Tooltip'
 import classes from 'src/styles/components/avatar.module.scss'
-import ProfileImage from './ProfileImage'
 
 export type AvatarProps = {
   alt?: string
@@ -10,6 +10,7 @@ export type AvatarProps = {
   color?: 'default' | 'primary' | 'secondary' | 'red' | 'green'
   size?: number
   src?: string
+  tooltip?: string | boolean
 }
 
 const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
@@ -20,6 +21,7 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
     color = 'default',
     size = 40,
     src,
+    tooltip,
     ...rest
   } = props
 
@@ -29,15 +31,26 @@ const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>((props, ref) => {
     className && className,
   ]
 
+  let tooltipLabel: string
+  if (!!tooltip) {
+    if (tooltip === true && alt) {
+      tooltipLabel = alt
+    } else if (typeof tooltip === 'string') {
+      tooltipLabel = tooltip as string
+    }
+  }
+
   return (
-    <div
-      className={classNames.join(' ')}
-      style={{ width: size, height: size }}
-      ref={ref}
-      {...rest}
-    >
-      {src ? <ProfileImage src={src} alt={alt} size={40} /> : children}
-    </div>
+    <Tooltip label={tooltipLabel}>
+      <div
+        className={classNames.join(' ')}
+        style={{ width: size, height: size }}
+        ref={ref}
+        {...rest}
+      >
+        {src ? <img src={src} alt={alt} /> : children}
+      </div>
+    </Tooltip>
   )
 })
 
