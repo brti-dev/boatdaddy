@@ -7,6 +7,7 @@ import Layout from 'src/components/Layout'
 import ErrorPage from 'src/components/ErrorPage'
 import Loading from 'src/components/Loading'
 import Date from 'src/components/Date'
+import Tooltip from 'src/components/Tooltip'
 import Avatar, { AvatarGroup } from 'src/components/Avatar'
 import { BoatName } from 'src/components/Profile'
 
@@ -45,8 +46,6 @@ const Rides = () => {
     return <ErrorPage message={error.message ?? 'Something went wrong'} />
   if (!data || loading) return <Loading fullscreen />
 
-  console.log(data)
-
   return (
     <Layout title="Your Rides with Boat Daddy">
       <ul>
@@ -59,10 +58,12 @@ const Rides = () => {
                   <Avatar
                     src={ride.driver.user.image}
                     alt={ride.driver.user.profile.name}
+                    tooltip
                   />
                   <Avatar
                     src={ride.driver.user.profile?.boatImage}
                     alt={`"${ride.driver.user.profile.boatName || 'Boat'}"`}
+                    tooltip
                   />
                 </AvatarGroup>
                 <BoatName>{ride.driver.user.profile.boatName}</BoatName>
