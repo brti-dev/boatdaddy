@@ -140,8 +140,8 @@ async function list(
   const rides = await prisma.ride.findMany({
     where,
     include: {
-      rider: { include: { user: true } },
-      driver: { include: { user: true } },
+      rider: { include: { user: { include: { profile: true } } } },
+      driver: { include: { user: { include: { profile: true } } } },
     },
     orderBy: { startedAt: 'asc' },
   })
