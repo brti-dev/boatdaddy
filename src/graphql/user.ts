@@ -25,6 +25,7 @@ const MOCK_USER = {
   id: 1,
   username: 'john_daddy',
   email: 'john_daddy@boatdaddy.app',
+  image: 'cloudinaryPublicId=hero_redshortsdaddy_khqgav',
   createdAt: new Date(2021, 6, 1),
   updatedAt: new Date(2021, 6, 2),
   profile: {
@@ -32,7 +33,7 @@ const MOCK_USER = {
     aboutBoat: 'Take a good long look at this mother fucking boat',
     bio: "Aw shit get your towels ready because it's about to go down",
     birthday: new Date('1980-01-01'),
-    boatImage: null,
+    boatImage: 'cloudinaryPublicId=damian-barczak-p-GrqI8OSqI-unsplash_fnv5lo',
     boatName: 'USS Daddy',
     isBoatDaddy: true,
     createdAt: new Date(2021, 6, 1),
