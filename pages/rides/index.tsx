@@ -6,6 +6,9 @@ import { useUser } from 'src/context/user-context'
 import Layout from 'src/components/Layout'
 import ErrorPage from 'src/components/ErrorPage'
 import Loading from 'src/components/Loading'
+import Date from 'src/components/Date'
+import Avatar, { AvatarGroup } from 'src/components/Avatar'
+import { BoatName } from 'src/components/Profile'
 
 const RIDES_QUERY = gql`
   query rideList($riderId: Int) {
@@ -18,8 +21,10 @@ const RIDES_QUERY = gql`
           user {
             username
             id
+            image
             profile {
               boatName
+              boatImage
             }
           }
         }
@@ -44,7 +49,16 @@ const Rides = () => {
       <ul>
         {data.rideList.rides.map(ride => (
           <li key={ride.id}>
-            <Link href={`/rides/${ride.id}`}>{ride.startedAt}</Link>
+            <Link href={`/rides/${ride.id}`}>
+              <div style={{ display: 'flex', gap: '1em' }}>
+                <Date date={ride.startedAt} />
+                <AvatarGroup>
+                  <Avatar src={ride.driver.user.image} />
+                  <Avatar src={ride.driver.user.profile.boatImage} />
+                </AvatarGroup>
+                <BoatName>{ride.driver.user.profile.boatName}</BoatName>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>
