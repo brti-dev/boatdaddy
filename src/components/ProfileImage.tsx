@@ -1,7 +1,7 @@
 import { Image } from 'cloudinary-react'
 import React from 'react'
 
-import classes from 'styles/components/profile-image.module.scss'
+import classes from 'src/styles/components/profile-image.module.scss'
 
 export type ProfileImageProps = {
   src?: string | null

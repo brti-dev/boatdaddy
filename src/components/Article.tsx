@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { BiRightArrowAlt as ArrowRightIcon } from 'react-icons/bi'
 
-import classes from 'styles/article.module.scss'
+import classes from 'src/styles/article.module.scss'
 import Date from 'src/components/Date'
 
 type ArticleProps = {

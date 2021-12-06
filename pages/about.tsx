@@ -2,7 +2,7 @@ import { useQuery, gql } from '@apollo/client'
 import Image from 'next/image'
 
 import Layout from 'src/components/Layout'
-import classes from 'styles/about.module.scss'
+import classes from 'src/styles/about.module.scss'
 import photoAttribution from 'public/img/hero_landscape_attribution'
 import photoAttributionHome from 'public/img/hero_redshortsdaddy_attribution'
 import { About as AboutType } from 'src/interfaces/api/about'

@@ -23,6 +23,7 @@ const RIDES_QUERY = gql`
             id
             image
             profile {
+              name
               boatName
               boatImage
             }
@@ -44,6 +45,8 @@ const Rides = () => {
     return <ErrorPage message={error.message ?? 'Something went wrong'} />
   if (!data || loading) return <Loading fullscreen />
 
+  console.log(data)
+
   return (
     <Layout title="Your Rides with Boat Daddy">
       <ul>
@@ -53,8 +56,14 @@ const Rides = () => {
               <div style={{ display: 'flex', gap: '1em' }}>
                 <Date date={ride.startedAt} />
                 <AvatarGroup>
-                  <Avatar src={ride.driver.user.image} />
-                  <Avatar src={ride.driver.user.profile.boatImage} />
+                  <Avatar
+                    src={ride.driver.user.image}
+                    alt={ride.driver.user.profile.name}
+                  />
+                  <Avatar
+                    src={ride.driver.user.profile?.boatImage}
+                    alt={`"${ride.driver.user.profile.boatName || 'Boat'}"`}
+                  />
                 </AvatarGroup>
                 <BoatName>{ride.driver.user.profile.boatName}</BoatName>
               </div>

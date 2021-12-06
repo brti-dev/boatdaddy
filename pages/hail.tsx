@@ -2,7 +2,7 @@ import { useQuery, gql } from '@apollo/client'
 
 import Layout from 'src/components/Layout'
 import Map from 'src/components/Map'
-import classes from 'styles/hail.module.scss'
+import classes from 'src/styles/hail.module.scss'
 
 export default function Hail() {
   return (

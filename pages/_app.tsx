@@ -7,7 +7,7 @@ import ErrorPage from 'src/components/ErrorPage'
 import Layout from 'src/components/Layout'
 
 import 'normalize.css'
-import 'styles/global.scss'
+import 'src/styles/global.scss'
 import Loading from 'src/components/Loading'
 
 /**

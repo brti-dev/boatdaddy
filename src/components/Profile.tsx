@@ -6,7 +6,7 @@ import { User } from 'src/interfaces/user'
 import Button from 'src/components/Button'
 import ProfileImage from 'src/components/ProfileImage'
 import BoatImage from 'src/components/BoatImage'
-import classes from 'styles/profile.module.scss'
+import classes from 'src/styles/profile.module.scss'
 
 export type BoatNameProps = {
   children?: string | null

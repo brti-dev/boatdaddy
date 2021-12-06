@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-import classes from 'styles/components/check-button.module.scss'
+import classes from 'src/styles/components/check-button.module.scss'
 import makeRandomString from 'src/lib/make-random-string'
 
 export const checkButtonContainerClass = classes.container

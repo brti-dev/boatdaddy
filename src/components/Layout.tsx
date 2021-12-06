@@ -6,7 +6,7 @@ import { SkipNavLink, SkipNavContent } from '@reach/skip-nav'
 import '@reach/skip-nav/styles.css'
 
 import { useAuth } from 'src/context/auth-context'
-import classes from 'styles/layout.module.scss'
+import classes from 'src/styles/layout.module.scss'
 import NavAuthenticated from './NavAuthenticated'
 import NavUnauthenticated from './NavUnauthenticated'
 
