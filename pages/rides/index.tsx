@@ -1,13 +1,12 @@
 import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
+import ContentLoader from 'react-content-loader'
 
 import { RideList_data } from 'src/interfaces/api/ride'
 import { useUser } from 'src/context/user-context'
 import Layout from 'src/components/Layout'
 import ErrorPage from 'src/components/ErrorPage'
-import Loading from 'src/components/Loading'
 import Date from 'src/components/Date'
-import Tooltip from 'src/components/Tooltip'
 import Avatar, { AvatarGroup } from 'src/components/Avatar'
 import { BoatName } from 'src/components/Profile'
 
@@ -36,6 +35,26 @@ const RIDES_QUERY = gql`
   }
 `
 
+const Loader = props => (
+  <ContentLoader
+    speed={2}
+    width={400}
+    height={150}
+    viewBox="0 0 400 150"
+    foregroundColor="#ecebeb"
+    {...props}
+  >
+    <circle cx="10" cy="20" r="8" />
+    <rect x="25" y="15" rx="5" ry="5" width="220" height="10" />
+    <circle cx="10" cy="50" r="8" />
+    <rect x="25" y="45" rx="5" ry="5" width="220" height="10" />
+    <circle cx="10" cy="80" r="8" />
+    <rect x="25" y="75" rx="5" ry="5" width="220" height="10" />
+    <circle cx="10" cy="110" r="8" />
+    <rect x="25" y="105" rx="5" ry="5" width="220" height="10" />
+  </ContentLoader>
+)
+
 const Rides = () => {
   const { data: user } = useUser()
   const { data, error, loading } = useQuery<RideList_data>(RIDES_QUERY, {
@@ -44,33 +63,46 @@ const Rides = () => {
 
   if (error)
     return <ErrorPage message={error.message ?? 'Something went wrong'} />
-  if (!data || loading) return <Loading fullscreen />
 
   return (
     <Layout title="Your Rides with Boat Daddy">
-      <ul>
-        {data.rideList.rides.map(ride => (
-          <li key={ride.id}>
-            <Link href={`/rides/${ride.id}`}>
-              <div style={{ display: 'flex', gap: '1em' }}>
-                <Date date={ride.startedAt} />
-                <AvatarGroup>
-                  <Avatar
-                    src={ride.driver.user.image}
-                    alt={ride.driver.user.profile.name}
-                    tooltip
-                  />
-                  <Avatar
-                    src={ride.driver.user.profile?.boatImage}
-                    alt={`"${ride.driver.user.profile.boatName || 'Boat'}"`}
-                    tooltip
-                  />
-                </AvatarGroup>
-                <BoatName>{ride.driver.user.profile.boatName}</BoatName>
-              </div>
-            </Link>
-          </li>
-        ))}
+      <h1>Your Rides</h1>
+      <ul
+        style={{
+          listStyle: 'none',
+          margin: 0,
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '1em',
+        }}
+      >
+        {!data || loading ? (
+          <Loader />
+        ) : (
+          data.rideList.rides.map(ride => (
+            <li key={ride.id}>
+              <Link href={`/rides/${ride.id}`}>
+                <a style={{ display: 'flex', gap: '1em' }}>
+                  <Date date={ride.startedAt} />
+                  <AvatarGroup>
+                    <Avatar
+                      src={ride.driver.user.image}
+                      alt={ride.driver.user.profile.name}
+                      tooltip
+                    />
+                    <Avatar
+                      src={ride.driver.user.profile?.boatImage}
+                      alt={`"${ride.driver.user.profile.boatName || 'Boat'}"`}
+                      tooltip
+                    />
+                  </AvatarGroup>
+                  <BoatName>{ride.driver.user.profile.boatName}</BoatName>
+                </a>
+              </Link>
+            </li>
+          ))
+        )}
       </ul>
     </Layout>
   )

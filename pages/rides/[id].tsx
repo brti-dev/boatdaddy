@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
 
 import { Ride_data } from 'src/interfaces/api/ride'
@@ -8,6 +8,7 @@ import ErrorPage from 'src/components/ErrorPage'
 import Loading from 'src/components/Loading'
 import Avatar, { AvatarGroup } from 'src/components/Avatar'
 import Date from 'src/components/Date'
+import React from 'react'
 
 const RIDE_QUERY = gql`
   query ride($id: Int) {
@@ -16,18 +17,24 @@ const RIDE_QUERY = gql`
       finishedAt
       driver {
         user {
-          id
           username
+          id
+          image
           profile {
+            name
             boatName
-            image
+            boatImage
           }
         }
       }
       rider {
         user {
-          id
           username
+          id
+          image
+          profile {
+            name
+          }
         }
       }
     }
@@ -48,7 +55,9 @@ export default function Ride() {
     return <ErrorPage message="Something went wrong" />
   }
 
-  if (!data || loading) return <Loading fullscreen />
+  if (!data || loading) {
+    return <Loading fullscreen />
+  }
 
   return (
     <Layout title={`Ride on ${data.ride.startedAt.substring(0, 10)}`}>
@@ -56,12 +65,45 @@ export default function Ride() {
         Ride on <Date date={data.ride.startedAt} />
       </h1>
       <div style={{ display: 'flex', gap: '1em' }}>
-        <Avatar src={data.ride.rider.user.image} />
-        <AvatarGroup>
-          <Avatar src={data.ride.driver.user.image} />
-          <Avatar src={data.ride.driver.user.profile.boatImage} />
-        </AvatarGroup>
+        <Link href={`/@${data.ride.rider.user.username}`}>
+          <Avatar
+            src={data.ride.rider.user.image}
+            alt={data.ride.rider.user.username}
+            tooltip
+            size={80}
+          />
+        </Link>
+        <Link href={`/@${data.ride.driver.user.username}`}>
+          <AvatarGroup>
+            <Avatar
+              src={data.ride.driver.user.image}
+              alt={data.ride.driver.user.username}
+              tooltip
+              size={80}
+            />
+            <Avatar
+              src={data.ride.driver.user.profile.boatImage}
+              alt={`"${data.ride.driver.user.profile.boatName ?? 'Boat'}"`}
+              tooltip
+              size={80}
+            />
+          </AvatarGroup>
+        </Link>
       </div>
+      <dl>
+        <dt>Started at</dt>
+        <dd>
+          <Date date={data.ride.startedAt} />
+        </dd>
+        {data.ride.finishedAt && (
+          <>
+            <dt>Finished at</dt>
+            <dd>
+              <Date date={data.ride.finishedAt} />
+            </dd>
+          </>
+        )}
+      </dl>
     </Layout>
   )
 }
