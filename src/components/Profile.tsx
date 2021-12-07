@@ -3,10 +3,34 @@ import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
 
 import { User } from 'src/interfaces/user'
-import Button from 'src/components/Button'
-import ProfileImage from 'src/components/ProfileImage'
-import BoatImage from 'src/components/BoatImage'
+import Button from './Button'
+import ProfileImage from './ProfileImage'
+import BoatImage from './BoatImage'
+import Avatar from './Avatar'
 import classes from 'src/styles/profile.module.scss'
+import { Partial } from 'src/interfaces/generic'
+
+export function BoatAvatar({ user, ...rest }) {
+  const {
+    username,
+    profile: { boatName = 'Boat', boatImage },
+  } = user
+  const firstInitial = boatName.slice(0, 1)
+
+  return (
+    <Avatar
+      src={boatImage}
+      alt={
+        boatName
+          ? String.fromCharCode(8220) + boatName + String.fromCharCode(8221)
+          : `${username}'s Boat`
+      }
+      {...rest}
+    >
+      {firstInitial}
+    </Avatar>
+  )
+}
 
 export type BoatNameProps = {
   children?: string | null
@@ -17,6 +41,25 @@ export function BoatName({ children: boatName, ...rest }: BoatNameProps) {
     <q className={classes.boatName} {...rest}>
       {boatName ?? 'Boat'}
     </q>
+  )
+}
+
+export function ProfileAvatar({ user, ...rest }) {
+  const {
+    username,
+    image,
+    profile: { name },
+  } = user
+  const firstInitial = name.slice(0, 1)
+  const secondInitial = name.includes(' ')
+    ? name.substr(name.indexOf(' ') + 1, 1)
+    : null
+  const initials = `${firstInitial}${secondInitial}`
+
+  return (
+    <Avatar alt={username} src={image} {...rest}>
+      {initials}
+    </Avatar>
   )
 }
 

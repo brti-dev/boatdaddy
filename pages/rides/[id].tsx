@@ -1,3 +1,4 @@
+import React from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
@@ -6,9 +7,9 @@ import { Ride_data } from 'src/interfaces/api/ride'
 import Layout from 'src/components/Layout'
 import ErrorPage from 'src/components/ErrorPage'
 import Loading from 'src/components/Loading'
-import Avatar, { AvatarGroup } from 'src/components/Avatar'
+import { AvatarGroup } from 'src/components/Avatar'
 import Date from 'src/components/Date'
-import React from 'react'
+import { BoatAvatar, ProfileAvatar } from 'src/components/Profile'
 
 const RIDE_QUERY = gql`
   query ride($id: Int) {
@@ -66,28 +67,17 @@ export default function Ride() {
       </h1>
       <div style={{ display: 'flex', gap: '1em' }}>
         <Link href={`/@${data.ride.rider.user.username}`}>
-          <Avatar
-            src={data.ride.rider.user.image}
-            alt={data.ride.rider.user.username}
-            tooltip
-            size={80}
-          />
+          <a>
+            <ProfileAvatar user={data.ride.rider.user} tooltip size={80} />
+          </a>
         </Link>
         <Link href={`/@${data.ride.driver.user.username}`}>
-          <AvatarGroup>
-            <Avatar
-              src={data.ride.driver.user.image}
-              alt={data.ride.driver.user.username}
-              tooltip
-              size={80}
-            />
-            <Avatar
-              src={data.ride.driver.user.profile.boatImage}
-              alt={`"${data.ride.driver.user.profile.boatName ?? 'Boat'}"`}
-              tooltip
-              size={80}
-            />
-          </AvatarGroup>
+          <a>
+            <AvatarGroup>
+              <ProfileAvatar user={data.ride.driver.user} tooltip size={80} />
+              <BoatAvatar user={data.ride.driver.user} tooltip size={80} />
+            </AvatarGroup>
+          </a>
         </Link>
       </div>
       <dl>

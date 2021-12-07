@@ -7,8 +7,8 @@ import { useUser } from 'src/context/user-context'
 import Layout from 'src/components/Layout'
 import ErrorPage from 'src/components/ErrorPage'
 import Date from 'src/components/Date'
-import Avatar, { AvatarGroup } from 'src/components/Avatar'
-import { BoatName } from 'src/components/Profile'
+import { AvatarGroup } from 'src/components/Avatar'
+import { BoatAvatar, BoatName, ProfileAvatar } from 'src/components/Profile'
 
 const RIDES_QUERY = gql`
   query rideList($riderId: Int) {
@@ -86,16 +86,8 @@ const Rides = () => {
                 <a style={{ display: 'flex', gap: '1em' }}>
                   <Date date={ride.startedAt} />
                   <AvatarGroup>
-                    <Avatar
-                      src={ride.driver.user.image}
-                      alt={ride.driver.user.profile.name}
-                      tooltip
-                    />
-                    <Avatar
-                      src={ride.driver.user.profile?.boatImage}
-                      alt={`"${ride.driver.user.profile.boatName || 'Boat'}"`}
-                      tooltip
-                    />
+                    <ProfileAvatar user={ride.driver.user} tooltip />
+                    <BoatAvatar user={ride.driver.user} tooltip />
                   </AvatarGroup>
                   <BoatName>{ride.driver.user.profile.boatName}</BoatName>
                 </a>
