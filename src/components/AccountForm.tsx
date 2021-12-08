@@ -22,6 +22,13 @@ type UploadImageResponse = {
 const CLOUDINARY_API_ENDPOINT = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`
 const RESTRICT_AGE_MIN =
   Number(process.env.NEXT_PUBLIC_RESTRICTED_AGE_MIN) || 18
+const MAX_LENGTHS = {
+  name: 25,
+  username: 25,
+  bio: 255,
+  aboutBoat: 255,
+  boatName: 25,
+}
 
 const SIGNATURE_MUTATION = gql`
   mutation CreateSignatureMutation {
@@ -200,6 +207,17 @@ export default function AccountEdit({ user }: { user: User }) {
       })
     }
 
+    if (MAX_LENGTHS[name] && String(value).length > MAX_LENGTHS[name]) {
+      setState({
+        error: {
+          inputName: name,
+          message: `Max langth is ${MAX_LENGTHS[name]} characters`,
+        },
+      })
+
+      return
+    }
+
     doHandleChange(event, value)
   }
 
@@ -271,6 +289,8 @@ export default function AccountEdit({ user }: { user: User }) {
     try {
       const res = await submitUpdate({ variables })
       console.log('Submit res', res)
+      setAlert({ message: 'Account saved', severity: 'success' })
+      router.push(`/@${user.username}`)
     } catch (err) {
       console.error(err)
     }
@@ -339,6 +359,7 @@ export default function AccountEdit({ user }: { user: User }) {
             value={state.data.name}
             required
             placeholder="Given name or nickname"
+            maxLength={MAX_LENGTHS.name}
             onChange={handleChange}
           />
         }
@@ -364,6 +385,7 @@ export default function AccountEdit({ user }: { user: User }) {
             value={state.data.username}
             required
             placeholder="Choose a username that begins with a letter"
+            maxLength={MAX_LENGTHS.username}
             onChange={handleChange}
           />
         }
@@ -428,6 +450,7 @@ export default function AccountEdit({ user }: { user: User }) {
             value={state.data.bio}
             multiline
             rows={2}
+            maxLength={MAX_LENGTHS.bio}
             onChange={handleChange}
           />
         }
@@ -457,6 +480,7 @@ export default function AccountEdit({ user }: { user: User }) {
             value={state.data.aboutBoat}
             multiline
             rows={2}
+            maxLength={MAX_LENGTHS.aboutBoat}
             onChange={handleChange}
           />
         }
