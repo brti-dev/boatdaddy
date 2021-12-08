@@ -58,12 +58,12 @@ model Identity {
 // Site account
 model Profile {
   id Int @id @default(autoincrement())
-  name String
+  name String @db.VarChar(25)
   birthday DateTime? @db.Date
   isBoatDaddy Boolean
-  bio String?
-  boatName String?
-  aboutBoat String?
+  bio String? @db.VarChar(255)
+  boatName String? @db.VarChar(25)
+  aboutBoat String? @db.VarChar(255)
   boatImage String?
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
@@ -96,8 +96,8 @@ model Session {
 
 model User {
   id Int @id @default(autoincrement())
-  username String @unique
-  email String? @unique
+  username String @unique @db.VarChar(25)
+  email String? @unique 
   emailVerified DateTime? @map(name: "email_verified")
   image String?
   createdAt DateTime @default(now()) @map(name: "created_at")
