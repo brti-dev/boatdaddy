@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Session, Provider } from 'src/interfaces/user'
-import { Auth_data } from 'src/interfaces/api/auth'
+import { Auth_data } from 'src/interfaces/api/_auth'
 import useLocalStorage from 'src/lib/use-local-storage'
 import { getUserAsync } from 'src/user'
 import graphQlFetch from 'src/graphql/fetch'

@@ -1,4 +1,4 @@
-import { CreateSignature } from 'src/interfaces/api/image'
+import { CreateSignature } from 'src/interfaces/api/_image'
 
 const cloudinary = require('cloudinary').v2
 
