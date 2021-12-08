@@ -38,6 +38,7 @@
 
 .group {
   display: flex;
+  margin-left: 4px;
 
   & > * {
     box-shadow: 0 0 0 2px var(--color-body);

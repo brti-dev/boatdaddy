@@ -48,9 +48,17 @@
 
   nav ul {
     margin: 0;
-    padding: 0;
+    padding: 1em 0 0;
     list-style-type: none;
     display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--color-comment);
+
+    @include breakpoint(screen) {
+      padding: 0;
+      border: none;
+      flex-direction: row;
+    }
 
     li {
       margin: 0 1em 0 0;

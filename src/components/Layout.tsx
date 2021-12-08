@@ -24,6 +24,7 @@ function Session() {
 
 const PAGES = [
   { link: '/hail', title: 'Hail a Boat Daddy' },
+  { link: '/daddies', title: 'Boat Daddies' },
   { link: '/about', title: 'About' },
   { link: '/privacy-policy', title: 'Policy' },
 ]
