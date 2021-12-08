@@ -1,8 +1,6 @@
 import { Context } from 'src/interfaces/api/context'
 import {
   User,
-  UserAddInput,
-  UserUpdateInput,
   UserUpdateInput_input,
   UserDeleteInput_input,
   UserVariables,

@@ -1,8 +1,8 @@
 import { gql } from 'apollo-server-micro'
 
-import image from './image'
-import user from './user'
-import ride from './ride'
+import image from './resolvers/image'
+import user from './resolvers/user'
+import ride from './resolvers/ride'
 // import { authChecker } from './auth'
 import { GraphQlDateTime } from './datetime'
 import { Context } from 'src/interfaces/api/context'
