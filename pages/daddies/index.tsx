@@ -7,6 +7,8 @@ import ErrorPage from 'src/components/ErrorPage'
 import Loading from 'src/components/Loading'
 import { AvatarGroup } from 'src/components/Avatar'
 import { BoatAvatar, BoatName, ProfileAvatar } from 'src/components/Profile'
+import classes from 'src/styles/daddies.module.scss'
+import useMediaQuery from 'src/lib/use-media-query'
 
 const DADDIES_QUERY = gql`
   query {
@@ -47,37 +49,21 @@ export default function Daddies() {
 }
 
 function DaddiesList({ users }) {
+  const isMobile = useMediaQuery('(max-width:640px')
+  const avatarSize = isMobile ? 40 : 80
+
   return (
-    <ul
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: '1em',
-        margin: 0,
-        padding: 0,
-        listStyle: 'none',
-      }}
-    >
+    <ul className={classes.index}>
       {users.map(user => (
         <li key={user.id}>
           <Link href={`@${user.username}`}>
-            <a
-              style={{
-                display: 'flex',
-                gap: '1em',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}
-            >
-              <strong style={{ flex: 1, textAlign: 'right' }}>
-                {user.username}
-              </strong>
+            <a className={classes.row}>
+              <strong>{user.username}</strong>
               <AvatarGroup>
-                <ProfileAvatar user={user} size={80} />
-                <BoatAvatar user={user} size={80} />
+                <ProfileAvatar user={user} size={avatarSize} />
+                <BoatAvatar user={user} size={avatarSize} />
               </AvatarGroup>
-              <strong style={{ flex: 1 }}>
+              <strong>
                 <BoatName>{user.profile.boatName}</BoatName>
               </strong>
             </a>
