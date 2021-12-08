@@ -6,7 +6,7 @@ import {
   UserVariables,
   UserListVariables,
   UserList,
-} from 'src/interfaces/api/_user'
+} from 'src/interfaces/api/user'
 import { DeleteResult } from 'src/interfaces/api/globalTypes'
 import userResolver from 'src/api/user'
 

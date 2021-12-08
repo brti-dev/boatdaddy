@@ -2,7 +2,7 @@ import { useQuery, useLazyQuery, gql } from '@apollo/client'
 import { print } from 'graphql'
 
 import { User } from 'src/interfaces/user'
-import { UserVariables, User_data } from 'src/interfaces/api/_user'
+import { UserVariables, User_data } from 'src/interfaces/api/user'
 import graphQlFetch from './graphql/fetch'
 import userDataFragment from 'src/graphql/fragments/user-data'
 

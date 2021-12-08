@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
 import Link from 'next/link'
 
-import { UserList_data, User } from 'src/interfaces/api/_user'
+import { UserList_data, User } from 'src/interfaces/api/user'
 import Layout from 'src/components/Layout'
 import ErrorPage from 'src/components/ErrorPage'
 import Loading from 'src/components/Loading'
