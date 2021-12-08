@@ -1,20 +1,31 @@
 import { gql, useQuery } from '@apollo/client'
+import Link from 'next/link'
 
-import { UserList_data } from 'src/interfaces/api/user'
+import { UserList_data, User } from 'src/interfaces/api/user'
 import Layout from 'src/components/Layout'
 import ErrorPage from 'src/components/ErrorPage'
 import Loading from 'src/components/Loading'
-import userDataFragment from 'src/graphql/fragments/user-data'
+import { AvatarGroup } from 'src/components/Avatar'
+import { BoatAvatar, BoatName, ProfileAvatar } from 'src/components/Profile'
 
 const DADDIES_QUERY = gql`
   query {
     userList(isBoatDaddy: true) {
       users {
-        ...userData
+        id
+        username
+        image
+        createdAt
+        profile {
+          name
+          birthday
+          isBoatDaddy
+          boatName
+          boatImage
+        }
       }
     }
   }
-  ${userDataFragment}
 `
 
 export default function Daddies() {
@@ -26,7 +37,53 @@ export default function Daddies() {
   return (
     <Layout title="Boat Daddies">
       <h1>Boat Daddies</h1>
-      {!data || loading ? <Loading /> : <p>{JSON.stringify(data.userList)}</p>}
+      {!data || loading ? (
+        <Loading />
+      ) : (
+        <DaddiesList users={data.userList.users} />
+      )}
     </Layout>
+  )
+}
+
+function DaddiesList({ users }) {
+  return (
+    <ul
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '1em',
+        margin: 0,
+        padding: 0,
+        listStyle: 'none',
+      }}
+    >
+      {users.map(user => (
+        <li key={user.id}>
+          <Link href={`@${user.username}`}>
+            <a
+              style={{
+                display: 'flex',
+                gap: '1em',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+              }}
+            >
+              <strong style={{ flex: 1, textAlign: 'right' }}>
+                {user.username}
+              </strong>
+              <AvatarGroup>
+                <ProfileAvatar user={user} size={80} />
+                <BoatAvatar user={user} size={80} />
+              </AvatarGroup>
+              <strong style={{ flex: 1 }}>
+                <BoatName>{user.profile.boatName}</BoatName>
+              </strong>
+            </a>
+          </Link>
+        </li>
+      ))}
+    </ul>
   )
 }
