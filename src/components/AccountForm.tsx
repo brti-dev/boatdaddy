@@ -407,7 +407,6 @@ export default function AccountEdit({ user }: { user: User }) {
         error={isError('birthday')}
         helperText={isError('birthday') ? state.error.message : null}
       />
-      <div>{state.data.isBoatDaddy ? 'YES daddy' : 'NO daddy'}</div>
       <div className={checkButtonContainerClass}>
         <CheckButton
           name="isBoatDaddy"
