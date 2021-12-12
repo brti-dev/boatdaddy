@@ -10,7 +10,15 @@ import {
 import Button from './Button'
 
 const NewMenuButton = ({ children, ...props }) => (
-  <MenuButton as={Button} {...props}>
+  <MenuButton
+    as={Button}
+    style={{
+      appearance: 'menulist-button',
+      WebkitAppearance: 'menulist-button',
+      MozAppearance: 'menulist-button',
+    }}
+    {...props}
+  >
     {children}
   </MenuButton>
 )
