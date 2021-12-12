@@ -1,3 +1,5 @@
+@use 'breakpoint' as *;
+
 .index {
   display: flex;
   justify-content: center;
@@ -8,11 +10,35 @@
   list-style: none;
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  margin: 0.67em 0; // H1 margin
+
+  @include breakpoint(mobile) {
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    flex-basis: 100%;
+    margin: 0;
+  }
+
+  h1 + *,
+  h1 + * + * {
+    flex-shrink: 0;
+  }
+}
+
 .row {
   display: flex;
   gap: 1em;
   justify-content: space-around;
   align-items: center;
+
+  @include breakpoint(mobile) {
+    font-size: smaller;
+  }
 
   & > *:first-child {
     text-align: right;

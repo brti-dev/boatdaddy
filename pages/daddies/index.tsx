@@ -9,6 +9,8 @@ import { AvatarGroup } from 'src/components/Avatar'
 import { BoatAvatar, BoatName, ProfileAvatar } from 'src/components/Profile'
 import classes from 'src/styles/daddies.module.scss'
 import useMediaQuery from 'src/lib/use-media-query'
+import Button from 'src/components/Button'
+import { useUser } from 'src/context/user-context'
 
 const DADDIES_QUERY = gql`
   query {
@@ -32,13 +34,22 @@ const DADDIES_QUERY = gql`
 
 export default function Daddies() {
   const { data, error, loading } = useQuery<UserList_data>(DADDIES_QUERY)
+  const user = useUser()
 
   if (error)
     return <ErrorPage message={error.message ?? 'Something went wrong'} />
 
   return (
     <Layout title="Boat Daddies">
-      <h1>Boat Daddies</h1>
+      <header className={classes.header}>
+        <h1>Boat Daddies</h1>
+        {user?.data?.roles?.includes('ADMIN') && (
+          <Button to="/daddies/add" variant="contained" color="primary">
+            Add Daddy
+          </Button>
+        )}
+      </header>
+
       {!data || loading ? (
         <Loading />
       ) : (
