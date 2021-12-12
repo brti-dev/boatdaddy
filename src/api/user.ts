@@ -31,23 +31,25 @@ async function makeUsername({ email }): Promise<string> {
   return usernameRandom
 }
 
-function verify(
-  input: UserUpdateInput | UserAddInput
-): UserUpdateInput | UserAddInput {
-  if (!input.profile?.name) {
-    throw new Error('Profile name is required')
-  }
-
-  const name = input.profile.name.trim()
-  if (name === '' || name.length < 2) {
-    throw new Error('Please input a name that is at least two characters')
-  }
-
-  USERNAME_TESTS.map(({ test, message }) => {
-    if (!test(input.username)) {
-      throw new Error(message)
+function verify(input: UserUpdateInput, strict?: boolean): UserUpdateInput
+function verify(input: UserAddInput, strict?: boolean): UserAddInput {
+  if (strict) {
+    if (!input.profile?.name) {
+      throw new Error('Profile name is required')
     }
-  })
+
+    const name = input.profile.name.trim()
+    if (name === '' || name.length < 2) {
+      throw new Error('Please input a name that is at least two characters')
+    }
+  }
+
+  input.username &&
+    USERNAME_TESTS.map(({ test, message }) => {
+      if (!test(input.username)) {
+        throw new Error(message)
+      }
+    })
 
   if (input.email && !EMAIL_TEST.test(input.email)) {
     throw new Error('Please input a valid email address')
@@ -102,7 +104,7 @@ async function add(input: UserAddInput): Promise<User> {
     input.username = await makeUsername(input)
   }
 
-  const newUser = verify(input)
+  const newUser = verify(input, true)
 
   if (!newUser.profile.isBoatDaddy) {
     newUser.profile.isBoatDaddy = false
@@ -153,7 +155,7 @@ async function update(id: number, input: UserUpdateInput): Promise<User> {
     const allActor = await prisma.actor.findMany({
       where: { userId: id },
     })
-    if (userData.profile.isBoatDaddy) {
+    if (userData.profile?.isBoatDaddy) {
       const driverRole = allActor.filter(actor => actor.role === 'DRIVER')
       if (!driverRole) {
         roles.push('DRIVER')
@@ -173,16 +175,17 @@ async function update(id: number, input: UserUpdateInput): Promise<User> {
     }
     const updateResult = await prisma.user.update(userUpdate)
 
-    const profileUpdate = {
-      data: { ...profile },
-      where: { userId: id },
-    }
-    const updateProfileResult = await prisma.profile.update(profileUpdate)
+    console.log('update user result', updateResult)
 
-    console.log('update user result', {
-      ...updateResult,
-      profile: { updateProfileResult },
-    })
+    if (profile) {
+      const profileUpdate = {
+        data: { ...profile },
+        where: { userId: id },
+      }
+      const updateProfileResult = await prisma.profile.update(profileUpdate)
+
+      console.log('update profile result:', updateProfileResult)
+    }
 
     const updatedUser = get({ id })
 
