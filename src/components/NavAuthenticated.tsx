@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
-import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
 import { useAuth } from 'src/context/auth-context'
 import { useUser } from 'src/context/user-context'
 import Avatar from './Avatar'
+import { Menu, MenuList, MenuButton, MenuItem } from './Menu'
 
 export default function NavAuthenticated() {
   const auth = useAuth()
