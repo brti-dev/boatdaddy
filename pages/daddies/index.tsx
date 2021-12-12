@@ -61,7 +61,7 @@ export default function Daddies() {
 
 function DaddiesList({ users }) {
   const isMobile = useMediaQuery('(max-width:640px)')
-  const avatarSize = isMobile ? 40 : 80
+  const avatarSize = isMobile ? 55 : 80
 
   return (
     <ul className={classes.index}>
