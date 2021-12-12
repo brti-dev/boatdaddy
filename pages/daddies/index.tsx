@@ -60,7 +60,7 @@ export default function Daddies() {
 }
 
 function DaddiesList({ users }) {
-  const isMobile = useMediaQuery('(max-width:640px')
+  const isMobile = useMediaQuery('(max-width:640px)')
   const avatarSize = isMobile ? 40 : 80
 
   return (
