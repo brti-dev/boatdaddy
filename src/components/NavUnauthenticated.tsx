@@ -235,7 +235,7 @@ export default function NavUnauthenticated() {
               <GoogleIcon />
               <span>Sign in with Google</span>
             </Button>
-            <label htmlFor="sessionform__email">Email</label>
+            {/* <label htmlFor="sessionform__email">Email</label>
             <input
               type="email"
               name="email"
@@ -269,7 +269,7 @@ export default function NavUnauthenticated() {
               >
                 Sign Up
               </Button>
-            </SubmitRow>
+            </SubmitRow> */}
           </Form>
         ) : (
           <Form onSubmit={submitSignUp}>
