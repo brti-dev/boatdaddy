@@ -70,3 +70,8 @@
   top: 3px;
   right: 3px;
 }
+
+// The badge content is a React Component rather than a string or number
+.componentAsBadge {
+  padding: 0;
+}

@@ -4,6 +4,7 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  align-items: center;
   gap: 1em;
   margin: 0;
   padding: 0;
@@ -33,20 +34,4 @@
 .row {
   display: flex;
   gap: 1em;
-  justify-content: space-around;
-  align-items: center;
-
-  @include breakpoint(mobile) {
-    font-size: smaller;
-  }
-
-  & > *:first-child {
-    text-align: right;
-  }
-
-  & > *:first-child,
-  & > *:last-child {
-    flex-basis: 50%;
-    flex-shrink: 0;
-  }
 }

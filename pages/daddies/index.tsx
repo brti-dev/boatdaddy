@@ -11,6 +11,7 @@ import classes from 'src/styles/daddies.module.scss'
 import useMediaQuery from 'src/lib/use-media-query'
 import Button from 'src/components/Button'
 import { useUser } from 'src/context/user-context'
+import Badge from 'src/components/Badge'
 
 const DADDIES_QUERY = gql`
   query {
@@ -61,7 +62,7 @@ export default function Daddies() {
 
 function DaddiesList({ users }) {
   const isMobile = useMediaQuery('(max-width:640px)')
-  const avatarSize = isMobile ? 55 : 80
+  const avatarSize = isMobile ? 60 : 80
 
   return (
     <ul className={classes.index}>
@@ -69,12 +70,13 @@ function DaddiesList({ users }) {
         <li key={user.id}>
           <Link href={`@${user.username}`}>
             <a className={classes.row}>
-              <strong>{user.username}</strong>
               <AvatarGroup>
                 <ProfileAvatar user={user} size={avatarSize} />
                 <BoatAvatar user={user} size={avatarSize} />
               </AvatarGroup>
               <strong>
+                {user.username}
+                <br />
                 <BoatName>{user.profile.boatName}</BoatName>
               </strong>
             </a>
