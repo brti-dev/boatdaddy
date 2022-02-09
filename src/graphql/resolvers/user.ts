@@ -1,5 +1,8 @@
+import { getBoundsOfDistance } from 'geolib'
+
 import { Context } from 'src/interfaces/api/context'
 import {
+  DriverListVariables,
   User,
   UserUpdateInput_input,
   UserDeleteInput_input,
@@ -104,12 +107,33 @@ const getAll = async (_, __, ctx: Context): Promise<UserList> => {
   }
 }
 
+const getNearby = async (
+  _,
+  { latitude, longitude, within }: DriverListVariables,
+  ctx: Context
+): Promise<User[]> => {
+  const bounds = getBoundsOfDistance({ latitude, longitude }, within)
+
+  const users = await ctx.prisma.user.findMany({
+    include: { profile: true, actor: true },
+    where: {
+      profile: { isBoatDaddy: true },
+      // latitude: { gte: bounds[0].latitude, lte: bounds[1].latitude },
+      // longitude: { gte: bounds[0].longitude, lte: bounds[1].longitude },
+      id: { not: { equals: ctx.session.userId } },
+    },
+    take: 25,
+  })
+
+  return users.map(user => userResolver.attachRoles(user))
+}
+
 const list = async (
   _,
-  variables: UserListVariables,
+  vars: UserListVariables,
   ctx: Context
 ): Promise<UserList> => {
-  const { isBoatDaddy } = variables
+  const { isBoatDaddy } = vars
   const { prisma } = ctx
 
   if (typeof isBoatDaddy !== undefined) {
@@ -125,7 +149,7 @@ const list = async (
       },
     })
 
-    console.log('User list', variables, users)
+    console.log('User list', vars, users)
 
     if (!users.length) {
       return { users: [], pages: 1 }
@@ -137,7 +161,7 @@ const list = async (
   }
 
   throw new Error(
-    `Could not find the requested resource using the given variables ${variables}`
+    `Could not find the requested resource using the given variables ${vars}`
   )
 }
 
@@ -183,6 +207,7 @@ export default {
   seed,
   get,
   getAll,
+  getNearby,
   list,
   add,
   update,

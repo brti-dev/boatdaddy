@@ -1,5 +1,11 @@
 import { User as UserType, Roles } from '../user'
 
+export interface DriverListVariables {
+  longitude: number
+  latitude: number
+  within: number
+}
+
 export type User = UserType
 
 export interface User_data {
@@ -45,6 +51,8 @@ export interface UserUpdateInput {
   image?: string
   roles?: Roles
   profile?: ProfileUpdateInput
+  latitude?: number
+  longitude?: number
 }
 
 export interface UserUpdateInput_input {

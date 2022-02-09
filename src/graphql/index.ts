@@ -116,6 +116,8 @@ export const typeDefs = gql`
     updatedAt: DateTime
     profile: Profile
     roles: [Role]!
+    latitude: Float
+    longitude: Float
   }
 
   input UserAddInput {
@@ -147,6 +149,8 @@ export const typeDefs = gql`
     username: String
     profile: ProfileInput
     roles: [Role]
+    latitude: Float
+    longitude: Float
   }
 
   type Query {
@@ -154,6 +158,7 @@ export const typeDefs = gql`
     allRides: RideListPaginated
     allUsers: UserListPaginated
     auth: Session
+    nearbyDrivers(latitude: Float, longitude: Float, within: Int): [User]
     ride(id: Int): Ride
     rideList(driverId: Int, riderId: Int, page: Int): RideListPaginated
     user(username: String, id: Int, email: String): User
@@ -178,6 +183,7 @@ export const resolvers = {
     allRides: ride.getAll,
     allUsers: user.getAll,
     auth: (_, __, ctx: Context) => ctx.session,
+    nearbyDrivers: user.getNearby,
     ride: ride.get,
     rideList: ride.list,
     user: user.get,

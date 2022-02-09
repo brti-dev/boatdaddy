@@ -100,6 +100,8 @@ model User {
   email String? @unique 
   emailVerified DateTime? @map(name: "email_verified")
   image String?
+  latitude Float?
+  longitude Float?
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
   sessions Session[]
