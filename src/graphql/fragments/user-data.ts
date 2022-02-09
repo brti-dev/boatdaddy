@@ -4,6 +4,8 @@ export default `fragment userData on User {
   email
   emailVerified
   image
+  latitude
+  longitude
   createdAt
   updatedAt
   profile {

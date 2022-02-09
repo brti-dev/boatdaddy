@@ -7,8 +7,8 @@ import Button from './Button'
 import ProfileImage from './ProfileImage'
 import BoatImage from './BoatImage'
 import Avatar from './Avatar'
+import Map from './Map'
 import classes from 'src/styles/profile.module.scss'
-import { Partial } from 'src/interfaces/generic'
 
 export function BoatAvatar({ user, ...rest }) {
   const {
@@ -64,6 +64,7 @@ export function ProfileAvatar({ user, ...rest }) {
 }
 
 function Profile({ user }: { user: User }) {
+  console.log({ user })
   let birthday = parseISO(user.profile.birthday)
   let age: number
   try {
@@ -119,6 +120,19 @@ function Profile({ user }: { user: User }) {
           // height={Math.floor((9 / 16) * 900)}
           gravity="auto"
         />
+      )}
+      {user.longitude && user.latitude ? (
+        <div className={classes.map}>
+          <Map
+            userPosition={{
+              id: user.id,
+              latitude: user.latitude,
+              longitude: user.longitude,
+            }}
+          />
+        </div>
+      ) : (
+        <strong>Unknown location</strong>
       )}
       {user.profile.isBoatDaddy && (
         <div className={classes.hail}>
