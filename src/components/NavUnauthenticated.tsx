@@ -1,11 +1,11 @@
 import { useState, useEffect, useReducer, useRef } from 'react'
-import { Dialog } from '@reach/dialog'
-import { VisuallyHidden } from '@reach/visually-hidden'
 
 import useAlert from 'src/lib/use-alert'
 import { Form, SubmitRow } from './Form'
 import Button from './Button'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
+import Dialog from './Dialog'
+import VisuallyHidden from './VisuallyHidden'
 import { useAuth, AuthBody } from 'src/context/auth-context'
 
 const GoogleIcon = () => (
@@ -74,7 +74,6 @@ export default function NavUnauthenticated() {
     MOCK: true,
     GOOGLE: false,
   })
-  console.log(enabledLoginMethods)
 
   useEffect(() => {
     let mounted = true
