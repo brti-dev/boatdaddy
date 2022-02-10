@@ -1,14 +1,18 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
 import { Session, Provider } from 'src/interfaces/user'
 import { Auth_data } from 'src/interfaces/api/auth'
-import { UserUpdateInput_input } from 'src/interfaces/api/user'
 import useLocalStorage from 'src/lib/use-local-storage'
 import { getUserAsync } from 'src/user'
 import graphQlFetch from 'src/graphql/fetch'
-
-const DEFAULT_LAT = 41.49
-const DEFAULT_LONG = -73.45
 
 /**
  * Object to send in HTTP body request at auth API
@@ -47,31 +51,13 @@ const AUTH_QUERY = `
   }
 `
 
-const USER_UPDATE_MUTATION = `
-  mutation userUpdate($id: Int!, $input: UserUpdateInput!) {
-    userUpdate(id: $id, input: $input) {
-      id
-    }
-  }
-`
-type UserUpdate_data = {
-  id: number
-}
-
 const AuthContext = createContext(undefined)
-
-const updateUserData = async (vars: UserUpdateInput_input) => {
-  console.log('Update user', vars)
-  const userUpdateRes = await graphQlFetch<
-    UserUpdate_data,
-    UserUpdateInput_input
-  >(USER_UPDATE_MUTATION, vars)
-  console.log(userUpdateRes)
-}
 
 function AuthProvider(props) {
   const [data, setData] = useState<Session>(null)
   const [jwt, setJwt] = useLocalStorage<string>('jwt', '')
+
+  const geolocationAsk = useRef(false)
 
   // If token persists in localStorage, query API for user session
   // Authorization with bearer token is automatically attached to the request
@@ -96,31 +82,8 @@ function AuthProvider(props) {
         return
       }
 
-      if (!navigator.geolocation) {
-        console.warn(
-          'Geolocation is not supported by current browser; Using default position'
-        )
-        updateUserData({
-          id: user.id,
-          input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
-        })
-      } else {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            const { latitude, longitude } = position.coords
-            updateUserData({ id: user.id, input: { latitude, longitude } })
-          },
-          () => {
-            console.error(
-              'Unable to retrieve your location; Using default position'
-            )
-            updateUserData({
-              id: user.id,
-              input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
-            })
-          }
-        )
-      }
+      console.log('found user, ask for geoloc')
+      geolocationAsk.current = true
 
       const session: Session = {
         provider: authRes.data.auth.provider,
@@ -170,8 +133,8 @@ function AuthProvider(props) {
   }
 
   const value = useMemo(
-    () => ({ data, login, logout, register }),
-    [data, login, logout, register]
+    () => ({ data, login, logout, register, geolocationAsk }),
+    [data, login, logout, register, geolocationAsk]
   )
 
   return <AuthContext.Provider value={value} {...props} />
@@ -182,6 +145,7 @@ function useAuth(): {
   login: (params: AuthBody) => Promise<null>
   logout: () => void
   register: () => void
+  geolocationAsk: any // React reference
 } {
   const context = useContext(AuthContext)
   if (context === undefined) {
