@@ -7,7 +7,7 @@ import Button from './Button'
 import ProfileImage from './ProfileImage'
 import BoatImage from './BoatImage'
 import Avatar from './Avatar'
-import Map from './Map'
+import Map, { MapMarker } from './Map'
 import classes from 'src/styles/profile.module.scss'
 
 export function BoatAvatar({ user, ...rest }) {
@@ -64,7 +64,6 @@ export function ProfileAvatar({ user, ...rest }) {
 }
 
 function Profile({ user }: { user: User }) {
-  console.log({ user })
   let birthday = parseISO(user.profile.birthday)
   let age: number
   try {
@@ -123,13 +122,11 @@ function Profile({ user }: { user: User }) {
       )}
       {user.longitude && user.latitude ? (
         <div className={classes.map}>
-          <Map
-            userPosition={{
-              id: user.id,
-              latitude: user.latitude,
-              longitude: user.longitude,
-            }}
-          />
+          <Map latitude={user.latitude} longitude={user.longitude} zoom={12}>
+            <MapMarker latitude={user.latitude} longitude={user.longitude}>
+              <ProfileAvatar user={user} size={40} />
+            </MapMarker>
+          </Map>
         </div>
       ) : (
         <strong>Unknown location</strong>

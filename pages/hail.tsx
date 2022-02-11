@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 
+import { useUser } from 'src/context/user-context'
 import Layout from 'src/components/Layout'
-import Map from 'src/components/Map'
-import classes from 'src/styles/hail.module.scss'
+import Map, { MapMarker } from 'src/components/Map'
+import classes from 'src/styles/map.module.scss'
 
 // const DADDIES_QUERY = gql`
 //   query {
@@ -26,25 +27,24 @@ import classes from 'src/styles/hail.module.scss'
 // `
 
 export default function Hail() {
+  const user = useUser()
   const [mapState, setMapState] = useState(null)
-
-  // Only query API after timeout to prevent superfluous calls while user is
-  // changing map state (zooming, panning, etc)
-  const timerRef = useRef(null)
-  useEffect(() => {
-    console.log('state effect')
-    if (timerRef.current) {
-      console.log('cancel')
-      clearTimeout(timerRef.current)
-    }
-    timerRef.current = setTimeout(() => console.log('Hey 🎉'), 500)
-    return () => clearTimeout(timerRef.current)
-  }, [mapState])
 
   return (
     <Layout title="Hail A Boat Daddy" showFooter={false}>
       <div className={classes.map}>
-        <Map onChange={setMapState} />
+        <Map
+          latitude={user.data.latitude}
+          longitude={user.data.longitude}
+          onChange={setMapState}
+        >
+          <MapMarker
+            latitude={user.data.latitude}
+            longitude={user.data.longitude}
+          >
+            📍
+          </MapMarker>
+        </Map>
       </div>
       <div className={classes.hail}>
         <h5>Hail these daddies</h5>
