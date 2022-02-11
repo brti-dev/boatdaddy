@@ -6,12 +6,16 @@ import Avatar from './Avatar'
 import { Menu, MenuList, MenuButton, MenuItem } from './Menu'
 
 export default function NavAuthenticated() {
-  const auth = useAuth()
   const router = useRouter()
+  const auth = useAuth()
   const user = useUser()
 
-  if (user.loading) {
+  if (auth.loading || user.loading) {
     return <>...</>
+  }
+
+  if (!user.data) {
+    return <>?</>
   }
 
   const {
@@ -23,7 +27,7 @@ export default function NavAuthenticated() {
 
   const firstInitial = name.slice(0, 1)
   const secondInitial = name.includes(' ')
-    ? name.substr(name.indexOf(' ') + 1, 1)
+    ? name.substring(name.indexOf(' ') + 1, name.indexOf(' ') + 2)
     : null
   const initials = `${firstInitial}${secondInitial}`
 
