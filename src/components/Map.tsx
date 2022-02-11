@@ -4,7 +4,6 @@ import ReactMap, { Marker, NavigationControl } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import useMediaQuery from 'src/lib/use-media-query'
-import { useUser } from 'src/context/user-context'
 
 const DEFAULT_LAT = 41.49
 const DEFAULT_LONG = -73.45
@@ -41,8 +40,6 @@ export default function Map(props: MapProps) {
     children,
   } = props
 
-  const user = useUser()
-
   if (!MAPBOX_API_TOKEN) {
     console.log('No Mapbox token found in env')
 
@@ -50,8 +47,8 @@ export default function Map(props: MapProps) {
   }
 
   const viewportVars = {
-    latitude: latitude ?? user?.data?.latitude ?? DEFAULT_LAT,
-    longitude: longitude ?? user?.data?.longitude ?? DEFAULT_LONG,
+    latitude: latitude ?? DEFAULT_LAT,
+    longitude: longitude ?? DEFAULT_LONG,
     zoom: zoom ?? 13,
   }
 
