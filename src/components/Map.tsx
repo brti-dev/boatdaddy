@@ -105,7 +105,7 @@ export default function Map(props: MapProps) {
   )
 }
 
-export { Marker }
+export { Marker as MapMarker }
 
 // function SingleMapMarker({ latitude, longitude }: Position) {
 //   return (

@@ -46,6 +46,9 @@ export default function NavAuthenticated() {
         <MenuItem onSelect={() => router.push('/account')}>
           Account Settings
         </MenuItem>
+        <MenuItem onSelect={() => router.push('/set-location')}>
+          Your Location
+        </MenuItem>
         {roles.includes('ADMIN') && (
           <MenuItem onSelect={() => router.push('/admin')}>Admin</MenuItem>
         )}

@@ -1,0 +1,43 @@
+.hail {
+  position: fixed;
+  bottom: 5vh;
+  left: 5vh;
+}
+
+.map {
+  min-width: 400px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 2em;
+  display: flex;
+  justify-content: center;
+}
+
+.marker_center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -1em 0 0 -1em;
+  font-size: 2em;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  transition: transform 0.1s ease;
+  transform: translate(0, 0);
+
+  &_moving {
+    transform: translate(0, -0.5em) rotate(0.1turn);
+  }
+}
