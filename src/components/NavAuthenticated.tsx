@@ -14,12 +14,6 @@ export default function NavAuthenticated() {
     return <>...</>
   }
 
-  if (user.error || !user.data) {
-    console.error('An error ocurred when fetching auth user', user.error)
-
-    return <>?</>
-  }
-
   const {
     username,
     image,

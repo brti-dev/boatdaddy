@@ -87,14 +87,14 @@ function MyApp({ Component, pageProps }) {
  * Wrapper component for session requirement to access child components
  */
 function Auth({ children }) {
-  const { data: auth } = useAuth()
-  const { data: user, loading } = useUser()
+  const { data: auth, loading: authLoading } = useAuth()
+  const { data: user, loading: userLoading } = useUser()
 
   if (auth && user) {
     return children
   }
 
-  if (loading) {
+  if (authLoading || userLoading) {
     return <Loading fullscreen />
   }
 

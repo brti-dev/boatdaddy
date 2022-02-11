@@ -1,23 +1,33 @@
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 import { User } from 'src/interfaces/user'
 import { useAuth } from './auth-context'
-import { getUserLazy } from 'src/user'
+import { getUserAsync } from 'src/user'
+import usePrevious from 'src/lib/use-previous'
 
 const UserContext =
-  createContext<{ data: User; loading: boolean; error: any }>(undefined)
+  createContext<{ data: User | null; loading: boolean }>(undefined)
 
 /**
  * Context provider wrapper component at <AppProviders>
  * This component will provide details about the authenticated user
  */
 function UserProvider(props) {
-  const { data: auth } = useAuth()
-  const [getUser, user] = getUserLazy()
+  const auth = useAuth()
+  const [user, setUser] = useState({ data: null, loading: true })
 
   useEffect(() => {
-    if (auth?.userId) {
-      getUser({ id: auth.userId })
+    // Track auth context until loading finishes, then get user data if auth
+    // token exists
+    if (auth.loading) {
+      return
+    }
+    if (auth && auth?.data?.userId) {
+      getUserAsync({ id: auth.data.userId }).then(data => {
+        setUser({ data, loading: false })
+      })
+    } else {
+      setUser(u => ({ ...u, loading: false }))
     }
   }, [auth])
 

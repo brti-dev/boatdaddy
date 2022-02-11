@@ -56,6 +56,7 @@ const AuthContext = createContext(undefined)
 function AuthProvider(props) {
   const [data, setData] = useState<Session>(null)
   const [jwt, setJwt] = useLocalStorage<string>('jwt', '')
+  const [loading, setLoading] = useState(!!jwt)
 
   const geolocationAsk = useRef(false)
 
@@ -82,15 +83,17 @@ function AuthProvider(props) {
         return
       }
 
-      console.log('found user, ask for geoloc')
       geolocationAsk.current = true
 
       const session: Session = {
         provider: authRes.data.auth.provider,
         userId: user.id,
-        ...user,
+        username: user.username,
+        roles: user.roles,
       }
+
       setData(session)
+      setLoading(false)
     }
     fetchData()
   }, [jwt])
@@ -133,14 +136,15 @@ function AuthProvider(props) {
   }
 
   const value = useMemo(
-    () => ({ data, login, logout, register, geolocationAsk }),
-    [data, login, logout, register, geolocationAsk]
+    () => ({ loading, data, login, logout, register, geolocationAsk }),
+    [loading, data, login, logout, register, geolocationAsk]
   )
 
   return <AuthContext.Provider value={value} {...props} />
 }
 
 function useAuth(): {
+  loading: boolean
   data: Session
   login: (params: AuthBody) => Promise<null>
   logout: () => void
