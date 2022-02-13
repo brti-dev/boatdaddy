@@ -136,7 +136,7 @@ function Profile({ user }: { user: User }) {
           <Button
             variant="contained"
             color="secondary"
-            to="/hail"
+            to={`/hail/@${user.username}`}
             className={classes.hailButton}
           >
             Hail a Ride with {user.username}
