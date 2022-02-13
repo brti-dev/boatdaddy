@@ -2,7 +2,7 @@ import { getBoundsOfDistance } from 'geolib'
 
 import { Context } from 'src/interfaces/api/context'
 import {
-  DriverListVariables,
+  NearbyDrivers_variables,
   User,
   UserUpdateInput_input,
   UserDeleteInput_input,
@@ -109,17 +109,39 @@ const getAll = async (_, __, ctx: Context): Promise<UserList> => {
 
 const getNearby = async (
   _,
-  { latitude, longitude, within }: DriverListVariables,
+  {
+    latitude,
+    longitude,
+    within,
+    bounds: boundsString,
+  }: NearbyDrivers_variables,
   ctx: Context
 ): Promise<User[]> => {
-  const bounds = getBoundsOfDistance({ latitude, longitude }, within)
+  if (boundsString) {
+    const bounds: number[][] = JSON.parse(boundsString)
+    const where = {
+      profile: { isBoatDaddy: true },
+      ...(ctx?.session?.userId && {
+        id: { not: { equals: ctx.session.userId } },
+      }),
+      latitude: { gte: bounds[0][1], lte: bounds[1][1] },
+      longitude: { gte: bounds[0][0], lte: bounds[1][0] },
+    }
+    console.log('getNearby', where)
+    const users = await ctx.prisma.user.findMany({
+      include: { profile: true, actor: true },
+      where,
+      take: 25,
+    })
+    console.log('found', users)
+
+    return users ? users.map(user => userResolver.attachRoles(user)) : null
+  }
 
   const users = await ctx.prisma.user.findMany({
     include: { profile: true, actor: true },
     where: {
       profile: { isBoatDaddy: true },
-      // latitude: { gte: bounds[0].latitude, lte: bounds[1].latitude },
-      // longitude: { gte: bounds[0].longitude, lte: bounds[1].longitude },
       id: { not: { equals: ctx.session.userId } },
     },
     take: 25,
