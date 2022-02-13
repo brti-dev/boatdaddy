@@ -158,7 +158,12 @@ export const typeDefs = gql`
     allRides: RideListPaginated
     allUsers: UserListPaginated
     auth: Session
-    nearbyDrivers(latitude: Float, longitude: Float, within: Int): [User]
+    nearbyDrivers(
+      latitude: Float
+      longitude: Float
+      within: Int
+      bounds: String
+    ): [User]
     ride(id: Int): Ride
     rideList(driverId: Int, riderId: Int, page: Int): RideListPaginated
     user(username: String, id: Int, email: String): User

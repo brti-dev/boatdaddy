@@ -1,9 +1,14 @@
 import { User as UserType, Roles } from '../user'
 
-export interface DriverListVariables {
-  longitude: number
-  latitude: number
-  within: number
+export interface NearbyDrivers_variables {
+  longitude?: number
+  latitude?: number
+  within?: number
+  bounds?: string
+}
+
+export interface NearbyDrivers_data {
+  nearbyDrivers: User[]
 }
 
 export type User = UserType
