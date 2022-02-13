@@ -4,20 +4,29 @@ import ReactMap, { Marker, NavigationControl } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import useMediaQuery from 'src/lib/use-media-query'
+import useDebounce from 'src/lib/use-debounce'
 
 const DEFAULT_LAT = 41.49
 const DEFAULT_LONG = -73.45
-
 const MAPBOX_API_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN
 
-interface MapProps {
+export type BoundsArray = number[][]
+
+export type ViewportState = {
+  latitude: number
+  longitude: number
+  zoom: number
+  bounds: BoundsArray
+}
+
+export interface MapProps {
   latitude?: number
   longitude?: number
   zoom?: number
   includeNavigationControls?: boolean
   style?: React.CSSProperties
-  onMove?: Function
-  onChange?: Function
+  onMove?: () => void
+  onChange?: (viewport: ViewportState) => void
   children?: React.ReactElement | React.ReactElement[]
 }
 
@@ -55,34 +64,41 @@ export default function Map(props: MapProps) {
   const mapRef = useRef(null)
   const [viewport, setViewport] = useState(viewportVars)
   const isDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+  const [bounds, setBounds] = useState<BoundsArray>(null)
+  const boundsDebounced = useDebounce(bounds, 200)
 
-  // To avoid reporting changes when zooming/panning, only return changes after
-  // a short interval
-  const [mapState, setMapState] = useState(null)
-  const timerRef = useRef(null)
+  // Only report debounced data to the onChange callback
   useEffect(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
+    console.log('bounds (deb) effect', boundsDebounced)
+    if (!bounds) {
+      return
     }
-    timerRef.current = setTimeout(() => onChange(mapState), 400)
-    return () => clearTimeout(timerRef.current)
-  }, [mapState])
+
+    const { latitude, longitude, zoom } = viewport
+    onChange({ latitude, longitude, zoom, bounds: boundsDebounced })
+  }, [boundsDebounced])
 
   return (
     <ReactMap
-      {...viewport}
+      latitude={viewport.latitude}
+      longitude={viewport.longitude}
+      zoom={viewport.zoom}
       width="100%"
       height="100%"
+      onLoad={() => {
+        if (mapRef.current) {
+          const bounds = mapRef.current.getMap().getBounds().toArray()
+          setBounds(bounds)
+        }
+      }}
       onViewportChange={viewport => {
         setViewport(viewport)
       }}
       onInteractionStateChange={state => {
-        console.log('onInteractionStateChange', state)
         onMove({ ...state, ...viewport })
 
-        if (!isFlux(state)) {
-          setMapState(viewport)
-        }
+        const bounds = mapRef.current.getMap().getBounds().toArray()
+        setBounds(bounds)
       }}
       mapboxApiAccessToken={MAPBOX_API_TOKEN}
       ref={instance => (mapRef.current = instance)}
