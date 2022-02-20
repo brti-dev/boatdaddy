@@ -27,7 +27,7 @@ export interface MapProps {
   style?: React.CSSProperties
   onMove?: () => void
   onChange?: (viewport: ViewportState) => void
-  children?: React.ReactElement | React.ReactElement[]
+  children?: React.ReactChild | React.ReactChild[]
 }
 
 const isFlux = state =>
