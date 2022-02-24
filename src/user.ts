@@ -1,10 +1,10 @@
 import { useQuery, useLazyQuery, gql } from '@apollo/client'
-import { print } from 'graphql'
+import { print } from 'api/graphql'
 
-import { User } from 'src/interfaces/user'
-import { UserVariables, User_data } from 'src/interfaces/api/user'
-import graphQlFetch from './graphql/fetch'
-import userDataFragment from 'src/graphql/fragments/user-data'
+import { User } from 'interfaces/user'
+import { UserVariables, User_data } from 'interfaces/api/user'
+import graphQlFetch from 'api/graphql/fetch'
+import userDataFragment from 'api/graphql/fragments/user-data'
 
 const USER_QUERY = gql`
   query User($username: String, $id: Int, $email: String) {

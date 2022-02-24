@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import VisuallyHidden from '@reach/visually-hidden'
 import { Dialog } from '@reach/dialog'
 
-import Button from 'src/components/Button'
-import IconButton from 'src/components/IconButton'
-import Layout from 'src/components/Layout'
+import Button from 'components/Button'
+import IconButton from 'components/IconButton'
+import Layout from 'components/Layout'
 
 export default function TestPage() {
   const [opened, setOpened] = useState(false)

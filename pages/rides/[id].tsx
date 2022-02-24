@@ -3,13 +3,13 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
 
-import { Ride_data } from 'src/interfaces/api/ride'
-import Layout from 'src/components/Layout'
-import ErrorPage from 'src/components/ErrorPage'
-import Loading from 'src/components/Loading'
-import { AvatarGroup } from 'src/components/Avatar'
-import Date from 'src/components/Date'
-import { BoatAvatar, ProfileAvatar } from 'src/components/Profile'
+import { Ride_data } from 'interfaces/api/ride'
+import Layout from 'components/Layout'
+import ErrorPage from 'components/ErrorPage'
+import Loading from 'components/Loading'
+import { AvatarGroup } from 'components/Avatar'
+import Date from 'components/Date'
+import { BoatAvatar, ProfileAvatar } from 'components/Profile'
 
 const RIDE_QUERY = gql`
   query ride($id: Int) {

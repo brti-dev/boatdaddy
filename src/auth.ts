@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { AuthenticationError, ForbiddenError } from 'apollo-server-micro'
 
-import { Session } from 'src/interfaces/user'
+import { Session } from 'interfaces/user'
 
 let JWT_SECRET = process.env.JWT_SECRET
 if (!JWT_SECRET) {

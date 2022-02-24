@@ -1,4 +1,4 @@
-import { Session, Provider, Role } from 'src/interfaces/user'
+import { Session, Provider, Role } from 'interfaces/user'
 
 export interface Auth {
   provider: Provider

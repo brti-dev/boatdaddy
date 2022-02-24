@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { Session } from 'src/interfaces/user'
+import { Session } from 'interfaces/user'
 
 export interface Context {
   session: Session | null

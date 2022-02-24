@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
-import { User } from 'src/interfaces/user'
+import { User } from 'interfaces/user'
 import { useAuth } from './auth-context'
-import { getUserAsync } from 'src/user'
-import usePrevious from 'src/lib/use-previous'
+import { getUserAsync } from 'user'
+import usePrevious from 'lib/use-previous'
 
 const UserContext =
   createContext<{ data: User | null; loading: boolean }>(undefined)

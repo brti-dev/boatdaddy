@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 
-import { useAuth } from 'src/context/auth-context'
-import { useUser } from 'src/context/user-context'
+import { useAuth } from 'context/auth-context'
+import { useUser } from 'context/user-context'
 import Avatar from './Avatar'
 import { Menu, MenuList, MenuButton, MenuItem } from './Menu'
 

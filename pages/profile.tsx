@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
 import ContentLoader from 'react-content-loader'
 
-import { getUser } from 'src/user'
-import Layout from 'src/components/Layout'
-import ErrorPage from 'src/components/ErrorPage'
-import ProfileView from 'src/components/Profile'
+import { getUser } from 'user'
+import Layout from 'components/Layout'
+import ErrorPage from 'components/ErrorPage'
+import ProfileView from 'components/Profile'
 
 const Loader = () => (
   <ContentLoader

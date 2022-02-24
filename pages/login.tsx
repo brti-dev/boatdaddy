@@ -1,7 +1,7 @@
 import Head from 'next/head'
 
-import Layout from 'src/components/Layout'
-import { useAuth } from 'src/context/auth-context'
+import Layout from 'components/Layout'
+import { useAuth } from 'context/auth-context'
 
 export default function Home() {
   const auth = useAuth()

@@ -1,12 +1,12 @@
 import { useState, useEffect, useReducer, useRef } from 'react'
 
-import useAlert from 'src/lib/use-alert'
+import useAlert from 'lib/use-alert'
 import { Form, SubmitRow } from './Form'
 import Button from './Button'
 import CheckButton, { checkButtonContainerClass } from './CheckButton'
 import Dialog from './Dialog'
 import VisuallyHidden from './VisuallyHidden'
-import { useAuth, AuthBody } from 'src/context/auth-context'
+import { useAuth, AuthBody } from 'context/auth-context'
 
 const GoogleIcon = () => (
   <svg

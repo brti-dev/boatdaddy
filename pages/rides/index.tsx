@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
 import ContentLoader from 'react-content-loader'
 
-import { RideList_data } from 'src/interfaces/api/ride'
-import { useUser } from 'src/context/user-context'
-import Layout from 'src/components/Layout'
-import ErrorPage from 'src/components/ErrorPage'
-import Date from 'src/components/Date'
-import { AvatarGroup } from 'src/components/Avatar'
-import { BoatAvatar, BoatName, ProfileAvatar } from 'src/components/Profile'
+import { RideList_data } from 'interfaces/api/ride'
+import { useUser } from 'context/user-context'
+import Layout from 'components/Layout'
+import ErrorPage from 'components/ErrorPage'
+import Date from 'components/Date'
+import { AvatarGroup } from 'components/Avatar'
+import { BoatAvatar, BoatName, ProfileAvatar } from 'components/Profile'
 
 const RIDES_QUERY = gql`
   query rideList($riderId: Int) {

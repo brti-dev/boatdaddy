@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 
-import { JWT_SECRET, getSession } from 'src/auth'
-import { Session } from 'src/interfaces/user'
-import { AuthBody, AuthResponse } from 'src/context/auth-context'
-import userResolver from 'src/api/user'
+import { JWT_SECRET, getSession } from 'auth'
+import { Session } from 'interfaces/user'
+import { AuthBody, AuthResponse } from 'context/auth-context'
+import userResolver from 'api/user'
 
 const MOCK_FOUND_USER = {
   id: 1,

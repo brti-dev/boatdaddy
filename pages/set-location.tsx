@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { UserUpdateInput_input } from 'src/interfaces/api/user'
-import { useUser } from 'src/context/user-context'
-import graphQlFetch from 'src/graphql/fetch'
-import Layout from 'src/components/Layout'
-import Map from 'src/components/Map'
-import classes from 'src/styles/map.module.scss'
-import Button from 'src/components/Button'
-import ErrorPage from 'src/components/ErrorPage'
+import { UserUpdateInput_input } from 'interfaces/api/user'
+import { useUser } from 'context/user-context'
+import graphQlFetch from 'api/graphql/fetch'
+import Layout from 'components/Layout'
+import Map from 'components/Map'
+import classes from 'styles/map.module.scss'
+import Button from 'components/Button'
+import ErrorPage from 'components/ErrorPage'
 
 type UserUpdate_data = {
   id: number

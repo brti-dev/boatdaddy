@@ -3,10 +3,12 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { ApolloServer, gql } from 'apollo-server-micro'
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 
-import { prisma } from 'src/prisma'
-import { Context } from 'src/interfaces/api/context'
-import { typeDefs, resolvers } from 'src/graphql'
-import { getSession } from 'src/auth'
+import { prisma } from 'api/prisma'
+import { Context } from 'interfaces/api/context'
+import { typeDefs, resolvers } from 'api/graphql'
+import { getSession } from 'auth'
+
+console.log('gql', typeDefs, resolvers)
 
 const apolloServer = new ApolloServer({
   typeDefs,

@@ -8,11 +8,11 @@ import {
   useState,
 } from 'react'
 
-import { Session, Provider } from 'src/interfaces/user'
-import { Auth_data } from 'src/interfaces/api/auth'
-import useLocalStorage from 'src/lib/use-local-storage'
-import { getUserAsync } from 'src/user'
-import graphQlFetch from 'src/graphql/fetch'
+import { Session, Provider } from 'interfaces/user'
+import { Auth_data } from 'interfaces/api/auth'
+import useLocalStorage from 'lib/use-local-storage'
+import { getUserAsync } from 'user'
+import graphQlFetch from 'api/graphql/fetch'
 
 /**
  * Object to send in HTTP body request at auth API

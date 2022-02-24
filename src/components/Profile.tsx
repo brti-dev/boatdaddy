@@ -2,13 +2,13 @@ import intervalToDuration from 'date-fns/intervalToDuration'
 import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
 
-import { User } from 'src/interfaces/user'
+import { User } from 'interfaces/user'
 import Button from './Button'
 import ProfileImage from './ProfileImage'
 import BoatImage from './BoatImage'
 import Avatar from './Avatar'
 import Map, { MapMarker } from './Map'
-import classes from 'src/styles/profile.module.scss'
+import classes from 'styles/profile.module.scss'
 
 export function BoatAvatar({ user, ...rest }) {
   const {

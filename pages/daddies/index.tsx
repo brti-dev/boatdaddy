@@ -1,17 +1,17 @@
 import { gql, useQuery } from '@apollo/client'
 import Link from 'next/link'
 
-import { UserList_data, User } from 'src/interfaces/api/user'
-import Layout from 'src/components/Layout'
-import ErrorPage from 'src/components/ErrorPage'
-import Loading from 'src/components/Loading'
-import { AvatarGroup } from 'src/components/Avatar'
-import { BoatAvatar, BoatName, ProfileAvatar } from 'src/components/Profile'
-import classes from 'src/styles/daddies.module.scss'
-import useMediaQuery from 'src/lib/use-media-query'
-import Button from 'src/components/Button'
-import { useUser } from 'src/context/user-context'
-import Badge from 'src/components/Badge'
+import { UserList_data, User } from 'interfaces/api/user'
+import Layout from 'components/Layout'
+import ErrorPage from 'components/ErrorPage'
+import Loading from 'components/Loading'
+import { AvatarGroup } from 'components/Avatar'
+import { BoatAvatar, BoatName, ProfileAvatar } from 'components/Profile'
+import classes from 'styles/daddies.module.scss'
+import useMediaQuery from 'lib/use-media-query'
+import Button from 'components/Button'
+import { useUser } from 'context/user-context'
+import Badge from 'components/Badge'
 
 const DADDIES_QUERY = gql`
   query {

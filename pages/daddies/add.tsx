@@ -1,18 +1,12 @@
 import { SyntheticEvent, useEffect } from 'react'
 
-import userDataFragment from 'src/graphql/fragments/user-data'
-import useAlert from 'src/lib/use-alert'
-import { useMutation } from 'src/graphql/hooks'
-import Layout from 'src/components/Layout'
-import AccountForm from 'src/components/AccountForm'
-import {
-  Form,
-  FormGroup,
-  TextInput,
-  useForm,
-  SubmitRow,
-} from 'src/components/Form'
-import Button from 'src/components/Button'
+import userDataFragment from 'api/graphql/fragments/user-data'
+import useAlert from 'lib/use-alert'
+import { useMutation } from 'api/graphql/hooks'
+import Layout from 'components/Layout'
+import AccountForm from 'components/AccountForm'
+import { Form, FormGroup, TextInput, useForm, SubmitRow } from 'components/Form'
+import Button from 'components/Button'
 
 const NEW_USER_MUTATION = `
   mutation userAdd($input: UserAddInput!) {

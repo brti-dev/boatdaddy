@@ -3,8 +3,8 @@ import { getBoundsOfDistance } from 'geolib'
 import ReactMap, { Marker, NavigationControl } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import useMediaQuery from 'src/lib/use-media-query'
-import useDebounce from 'src/lib/use-debounce'
+import useMediaQuery from 'lib/use-media-query'
+import useDebounce from 'lib/use-debounce'
 
 const DEFAULT_LAT = 41.49
 const DEFAULT_LONG = -73.45

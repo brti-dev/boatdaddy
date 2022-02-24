@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import Image from 'next/image'
 
-import Layout from 'src/components/Layout'
-import classes from 'src/styles/index.module.scss'
-import Button from 'src/components/Button'
+import Layout from 'components/Layout'
+import classes from 'styles/index.module.scss'
+import Button from 'components/Button'
 
 export default function Home() {
   return (

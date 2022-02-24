@@ -7,15 +7,15 @@ import {
   NearbyDrivers_variables,
   NearbyDrivers_data,
   User,
-} from 'src/interfaces/api/user'
-import userDataFragment from 'src/graphql/fragments/user-data'
-import { useUser } from 'src/context/user-context'
-import Layout from 'src/components/Layout'
-import Button from 'src/components/Button'
-import Map, { MapMarker, ViewportState } from 'src/components/Map'
-import { ProfileAvatar, BoatName } from 'src/components/Profile'
-import BoatImage from 'src/components/BoatImage'
-import classes from 'src/styles/map.module.scss'
+} from 'interfaces/api/user'
+import userDataFragment from 'api/graphql/fragments/user-data'
+import { useUser } from 'context/user-context'
+import Layout from 'components/Layout'
+import Button from 'components/Button'
+import Map, { MapMarker, ViewportState } from 'components/Map'
+import { ProfileAvatar, BoatName } from 'components/Profile'
+import BoatImage from 'components/BoatImage'
+import classes from 'styles/map.module.scss'
 
 const NEARBY_DRIVERS_QUERY = gql`
   query nearbyDrivers($bounds: String) {
