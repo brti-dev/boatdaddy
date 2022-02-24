@@ -1,5 +1,5 @@
 import { useQuery, useLazyQuery, gql } from '@apollo/client'
-import { print } from 'api/graphql'
+import { print } from 'graphql'
 
 import { User } from 'interfaces/user'
 import { UserVariables, User_data } from 'interfaces/api/user'

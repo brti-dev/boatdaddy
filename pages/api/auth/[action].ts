@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import jwt from 'jsonwebtoken'
 import { OAuth2Client } from 'google-auth-library'
 
-import { JWT_SECRET, getSession } from 'auth'
+import { JWT_SECRET, getSession } from 'lib/auth'
 import { Session } from 'interfaces/user'
 import { AuthBody, AuthResponse } from 'context/auth-context'
 import userResolver from 'api/user'

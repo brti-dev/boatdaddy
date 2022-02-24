@@ -10,7 +10,7 @@ import {
   UserUpdateInput,
 } from 'interfaces/api/user'
 import { DeleteResult } from 'interfaces/api/globalTypes'
-import { USERNAME_TESTS, EMAIL_TEST } from 'user'
+import { USERNAME_TESTS, EMAIL_TEST } from 'lib/user'
 import { prisma } from 'api/prisma'
 
 async function makeUsername({ email }): Promise<string> {

@@ -1,6 +1,5 @@
 import { CreateSignature } from 'interfaces/api/image'
-
-const cloudinary = require('cloudinary').v2
+import cloudinary from 'lib/cloudinary'
 
 // Add auth
 function createImageSignature(): CreateSignature {

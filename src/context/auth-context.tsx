@@ -11,7 +11,7 @@ import {
 import { Session, Provider } from 'interfaces/user'
 import { Auth_data } from 'interfaces/api/auth'
 import useLocalStorage from 'lib/use-local-storage'
-import { getUserAsync } from 'user'
+import { getUserAsync } from 'lib/user'
 import graphQlFetch from 'api/graphql/fetch'
 
 /**

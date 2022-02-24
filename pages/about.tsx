@@ -3,8 +3,8 @@ import Image from 'next/image'
 
 import Layout from 'components/Layout'
 import classes from 'styles/about.module.scss'
-import photoAttribution from 'public/img/hero_landscape_attribution'
-import photoAttributionHome from 'public/img/hero_redshortsdaddy_attribution'
+import photoAttribution from '../public/img/hero_landscape_attribution'
+import photoAttributionHome from '../public/img/hero_redshortsdaddy_attribution'
 import { About as AboutType } from 'interfaces/api/about'
 
 const ABOUT_QUERY = gql`

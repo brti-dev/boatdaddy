@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import ContentLoader from 'react-content-loader'
 
-import { getUser } from 'user'
+import { getUser } from 'lib/user'
 import Layout from 'components/Layout'
 import ErrorPage from 'components/ErrorPage'
 import ProfileView from 'components/Profile'
