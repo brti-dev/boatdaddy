@@ -6,12 +6,11 @@ import Layout from 'components/Layout'
 import ErrorPage from 'components/ErrorPage'
 import Loading from 'components/Loading'
 import { AvatarGroup } from 'components/Avatar'
-import { BoatAvatar, BoatName, ProfileAvatar } from 'components/Profile'
+import { BoatName, ProfileAvatar } from 'components/Profile'
 import classes from 'styles/daddies.module.scss'
 import useMediaQuery from 'lib/use-media-query'
 import Button from 'components/Button'
 import { useUser } from 'context/user-context'
-import Badge from 'components/Badge'
 
 const DADDIES_QUERY = gql`
   query {
@@ -72,7 +71,7 @@ function DaddiesList({ users }) {
             <a className={classes.row}>
               <AvatarGroup>
                 <ProfileAvatar user={user} size={avatarSize} />
-                <BoatAvatar user={user} size={avatarSize} />
+                <ProfileAvatar boat user={user} size={avatarSize} />
               </AvatarGroup>
               <strong>
                 {user.username}

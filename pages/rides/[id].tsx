@@ -9,7 +9,7 @@ import ErrorPage from 'components/ErrorPage'
 import Loading from 'components/Loading'
 import { AvatarGroup } from 'components/Avatar'
 import Date from 'components/Date'
-import { BoatAvatar, ProfileAvatar } from 'components/Profile'
+import { ProfileAvatar } from 'components/Profile'
 
 const RIDE_QUERY = gql`
   query ride($id: Int) {
@@ -75,7 +75,12 @@ export default function Ride() {
           <a>
             <AvatarGroup>
               <ProfileAvatar user={data.ride.driver.user} tooltip size={80} />
-              <BoatAvatar user={data.ride.driver.user} tooltip size={80} />
+              <ProfileAvatar
+                boat
+                user={data.ride.driver.user}
+                tooltip
+                size={80}
+              />
             </AvatarGroup>
           </a>
         </Link>

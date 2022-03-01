@@ -2,8 +2,8 @@ import { useRouter } from 'next/router'
 
 import { useAuth } from 'context/auth-context'
 import { useUser } from 'context/user-context'
-import Avatar from './Avatar'
 import { Menu, MenuList, MenuButton, MenuItem } from './Menu'
+import { ProfileAvatar } from './Profile'
 
 export default function NavAuthenticated() {
   const router = useRouter()
@@ -18,23 +18,12 @@ export default function NavAuthenticated() {
     return <>?</>
   }
 
-  const {
-    username,
-    image,
-    roles,
-    profile: { name },
-  } = user.data
-
-  const firstInitial = name.slice(0, 1)
-  const secondInitial = name.includes(' ')
-    ? name.substring(name.indexOf(' ') + 1, name.indexOf(' ') + 2)
-    : null
-  const initials = `${firstInitial}${secondInitial}`
+  const { username, roles } = user.data
 
   return (
     <Menu>
-      <MenuButton as={Avatar} alt={name} src={image}>
-        {initials}
+      <MenuButton as={ProfileAvatar} user={user.data}>
+        {username}
       </MenuButton>
       <MenuList>
         <MenuItem onSelect={() => router.push('/rides')}>My Rides</MenuItem>

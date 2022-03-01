@@ -1,3 +1,4 @@
+import * as React from 'react'
 import intervalToDuration from 'date-fns/intervalToDuration'
 import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
@@ -6,31 +7,9 @@ import { User } from 'interfaces/user'
 import Button from './Button'
 import ProfileImage from './ProfileImage'
 import BoatImage from './BoatImage'
-import Avatar from './Avatar'
+import Avatar, { AvatarProps } from './Avatar'
 import Map, { MapMarker } from './Map'
 import classes from 'styles/profile.module.scss'
-
-export function BoatAvatar({ user, ...rest }) {
-  const {
-    username,
-    profile: { boatName = 'Boat', boatImage },
-  } = user
-  const firstInitial = boatName.slice(0, 1)
-
-  return (
-    <Avatar
-      src={boatImage}
-      alt={
-        boatName
-          ? String.fromCharCode(8220) + boatName + String.fromCharCode(8221)
-          : `${username}'s Boat`
-      }
-      {...rest}
-    >
-      {firstInitial}
-    </Avatar>
-  )
-}
 
 export type BoatNameProps = {
   children?: string | null
@@ -44,24 +23,61 @@ export function BoatName({ children: boatName, ...rest }: BoatNameProps) {
   )
 }
 
-export function ProfileAvatar({ user, ...rest }) {
+/**
+ * An avatar of a user's profile image or their boat
+ */
+export const ProfileAvatar = React.forwardRef<
+  HTMLDivElement,
+  { alt?: string; boat?: boolean; size?: number; user: User } & Omit<
+    AvatarProps,
+    'alt'
+  >
+>((props, ref) => {
   const {
-    username,
-    image,
-    profile: { name },
-  } = user
-  const firstInitial = name.slice(0, 1)
-  const secondInitial = name.includes(' ')
-    ? name.substr(name.indexOf(' ') + 1, 1)
-    : null
-  const initials = `${firstInitial}${secondInitial}`
+    alt,
+    boat = false,
+    user: {
+      username,
+      image,
+      profile: { name, boatName = 'Boat', boatImage },
+    },
+    size = 40,
+    ...rest
+  } = props
+  console.log('ProfileAvatar', props)
+
+  let initials: string
+  let label = alt || username
+  let src = image
+
+  if (boat) {
+    src = boatImage
+    initials = boatName.slice(0, 1)
+    label =
+      boatName !== 'Boat'
+        ? String.fromCharCode(8220) + boatName + String.fromCharCode(8221)
+        : `${username}'s Boat`
+  } else {
+    const firstInitial = name.slice(0, 1)
+    const spaceIndex = name.indexOf(' ')
+    const secondInitial =
+      spaceIndex >= 0 ? name.substring(spaceIndex + 1, spaceIndex + 2) : null
+    initials = `${firstInitial}${secondInitial}`
+  }
 
   return (
-    <Avatar alt={username} src={image} {...rest}>
+    <ProfileImage
+      alt={label}
+      src={src}
+      size={size}
+      as={Avatar}
+      ref={ref}
+      {...rest}
+    >
       {initials}
-    </Avatar>
+    </ProfileImage>
   )
-}
+})
 
 function Profile({ user }: { user: User }) {
   let birthday = parseISO(user.profile.birthday)
