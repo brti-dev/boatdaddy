@@ -13,27 +13,28 @@ test('should render initials and label properly', () => {
 })
 
 test('should render an image from Cloudinary', () => {
-  const alt = 'Dan Abramov'
+  const alt = 'Red Shorts Daddy'
   const src = 'cloudinaryPublicId=hero_redshortsdaddy_khqgav'
-  const { getAllByRole } = render(<ProfileImage alt={alt} src={src} />)
+  const { getByRole } = render(<ProfileImage alt={alt} src={src} />)
 
-  const img = getAllByRole('img')
-  expect(img).toHaveLength(2)
-  expect(img[1]).toHaveAttribute('alt', alt)
+  const img = getByRole('img')
+  expect(img).toHaveAttribute('alt', alt)
 })
 
-test('should size correctly by default and when given a `size` value', () => {
+test('should size correctly by default', () => {
+  const { getByText } = render(<ProfileImage alt="a">a</ProfileImage>)
+
+  expect(getByText('a')).toHaveStyle({ '--size': '120px' })
+})
+
+test('should size correctly when given a `size` value', () => {
   const { getByText } = render(
-    <>
-      <ProfileImage alt="a">a</ProfileImage>
-      <ProfileImage alt="b" size={40}>
-        b
-      </ProfileImage>
-    </>
+    <ProfileImage alt="b" size={40}>
+      b
+    </ProfileImage>
   )
 
-  expect(getByText('a')).toHaveStyle({ width: '120px' })
-  expect(getByText('b')).toHaveStyle({ width: '40px' })
+  expect(getByText('b')).toHaveStyle({ '--size': '40px' })
 })
 
 test('should overload element root when given `as` prop', () => {

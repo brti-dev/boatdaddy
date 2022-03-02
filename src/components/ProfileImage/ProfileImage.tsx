@@ -1,5 +1,7 @@
 import React from 'react'
-import { Image } from 'cloudinary-react'
+import { AdvancedImage } from '@cloudinary/react'
+import { Cloudinary } from '@cloudinary/url-gen'
+import { thumbnail } from '@cloudinary/url-gen/actions/resize'
 
 import {
   OverloadedElement,
@@ -29,7 +31,13 @@ const ProfileImage: OverloadedElement<ProfileImageProps> = React.forwardRef<
   } = props
 
   if (src && src.includes('cloudinaryPublicId=')) {
-    const publicId = src.replace('cloudinaryPublicId=', '')
+    const cld = new Cloudinary({
+      cloud: {
+        cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+      },
+    })
+    const img = cld.image(src.replace('cloudinaryPublicId=', ''))
+    img.resize(thumbnail().width(size).height(size))
 
     return (
       <Component
@@ -37,13 +45,7 @@ const ProfileImage: OverloadedElement<ProfileImageProps> = React.forwardRef<
         style={{ '--size': `${size}px` } as React.CSSProperties}
         ref={ref}
       >
-        <Image
-          cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-          publicId={publicId}
-          secure
-          alt={alt}
-          {...rest}
-        />
+        <AdvancedImage cldImg={img} secure alt={alt} {...rest} />
       </Component>
     )
   }
@@ -54,15 +56,12 @@ const ProfileImage: OverloadedElement<ProfileImageProps> = React.forwardRef<
       style={{ '--size': `${size}px` } as React.CSSProperties}
       ref={ref}
       role="img"
+      aria-label={alt}
     >
       {src ? (
         <img src={src} alt={alt} />
       ) : (
-        children ?? (
-          <div aria-label={alt} className={classes.noImage}>
-            👨
-          </div>
-        )
+        children ?? <div className={classes.noImage}>👨</div>
       )}
     </Component>
   )
