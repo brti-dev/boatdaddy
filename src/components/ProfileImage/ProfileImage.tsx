@@ -1,7 +1,10 @@
 import React from 'react'
 import { AdvancedImage } from '@cloudinary/react'
 import { Cloudinary } from '@cloudinary/url-gen'
-import { thumbnail } from '@cloudinary/url-gen/actions/resize'
+
+import { fill } from '@cloudinary/url-gen/actions/resize'
+import { focusOn } from '@cloudinary/url-gen/qualifiers/gravity'
+import { FocusOn } from '@cloudinary/url-gen/qualifiers/focusOn'
 
 import {
   OverloadedElement,
@@ -14,8 +17,7 @@ export type ProfileImageProps = {
   alt?: string
   size?: number
   children?: React.ReactNode
-} & React.ComponentPropsWithoutRef<Image> &
-  OverloadedElementProps
+} & OverloadedElementProps
 
 const ProfileImage: OverloadedElement<ProfileImageProps> = React.forwardRef<
   HTMLDivElement,
@@ -36,8 +38,9 @@ const ProfileImage: OverloadedElement<ProfileImageProps> = React.forwardRef<
         cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
       },
     })
-    const img = cld.image(src.replace('cloudinaryPublicId=', ''))
-    img.resize(thumbnail().width(size).height(size))
+    const img = cld
+      .image(src.replace('cloudinaryPublicId=', ''))
+      .resize(fill().width(250).height(250).gravity(focusOn(FocusOn.faces())))
 
     return (
       <Component
