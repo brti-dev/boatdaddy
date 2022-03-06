@@ -2,9 +2,7 @@
 
 .index {
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  align-items: center;
   gap: 1em;
   margin: 0;
   padding: 0;
@@ -12,22 +10,12 @@
 }
 
 .header {
-  display: flex;
-  align-items: center;
-  margin: 0.67em 0; // H1 margin
+  position: relative;
 
-  @include breakpoint(mobile) {
-    flex-wrap: wrap;
-  }
-
-  h1 {
-    flex-basis: 100%;
-    margin: 0;
-  }
-
-  h1 + *,
-  h1 + * + * {
-    flex-shrink: 0;
+  h1 + * {
+    position: absolute;
+    top: -0.5em;
+    right: -0.5em;
   }
 }
 

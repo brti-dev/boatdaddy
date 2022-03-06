@@ -1,16 +1,17 @@
 import { gql, useQuery } from '@apollo/client'
 import Link from 'next/link'
 
-import { UserList_data, User } from 'interfaces/api/user'
+import { UserList_data } from 'interfaces/api/user'
+import { useUser } from 'context/user-context'
+import useMediaQuery from 'lib/use-media-query'
 import Layout from 'components/Layout'
 import ErrorPage from 'components/ErrorPage'
 import Loading from 'components/Loading'
 import { AvatarGroup } from 'components/Avatar'
 import { BoatName, ProfileAvatar } from 'components/Profile'
+import Button, { IconButton } from 'components/Button'
+import { BiUserPlus as AddIcon } from 'react-icons/bi'
 import classes from 'styles/daddies.module.scss'
-import useMediaQuery from 'lib/use-media-query'
-import Button from 'components/Button'
-import { useUser } from 'context/user-context'
 
 const DADDIES_QUERY = gql`
   query {
@@ -44,9 +45,14 @@ export default function Daddies() {
       <header className={classes.header}>
         <h1>Boat Daddies</h1>
         {user?.data?.roles?.includes('ADMIN') && (
-          <Button to="/daddies/add" variant="contained" color="primary">
-            Add Daddy
-          </Button>
+          <IconButton
+            to="/daddies/add"
+            variant="contained"
+            color="primary"
+            tooltip="Add a Daddy"
+          >
+            <AddIcon />
+          </IconButton>
         )}
       </header>
 

@@ -9,7 +9,7 @@ import userDataFragment from 'api/graphql/fragments/user-data'
 import { USERNAME_TESTS } from 'lib/user'
 import useAlert from 'lib/use-alert'
 import { Form, FormGroup, TextInput, useForm } from './Form'
-import CheckButton, { checkButtonContainerClass } from './CheckButton'
+import CheckButton, { CheckButtonGroup } from './CheckButton'
 import Button from './Button'
 import BoatImage from './BoatImage'
 import ProfileImage from './ProfileImage'
@@ -407,7 +407,7 @@ export default function AccountEdit({ user }: { user: User }) {
         error={isError('birthday')}
         helperText={isError('birthday') ? state.error.message : null}
       />
-      <div className={checkButtonContainerClass}>
+      <CheckButtonGroup>
         <CheckButton
           name="isBoatDaddy"
           value="true"
@@ -438,7 +438,7 @@ export default function AccountEdit({ user }: { user: User }) {
         >
           🕵 I'm looking for a Boat Daddy
         </CheckButton>
-      </div>
+      </CheckButtonGroup>
       <FormGroup
         className={!state.data?.isBoatDaddy && 'visually-hidden'}
         label="About you👨"

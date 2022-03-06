@@ -48,7 +48,14 @@ const ProfileImage: OverloadedElement<ProfileImageProps> = React.forwardRef<
         style={{ '--size': `${size}px` } as React.CSSProperties}
         ref={ref}
       >
-        <AdvancedImage cldImg={img} secure alt={alt} {...rest} />
+        <AdvancedImage
+          width={size + 'px'}
+          height={size + 'px'}
+          cldImg={img}
+          secure
+          alt={alt}
+          {...rest}
+        />
       </Component>
     )
   }
