@@ -6,7 +6,7 @@ import { render, screen } from '../test-utils'
 import Home from '../pages/index'
 import '@testing-library/jest-dom'
 
-import config from '../app.config'
+import config from '../package.json'
 import useMediaQuery from '../src/lib/use-media-query'
 
 test('two plus two is four', () => {

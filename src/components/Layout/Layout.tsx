@@ -9,7 +9,7 @@ import { useAuth } from 'context/auth-context'
 import classes from './Layout.module.scss'
 import NavAuthenticated from 'components/NavAuthenticated'
 import NavUnauthenticated from 'components/NavUnauthenticated'
-import config from '../../../app.config'
+import config from '../../../package.json'
 
 const PAGES = [
   { link: '/hail', title: 'Hail a Boat Daddy' },
