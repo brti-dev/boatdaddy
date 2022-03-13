@@ -23,14 +23,6 @@
     font-family: 'Corben';
     font-weight: bold;
     white-space: nowrap;
-
-    @include breakpoint(screen) {
-      font-size: 150%;
-    }
-
-    &:hover + img {
-      opacity: 0.9;
-    }
   }
 
   img {

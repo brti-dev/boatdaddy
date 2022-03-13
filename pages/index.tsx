@@ -21,7 +21,7 @@ export default function Home() {
           to daddies on boats nearby.
         </p>
         <div className={classes.hero}>
-          <Button to="/hail" variant="contained" color="secondary">
+          <Button to="/hail" variant="contained" color="secondary" size="large">
             Hail a Boat Daddy
           </Button>
           <Image

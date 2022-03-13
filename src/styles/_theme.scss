@@ -26,14 +26,14 @@ $color-primary-hover-light: hsl(172, 45%, 60%);
 
 $color-font-dark: white;
 $color-body-dark: #071013;
-$color-surface-dark: rgb(36, 37, 38);
+$color-surface-dark: rgb(42, 43, 44);
 $color-surface-hover-dark: color.scale($color-surface-dark, $lightness: 2%);
 $color-comment-dark: rgb(58, 59, 60);
 $color-primary-dark: $blue;
 $color-primary-hover-dark: $lightblue;
 
 $color-secondary: $pink;
-$color-secondary-hover: color.scale($color-secondary, $lightness: 30%);
+$color-secondary-hover: color.scale($color-secondary, $lightness: 15%);
 
 // Media query based on client preference
 

@@ -67,7 +67,9 @@ function Layout({
       <SkipNavLink />
       <header id="top" className={classes.header}>
         <h1>
-          <Link href="/">🛥️👨</Link>
+          <Link href="/" aria-label="Boat Daddy home page">
+            🛥️👨
+          </Link>
         </h1>
         <Session />
       </header>

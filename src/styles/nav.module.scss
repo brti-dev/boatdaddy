@@ -1,0 +1,11 @@
+@use 'breakpoint' as *;
+
+.dialog {
+  @include breakpoint(screen) {
+    max-width: 500px;
+  }
+}
+
+.heading {
+  margin-top: 0;
+}

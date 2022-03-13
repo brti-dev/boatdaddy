@@ -1,12 +1,13 @@
 import { useState, useEffect, useReducer, useRef } from 'react'
 
 import useAlert from 'lib/use-alert'
-import { Form, SubmitRow } from './Form'
-import Button from './Button'
-import CheckButton, { checkButtonContainerClass } from './CheckButton'
-import Dialog from './Dialog'
-import VisuallyHidden from './VisuallyHidden'
+import { Form, SubmitRow } from 'components/Form'
+import Button from 'components/Button'
+import CheckButton, { CheckButtonGroup } from 'components/CheckButton'
+import Dialog, { CloseButton } from 'components/Dialog'
 import { useAuth, AuthBody } from 'context/auth-context'
+
+import classes from 'styles/nav.module.scss'
 
 const GoogleIcon = () => (
   <svg
@@ -203,20 +204,17 @@ export default function NavUnauthenticated() {
       <Dialog
         isOpen={signInState.opened}
         onDismiss={closeSignIn}
-        className="surface"
+        className={classes.dialog}
         aria-label="sign in"
-        style={{ maxWidth: 500 }}
       >
-        <button className="close-button" onClick={closeSignIn}>
-          <VisuallyHidden>Close</VisuallyHidden>
-          <span aria-hidden>×</span>
-        </button>
+        <CloseButton onClick={closeSignIn} size="large" />
         {signInState.show === 'signin' ? (
           <Form onSubmit={submitPasswordSignIn}>
-            <h2>Hello, Daddy</h2>
+            <h2 className={classes.heading}>Hello, Daddy</h2>
             <Alert />
             <Button
-              variant="outlined"
+              variant="contained"
+              color="secondary"
               loading={signInState.loading}
               disabled={!enabledLoginMethods.MOCK}
               onClick={mockLogin}
@@ -225,7 +223,8 @@ export default function NavUnauthenticated() {
               Mock Sign-In (Test User)
             </Button>
             <Button
-              variant="outlined"
+              variant="contained"
+              color="secondary"
               loading={signInState.loading}
               disabled={!enabledLoginMethods.GOOGLE}
               onClick={googleLogin}
@@ -305,14 +304,14 @@ export default function NavUnauthenticated() {
               id="sessionform__birthdate"
               required
             />
-            <div className={checkButtonContainerClass}>
+            <CheckButtonGroup>
               <CheckButton name="gender" value="male">
                 👨 I'm a daddy
               </CheckButton>
               <CheckButton name="has_boat" value="true">
                 🛥️ I have a boat
               </CheckButton>
-            </div>
+            </CheckButtonGroup>
             <SubmitRow>
               <Button
                 type="submit"

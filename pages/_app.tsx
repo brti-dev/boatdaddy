@@ -9,14 +9,14 @@ import { UserProvider, useUser } from 'context/user-context'
 import graphQlFetch from 'api/graphql/fetch'
 import ErrorPage from 'components/ErrorPage'
 import Layout from 'components/Layout'
-import Dialog from 'components/Dialog'
-import VisuallyHidden from 'components/VisuallyHidden'
+import Dialog, { CloseButton } from 'components/Dialog'
 import Loading from 'components/Loading'
 import Button from 'components/Button'
 
 import 'normalize.css'
 import 'styles/global.scss'
 import 'styles/custom.scss'
+import classes from 'styles/nav.module.scss'
 
 const DEFAULT_LAT = 41.49
 const DEFAULT_LONG = -73.45
@@ -195,25 +195,33 @@ function GeolocationChecker({ children }) {
       <Dialog
         isOpen={open}
         onDismiss={() => setLoc('default')}
-        className="surface"
+        className={classes.dialog}
         aria-label="set your location"
-        style={{ maxWidth: 450 }}
       >
-        <button className="close-button" onClick={() => setLoc('default')}>
-          <VisuallyHidden>Close</VisuallyHidden>
-          <span aria-hidden>×</span>
-        </button>
+        <CloseButton onClick={() => setLoc('default')} />
 
-        <h2>Welcome Back</h2>
+        <h2 className={classes.heading}>Welcome Back</h2>
         <p>We use your location to pair you with nearby riders and drivers.</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
-          <Button variant="outlined" onClick={() => setLoc('auto')}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setLoc('auto')}
+          >
             Find my current location for me
           </Button>
-          <Button variant="outlined" onClick={() => setLoc('manual')}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setLoc('manual')}
+          >
             Set my location manually
           </Button>
-          <Button variant="outlined" onClick={() => setLoc('default')}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setLoc('default')}
+          >
             Don't use my location
           </Button>
         </div>

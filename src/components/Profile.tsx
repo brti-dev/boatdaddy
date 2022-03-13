@@ -152,6 +152,7 @@ function Profile({ user }: { user: User }) {
           <Button
             variant="contained"
             color="secondary"
+            size="large"
             to={`/hail/@${user.username}`}
             className={classes.hailButton}
           >

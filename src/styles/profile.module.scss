@@ -1,3 +1,5 @@
+@use 'breakpoint' as *;
+
 .profile {
   display: flex;
   flex-direction: column;
@@ -30,9 +32,14 @@
 .hail {
   margin-top: 1em;
 }
+
 .hailButton {
   font-family: Corben;
   font-weight: bold;
+
+  @include breakpoint(mobile) {
+    width: 100%;
+  }
 }
 
 .boatName {
