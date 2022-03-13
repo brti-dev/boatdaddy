@@ -16,6 +16,7 @@ import Button from 'components/Button'
 
 import 'normalize.css'
 import 'styles/global.scss'
+import 'styles/custom.scss'
 
 const DEFAULT_LAT = 41.49
 const DEFAULT_LONG = -73.45
