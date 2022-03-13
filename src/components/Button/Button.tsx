@@ -51,6 +51,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
     `color--${color}`,
     `size--${size}`,
     icon && 'button__icon',
+    !!to && 'no-hover',
     className
   )
 

@@ -29,7 +29,7 @@ $radius: 0.13rem;
   --color-success: #{$green};
   --spacing: #{$spacing-small};
   --radius: #{$radius};
-  --shadow: 2px 2px 5px #{$color-comment-dark};
+  --shadow: 2px 2px 2px #3a3b3c57;
   --input-height: 1.8rem;
   --input-height-small: 1.4rem;
   --input-height-large: 2.2rem;
@@ -230,7 +230,7 @@ a,
     color: var(--color-secondary);
   }
 
-  &:hover {
+  &:hover:not(.no-hover) {
     color: var(--color-primary-hover);
     --color-border: var(--color-primary-hover);
     text-decoration: underline;
@@ -438,10 +438,9 @@ textarea.input {
 
 .button {
   display: inline-flex;
-  gap: 0.5em;
+  justify-content: center;
   vertical-align: middle;
   align-items: center;
-  justify-content: center;
   padding: 0;
   cursor: pointer;
 
@@ -473,7 +472,8 @@ textarea.input {
     border-radius: 50%;
     width: var(--input-height);
 
-    &.variant--default {
+    &.variant--default,
+    &.variant--close {
       box-shadow: none !important;
     }
 
@@ -491,11 +491,15 @@ textarea.input {
   }
 
   .text-content {
+    display: flex;
+    gap: 0.5em;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
     padding: 0 var(--input-padding);
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    display: inline-block;
   }
 }
 
