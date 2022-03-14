@@ -14,7 +14,7 @@
     "clean": "npx rimraf .next out",
     "#db:seed": "Use API playground: `userDbSeed`",
     "db:cli": "heroku pg:psql postgresql-parallel-93526 --app boatdaddy-db",
-    "db:killconnections": "heroku pg:killall postgresql-parallel-93526 --app boatdaddy-db",
+    "db:kill": "heroku pg:killall postgresql-parallel-93526 --app boatdaddy-db",
     "test": "jest --watch"
   },
   "dependencies": {

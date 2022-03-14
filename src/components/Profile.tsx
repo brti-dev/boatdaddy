@@ -25,6 +25,8 @@ export function BoatName({ children: boatName, ...rest }: BoatNameProps) {
 
 /**
  * An avatar of a user's profile image or their boat
+ *
+ * @prop {number=40} size In pixels
  */
 export const ProfileAvatar = React.forwardRef<
   HTMLDivElement,
@@ -44,7 +46,6 @@ export const ProfileAvatar = React.forwardRef<
     size = 40,
     ...rest
   } = props
-  console.log('ProfileAvatar', props)
 
   let initials: string
   let label = alt || username

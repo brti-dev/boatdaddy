@@ -1,3 +1,10 @@
-const cloudinary = require('cloudinary').v2
+// const cloudinary = require('cloudinary').v2
+import { Cloudinary } from '@cloudinary/url-gen'
 
-export default cloudinary
+const cld = new Cloudinary({
+  cloud: {
+    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+  },
+})
+
+export default cld

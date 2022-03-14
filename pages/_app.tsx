@@ -198,7 +198,7 @@ function GeolocationChecker({ children }) {
         className={classes.dialog}
         aria-label="set your location"
       >
-        <CloseButton onClick={() => setLoc('default')} />
+        <CloseButton onClick={() => setLoc('default')} size="large" />
 
         <h2 className={classes.heading}>Welcome Back</h2>
         <p>We use your location to pair you with nearby riders and drivers.</p>

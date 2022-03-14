@@ -5,11 +5,11 @@ export type Roles = Role[]
 export type Provider = 'GOOGLE' | 'MOCK' | 'PASSWORD'
 
 export interface Profile {
-  aboutBoat: string | null
-  bio: string | null
+  aboutBoat: string
+  bio: string
   birthday: any
-  boatImage: string | null
-  boatName: string | null
+  boatImage: string
+  boatName: string
   createdAt: any
   isBoatDaddy: boolean
   name: string
@@ -26,7 +26,7 @@ export type User = {
   roles: Roles
   createdAt: any
   updatedAt: any
-  profile?: Profile
+  profile?: Partial<Profile>
   longitude: number
   latitude: number
 }
