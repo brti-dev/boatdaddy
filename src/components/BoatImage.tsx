@@ -1,26 +1,40 @@
-import { Image } from 'cloudinary-react'
+import { AdvancedImage } from '@cloudinary/react'
+import { fill } from '@cloudinary/url-gen/actions/resize'
+
+import cld from 'lib/cloudinary'
+
+export type BoatImageProps = {
+  src: string
+  alt?: string
+  height?: number
+  width?: number
+  [x: string]: any
+}
 
 export default function BoatImage({
   src,
   alt = 'Take a good hard look at this boat',
-  ...rest
-}: {
-  src: string
-  alt?: string
-} & React.ComponentPropsWithoutRef<Image>) {
-  if (src.includes('cloudinaryPublicId=')) {
-    const publicId = src.replace('cloudinaryPublicId=', '')
+  ...props
+}: BoatImageProps) {
+  const { width, height, ...rest } = props
 
-    return (
-      <Image
-        cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-        publicId={publicId}
-        secure
-        alt={alt}
-        {...rest}
-      />
-    )
+  if (src.includes('cloudinaryPublicId=')) {
+    let img = cld
+      .image(src.replace('cloudinaryPublicId=', ''))
+      .quality(rest.quality || 'auto')
+
+    if (width || height) img = img.resize(fill().width(width).height(height))
+
+    return <AdvancedImage alt={alt} cldImg={img} />
   }
 
-  return <img src={src} alt={alt} {...rest} />
+  return (
+    <img
+      src={src}
+      alt={alt}
+      width={!!width && width + 'px'}
+      height={!!height && height + 'px'}
+      {...rest}
+    />
+  )
 }

@@ -19,38 +19,23 @@
 }
 
 .hail {
+  --padding: 5vh;
+
   position: fixed;
-  bottom: 5vh;
-  left: 5vh;
-  width: 100%;
-  overflow: auto;
+  bottom: var(--padding);
+  left: var(--padding);
+  width: calc(100vw - (var(--padding) * 2));
+
+  h5 {
+    margin: 0 0 0.5em;
+  }
 }
 
 .driverCards {
   display: flex;
   gap: 1em;
-}
-.driverCard {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-
-  & .heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-
-    & > * {
-      margin: 0;
-      padding: 0;
-    }
-  }
-
-  & .details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-  }
+  height: 20vh;
+  overflow: auto;
 }
 
 .marker_center {

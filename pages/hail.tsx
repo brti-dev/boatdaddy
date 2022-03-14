@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLazyQuery, gql } from '@apollo/client'
 import router, { useRouter } from 'next/router'
-import Link from 'next/link'
 
 import {
   NearbyDrivers_variables,
@@ -10,11 +9,11 @@ import {
 } from 'interfaces/api/user'
 import userDataFragment from 'api/graphql/fragments/user-data'
 import { useUser } from 'context/user-context'
-import Layout from 'components/Layout'
 import Button from 'components/Button'
+import DriverCard from 'components/DriverCard'
+import Layout from 'components/Layout'
 import Map, { MapMarker, ViewportState } from 'components/Map'
-import { ProfileAvatar, BoatName } from 'components/Profile'
-import BoatImage from 'components/BoatImage'
+import { ProfileAvatar } from 'components/Profile'
 import classes from 'styles/map.module.scss'
 
 const NEARBY_DRIVERS_QUERY = gql`
@@ -25,8 +24,6 @@ const NEARBY_DRIVERS_QUERY = gql`
   }
   ${userDataFragment}
 `
-
-const HAIL = ['DonSoprano', 'G.O.B.', 'CommodoreHull', 'Fuuuuuuu']
 
 export default function Hail() {
   const {
@@ -39,8 +36,8 @@ export default function Hail() {
     NearbyDrivers_variables
   >(NEARBY_DRIVERS_QUERY)
 
-  const setDriver = driver =>
-    router.replace(driver ? '/hail?driver=' + driver : '/hail', undefined, {
+  const setDriver = (driver: string) =>
+    router.replace(driver ? `/hail?driver=${driver}` : '/hail', undefined, {
       shallow: true,
     })
 
@@ -134,50 +131,6 @@ function NearbyList({
       {data.nearbyDrivers.map(user => (
         <DriverCard user={user} key={user.id} />
       ))}
-    </div>
-  )
-}
-
-function DriverCard({ user }: { user: User }) {
-  return (
-    <div className={classes.driverCard}>
-      <div className="heading">
-        <h5>{user.profile.name ?? user.username}</h5>
-        <ProfileAvatar user={user} />
-      </div>
-      <div className="details">
-        <div>
-          <div className="icon">@</div>
-          <span>{user.username}</span>
-        </div>
-        <div>
-          <div className="icon">📍</div>
-          <span>New York</span>
-        </div>
-        <div>
-          <div className="icon">🛥️</div>
-          <span>
-            <BoatName>{user.profile.boatName}</BoatName>
-          </span>
-        </div>
-      </div>
-      {user.profile.boatImage && (
-        <BoatImage
-          src={user.profile.boatImage}
-          alt={`${user.username}'s boat`}
-          dpr="auto"
-          quality="auto"
-          gravity="auto"
-        />
-      )}
-      <Button
-        variant="contained"
-        color="primary"
-        to={`/hail/?driver=${user.username}`}
-      >
-        Hail {user.username}
-      </Button>
-      <Button to={`/@${user.username}`}>More information</Button>
     </div>
   )
 }
