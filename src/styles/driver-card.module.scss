@@ -1,0 +1,70 @@
+.driverCard {
+  --gap: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--gap);
+  box-sizing: border-box;
+  width: calc(200px + var(--gap) * 4);
+  margin: 0;
+  padding: calc(var(--gap) * 2);
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h5 {
+      margin: 0;
+      padding: 0;
+      font-size: 80%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+
+  & dl {
+    display: grid;
+    grid-template-columns: auto 100%;
+    column-gap: var(--gap);
+    align-items: center;
+    margin: 0;
+    padding: 0;
+
+    & dt {
+      margin: 0;
+      padding: 0;
+      font-size: 80%;
+      color: var(--color-primary);
+    }
+
+    & dd {
+      margin: 0;
+      padding: 0;
+      font-size: 70%;
+      font-weight: 600;
+    }
+  }
+
+  footer {
+    display: flex;
+    gap: var(--gap);
+    justify-content: space-between;
+    align-items: center;
+
+    & > *:first-child {
+      flex-basis: 100%;
+
+      & + * {
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+.boatImage {
+  width: 200px;
+  height: 133px;
+}
