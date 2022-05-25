@@ -1,12 +1,18 @@
-import { SyntheticEvent, useEffect } from 'react'
+import {
+  Button,
+  Form,
+  FormGroup,
+  SubmitRow,
+  TextInput,
+  useAlert,
+  useForm,
+} from 'matterial'
+import * as React from 'react'
 
 import userDataFragment from 'api/graphql/fragments/user-data'
-import useAlert from 'lib/use-alert'
 import { useMutation } from 'api/graphql/hooks'
 import Layout from 'components/Layout'
 import AccountForm from 'components/AccountForm'
-import { Form, FormGroup, TextInput, useForm, SubmitRow } from 'components/Form'
-import Button from 'components/Button'
 
 const NEW_USER_MUTATION = `
   mutation userAdd($input: UserAddInput!) {
@@ -29,7 +35,7 @@ export default function AddDaddy() {
   const [submitNewUser, { data, error, loading }] =
     useMutation(NEW_USER_MUTATION)
 
-  const handleSubmit = async (event: SyntheticEvent) => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     setAlert(null)
@@ -37,7 +43,7 @@ export default function AddDaddy() {
     submitNewUser({ input: form.data })
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!!form.error) {
       console.error(form.error.message)
       setAlert({ severity: 'error', message: form.error.message })

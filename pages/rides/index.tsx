@@ -1,13 +1,12 @@
-import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
+import { AvatarGroup, DateTime } from 'matterial'
+import Link from 'next/link'
 import ContentLoader from 'react-content-loader'
 
 import { RideList_data } from 'interfaces/api/ride'
 import { useUser } from 'context/user-context'
 import Layout from 'components/Layout'
 import ErrorPage from 'components/ErrorPage'
-import Date from 'components/Date'
-import { AvatarGroup } from 'components/Avatar'
 import { BoatName, ProfileAvatar } from 'components/Profile'
 
 const RIDES_QUERY = gql`
@@ -84,7 +83,7 @@ const Rides = () => {
             <li key={ride.id}>
               <Link href={`/rides/${ride.id}`}>
                 <a style={{ display: 'flex', gap: '1em' }}>
-                  <Date date={ride.startedAt} />
+                  <DateTime date={ride.startedAt} />
                   <AvatarGroup>
                     <ProfileAvatar user={ride.driver.user} tooltip />
                     <ProfileAvatar boat user={ride.driver.user} tooltip />

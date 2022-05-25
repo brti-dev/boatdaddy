@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
 import { useLazyQuery, gql } from '@apollo/client'
+import { Button } from 'matterial'
 import router, { useRouter } from 'next/router'
+import * as React from 'react'
 
 import {
   NearbyDrivers_variables,
   NearbyDrivers_data,
-  User,
 } from 'interfaces/api/user'
 import userDataFragment from 'api/graphql/fragments/user-data'
 import { useUser } from 'context/user-context'
-import Button from 'components/Button'
 import DriverCard from 'components/DriverCard'
 import Layout from 'components/Layout'
 import Map, { MapMarker, ViewportState } from 'components/Map'
@@ -30,7 +29,7 @@ export default function Hail() {
     query: { driver },
   } = useRouter()
   const user = useUser()
-  const [mapState, setMapState] = useState<ViewportState>(null)
+  const [mapState, setMapState] = React.useState<ViewportState>(null)
   const [getNearby, nearby] = useLazyQuery<
     NearbyDrivers_data,
     NearbyDrivers_variables
@@ -41,7 +40,7 @@ export default function Hail() {
       shallow: true,
     })
 
-  useEffect(() => {
+  React.useEffect(() => {
     console.log('map state effect', mapState)
     if (!mapState?.bounds) {
       return

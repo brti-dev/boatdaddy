@@ -1,14 +1,13 @@
-import React from 'react'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { gql, useQuery } from '@apollo/client'
+import { AvatarGroup, DateTime } from 'matterial'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import * as React from 'react'
 
 import { Ride_data } from 'interfaces/api/ride'
 import Layout from 'components/Layout'
 import ErrorPage from 'components/ErrorPage'
 import Loading from 'components/Loading'
-import { AvatarGroup } from 'components/Avatar'
-import Date from 'components/Date'
 import { ProfileAvatar } from 'components/Profile'
 
 const RIDE_QUERY = gql`
@@ -63,7 +62,7 @@ export default function Ride() {
   return (
     <Layout title={`Ride on ${data.ride.startedAt.substring(0, 10)}`}>
       <h1>
-        Ride on <Date date={data.ride.startedAt} />
+        Ride on <DateTime date={data.ride.startedAt} />
       </h1>
       <div style={{ display: 'flex', gap: '1em' }}>
         <Link href={`/@${data.ride.rider.user.username}`}>
@@ -88,13 +87,13 @@ export default function Ride() {
       <dl>
         <dt>Started at</dt>
         <dd>
-          <Date date={data.ride.startedAt} />
+          <DateTime date={data.ride.startedAt} />
         </dd>
         {data.ride.finishedAt && (
           <>
             <dt>Finished at</dt>
             <dd>
-              <Date date={data.ride.finishedAt} />
+              <DateTime date={data.ride.finishedAt} />
             </dd>
           </>
         )}

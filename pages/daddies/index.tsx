@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client'
+import { AvatarGroup, Button, Tooltip } from 'matterial'
 import Link from 'next/link'
 
 import { UserList_data } from 'interfaces/api/user'
@@ -7,9 +8,7 @@ import useMediaQuery from 'lib/use-media-query'
 import Layout from 'components/Layout'
 import ErrorPage from 'components/ErrorPage'
 import Loading from 'components/Loading'
-import { AvatarGroup } from 'components/Avatar'
 import { BoatName, ProfileAvatar } from 'components/Profile'
-import Button, { IconButton } from 'components/Button'
 import { BiUserPlus as AddIcon } from 'react-icons/bi'
 import classes from 'styles/daddies.module.scss'
 
@@ -45,14 +44,16 @@ export default function Daddies() {
       <header className={classes.header}>
         <h1>Boat Daddies</h1>
         {user?.data?.roles?.includes('ADMIN') && (
-          <IconButton
-            to="/daddies/add"
-            variant="contained"
-            color="primary"
-            tooltip="Add a Daddy"
-          >
-            <AddIcon />
-          </IconButton>
+          <Tooltip label="Add a Daddy">
+            <Button
+              to="/daddies/add"
+              variant="contained"
+              shape="circle"
+              color="primary"
+            >
+              <AddIcon />
+            </Button>
+          </Tooltip>
         )}
       </header>
 

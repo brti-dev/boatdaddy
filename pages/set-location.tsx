@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { Button } from 'matterial'
 import { useRouter } from 'next/router'
+import * as React from 'react'
 
 import { UserUpdateInput_input } from 'interfaces/api/user'
 import { useUser } from 'context/user-context'
@@ -7,7 +8,6 @@ import graphQlFetch from 'api/graphql/fetch'
 import Layout from 'components/Layout'
 import Map from 'components/Map'
 import classes from 'styles/map.module.scss'
-import Button from 'components/Button'
 import ErrorPage from 'components/ErrorPage'
 
 type UserUpdate_data = {
@@ -36,7 +36,7 @@ export default function SetLocation() {
   const user = useUser()
   const router = useRouter()
 
-  const [state, setState] = useState({
+  const [state, setState] = React.useState({
     latitude: user.data.latitude,
     longitude: user.data.longitude,
     moving: false,

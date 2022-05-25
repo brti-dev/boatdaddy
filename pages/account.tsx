@@ -1,6 +1,6 @@
 import { useUser } from 'context/user-context'
-import Layout from 'components/Layout'
 import AccountForm from 'components/AccountForm'
+import Layout from 'components/Layout'
 
 export default function ProfileEdit() {
   const { data } = useUser()
