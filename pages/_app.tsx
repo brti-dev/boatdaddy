@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
 import { ApolloProvider } from '@apollo/client'
+import { Button, Dialog, CloseButton } from 'matterial'
+import type { AppProps /*, AppContext */ } from 'next/app'
 import { useRouter } from 'next/router'
+import * as React from 'react'
 
 import { UserUpdateInput_input } from 'interfaces/api/user'
 import { useApollo } from 'api/graphql/apollo'
@@ -9,12 +11,10 @@ import { UserProvider, useUser } from 'context/user-context'
 import graphQlFetch from 'api/graphql/fetch'
 import ErrorPage from 'components/ErrorPage'
 import Layout from 'components/Layout'
-import Dialog, { CloseButton } from 'components/Dialog'
 import Loading from 'components/Loading'
-import Button from 'components/Button'
 
 import 'normalize.css'
-import 'styles/global.scss'
+import 'matterial/styles/global.scss'
 import 'styles/custom.scss'
 import classes from 'styles/nav.module.scss'
 
@@ -42,11 +42,8 @@ const updateUserData = async (vars: UserUpdateInput_input) => {
   console.log(userUpdateRes)
 }
 
-/**
- * @prop Component - The active page; when navigating between routes, Component will change to the new page. Therefore, any props you send to Component will be received by the page.
- * @prop pageProps - An object with the initial props that were preloaded for your page by one of Nextjs data fetching methods, otherwise it's an empty object.
- */
-function MyApp({ Component, pageProps }) {
+export default function App({ Component: Component_, pageProps }: AppProps) {
+  const Component = Component_ as any
   const client = useApollo()
 
   const Page = () => {
@@ -136,9 +133,9 @@ function GeolocationChecker({ children }) {
   const { data, geolocationAsk } = useAuth()
   const router = useRouter()
 
-  const [open, setOpen] = useState(geolocationAsk.current)
+  const [open, setOpen] = React.useState(geolocationAsk.current)
 
-  useEffect(() => {
+  React.useEffect(() => {
     setOpen(geolocationAsk.current)
   }, [geolocationAsk.current])
 
@@ -193,7 +190,7 @@ function GeolocationChecker({ children }) {
   return (
     <>
       <Dialog
-        isOpen={open}
+        active={open}
         onDismiss={() => setLoc('default')}
         className={classes.dialog}
         aria-label="set your location"
@@ -242,5 +239,3 @@ function GeolocationChecker({ children }) {
 
 //   return { ...appProps }
 // }
-
-export default MyApp

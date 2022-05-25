@@ -1,10 +1,8 @@
-import { BiInfoCircle as InfoIcon } from 'react-icons/bi'
+import { Tooltip, Button, InfoIcon } from 'matterial'
 
 import { User } from 'interfaces/api/user'
 import BoatImage from 'components/BoatImage'
-import Button, { IconButton } from 'components/Button'
 import { ProfileAvatar, BoatName } from 'components/Profile'
-import Tooltip from 'components/Tooltip'
 import classes from 'styles/driver-card.module.scss'
 
 export default function DriverCard({ user }: { user: User }) {
@@ -43,11 +41,11 @@ export default function DriverCard({ user }: { user: User }) {
           color="primary"
           to={`/hail/?driver=${user.username}`}
         >
-          Hail {user.username} dfoaj; jjifaifijjaijfdoijdas
+          Hail {user.username}
         </Button>
-        <IconButton size="large" to={`/@${user.username}`}>
+        <Button shape="circle" size="large" to={`/@${user.username}`}>
           <InfoIcon />
-        </IconButton>
+        </Button>
       </footer>
     </div>
   )

@@ -1,8 +1,8 @@
+import { Menu, MenuList, MenuButton, MenuItem } from 'matterial'
 import { useRouter } from 'next/router'
 
 import { useAuth } from 'context/auth-context'
 import { useUser } from 'context/user-context'
-import { Menu, MenuList, MenuButton, MenuItem } from './Menu'
 import { ProfileAvatar } from './Profile'
 
 export default function NavAuthenticated() {

@@ -35,22 +35,6 @@ h1,
   }
 }
 
-.modal,
-[data-reach-dialog-content] {
-  width: 100%;
-  height: 100vh;
-  margin: 0;
-  box-sizing: border-box;
-  outline: none;
-  transition: all 0.3s ease;
-
-  @include breakpoint(screen) {
-    width: 50vw;
-    height: auto;
-    margin: 10vh auto;
-  }
-}
-
 .overlay,
 [data-reach-dialog-overlay] {
   z-index: 100;

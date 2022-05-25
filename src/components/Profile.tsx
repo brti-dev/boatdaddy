@@ -1,13 +1,12 @@
-import * as React from 'react'
 import intervalToDuration from 'date-fns/intervalToDuration'
 import formatDistance from 'date-fns/formatDistance'
 import parseISO from 'date-fns/parseISO'
+import { Button, Avatar, AvatarProps } from 'matterial'
+import * as React from 'react'
 
 import { User } from 'interfaces/user'
-import Button from './Button'
 import ProfileImage from './ProfileImage'
 import BoatImage from './BoatImage'
-import Avatar, { AvatarProps } from './Avatar'
 import Map, { MapMarker } from './Map'
 import classes from 'styles/profile.module.scss'
 

@@ -1,9 +1,9 @@
+import { Button } from 'matterial'
 import Head from 'next/head'
 import Image from 'next/image'
 
 import Layout from 'components/Layout'
 import classes from 'styles/index.module.scss'
-import Button from 'components/Button'
 
 export default function Home() {
   return (

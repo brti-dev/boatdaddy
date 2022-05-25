@@ -22,12 +22,7 @@
     "@cloudinary/react": "^1.1.0",
     "@cloudinary/url-gen": "^1.6.0",
     "@prisma/client": "^2.27.0",
-    "@reach/alert": "^0.15.0",
-    "@reach/dialog": "^0.15.0",
-    "@reach/menu-button": "^0.15.3",
     "@reach/skip-nav": "^0.15.0",
-    "@reach/tooltip": "^0.13.2",
-    "@reach/visually-hidden": "^0.15.0",
     "apollo-server-micro": "^3.1.2",
     "class-validator": "^0.13.1",
     "cloudinary": "^1.26.3",
@@ -37,19 +32,18 @@
     "google-auth-library": "^7.14.0",
     "graphql": "^15.5.1",
     "jsonwebtoken": "^8.5.1",
+    "matterial": "^2.2.2",
     "micro": "^9.3.4",
-    "next": "^12.1.0",
+    "next": "^12.1.5",
     "normalize.css": "^8.0.1",
-    "react": "17.0.2",
+    "react": "^18.1.0",
     "react-content-loader": "^6.0.3",
-    "react-dom": "17.0.2",
+    "react-dom": "^18.1.0",
     "react-icons": "^4.2.0",
     "react-map-gl": "^6.1.16",
-    "react-test-renderer": "^17.0.2",
     "reflect-metadata": "^0.1.13",
     "sass": "^1.32.8",
-    "swr": "^0.5.6",
-    "type-graphql": "^1.1.1"
+    "swr": "^0.5.6"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.2",
@@ -60,6 +54,7 @@
     "@types/react-dom": "^17.0.5",
     "open": "^8.0.4",
     "prisma": "^2.27.0",
+    "react-test-renderer": "^17.0.2",
     "typescript": "^4.5.5"
   }
 }

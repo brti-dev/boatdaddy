@@ -98,7 +98,7 @@ function Layout({
           >
             &copy;2021 <span style={{ opacity: 0.33 }}>|</span> Amanda and
             Maranda, CEOs <span style={{ opacity: 0.33 }}>|</span>{' '}
-            <a href="https://mattberti.com">Matt Berti</a> production
+            <a href="https://brti.dev">Matt Berti</a> production
           </div>
         </footer>
       )}

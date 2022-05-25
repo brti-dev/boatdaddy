@@ -1,10 +1,15 @@
-import { useState, useEffect, useReducer, useRef } from 'react'
+import {
+  Button,
+  CheckButton,
+  CheckButtonGroup,
+  CloseButton,
+  Dialog,
+  Form,
+  SubmitRow,
+  useAlert,
+} from 'matterial'
+import * as React from 'react'
 
-import useAlert from 'lib/use-alert'
-import { Form, SubmitRow } from 'components/Form'
-import Button from 'components/Button'
-import CheckButton, { CheckButtonGroup } from 'components/CheckButton'
-import Dialog, { CloseButton } from 'components/Dialog'
 import { useAuth, AuthBody } from 'context/auth-context'
 
 import classes from 'styles/nav.module.scss'
@@ -71,12 +76,12 @@ export default function NavUnauthenticated() {
   const auth = useAuth()
 
   // Populate as the variables and libraries are loaded
-  const [enabledLoginMethods, setEnabledLoginMethods] = useState({
+  const [enabledLoginMethods, setEnabledLoginMethods] = React.useState({
     MOCK: true,
     GOOGLE: false,
   })
 
-  useEffect(() => {
+  React.useEffect(() => {
     let mounted = true
 
     loadGoogleOauth()
@@ -92,7 +97,7 @@ export default function NavUnauthenticated() {
     }
   }, [])
 
-  const [signInState, setSignInState] = useReducer(
+  const [signInState, setSignInState] = React.useReducer(
     (state: SignInState, newState: SignInNewState) => ({
       ...state,
       ...newState,
@@ -104,9 +109,9 @@ export default function NavUnauthenticated() {
   const closeSignIn = () => setSignInState({ opened: false })
 
   // Focus on first form element when the modal opens
-  const formFocusRef = useRef<HTMLInputElement>(null)
+  const formFocusRef = React.useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (signInState.opened && formFocusRef.current) {
       formFocusRef.current.focus()
     }
@@ -202,7 +207,7 @@ export default function NavUnauthenticated() {
         Sign In
       </Button>
       <Dialog
-        isOpen={signInState.opened}
+        active={signInState.opened}
         onDismiss={closeSignIn}
         className={classes.dialog}
         aria-label="sign in"
