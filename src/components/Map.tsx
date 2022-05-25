@@ -25,7 +25,7 @@ export interface MapProps {
   zoom?: number
   includeNavigationControls?: boolean
   style?: React.CSSProperties
-  onMove?: () => void
+  onMove?: (newState: ViewportState) => void
   onChange?: (viewport: ViewportState) => void
   children?: React.ReactChild | React.ReactChild[]
 }
