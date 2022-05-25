@@ -5,6 +5,21 @@
  */
 
 @use 'breakpoint' as *;
+@use 'fonts' as *;
+@use 'theme' as *;
+@use 'sass:color';
+
+:root {
+  --color-primary: hsl(172, 45%, 54%);
+  --color-primary-hover: hsl(172, 45%, 60%);
+  --color-secondary: #ea9ab2;
+  --color-secondary-hover: color.scale($color-secondary, $lightness: 15%);
+
+  @include theme(dark) {
+    --color-primary: hsl(196, 68%, 55%);
+    --color-primary-hover: hsl(196, 68%, 65%);
+  }
+}
 
 h1,
 h2,
