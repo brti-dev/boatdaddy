@@ -66,16 +66,9 @@ export const ProfileAvatar = React.forwardRef<
   }
 
   return (
-    <ProfileImage
-      alt={label}
-      src={src}
-      size={size}
-      as={Avatar}
-      ref={ref}
-      {...rest}
-    >
-      {initials}
-    </ProfileImage>
+    <Avatar alt={label} size={size} ref={ref} {...rest}>
+      {src ? <ProfileImage src={src} alt={label} size={size} /> : { initials }}
+    </Avatar>
   )
 })
 
