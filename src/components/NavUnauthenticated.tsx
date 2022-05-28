@@ -210,9 +210,9 @@ export default function NavUnauthenticated() {
         active={signInState.opened}
         onDismiss={closeSignIn}
         className={classes.dialog}
-        aria-label="sign in"
+        label="sign in"
+        closable
       >
-        <CloseButton onClick={closeSignIn} size="large" />
         {signInState.show === 'signin' ? (
           <Form onSubmit={submitPasswordSignIn}>
             <h2 className={classes.heading}>Hello, Daddy</h2>
@@ -223,7 +223,6 @@ export default function NavUnauthenticated() {
               loading={signInState.loading}
               disabled={!enabledLoginMethods.MOCK}
               onClick={mockLogin}
-              style={{ justifyContent: 'center' }}
             >
               Mock Sign-In (Test User)
             </Button>
@@ -233,9 +232,8 @@ export default function NavUnauthenticated() {
               loading={signInState.loading}
               disabled={!enabledLoginMethods.GOOGLE}
               onClick={googleLogin}
-              style={{ justifyContent: 'center' }}
+              prepend={<GoogleIcon />}
             >
-              <GoogleIcon />
               <span>Sign in with Google</span>
             </Button>
             {/* <label htmlFor="sessionform__email">Email</label>
