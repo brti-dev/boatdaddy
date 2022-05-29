@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
-import { getBoundsOfDistance } from 'geolib'
+// import { getBoundsOfDistance } from 'geolib'
 import ReactMap, { Marker, NavigationControl } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 

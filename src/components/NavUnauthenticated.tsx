@@ -2,7 +2,6 @@ import {
   Button,
   CheckButton,
   CheckButtonGroup,
-  CloseButton,
   Dialog,
   Form,
   SubmitRow,
