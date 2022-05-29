@@ -1,10 +1,11 @@
 import { ApolloProvider } from '@apollo/client'
-import { Button, Dialog, CloseButton } from 'matterial'
+import { Button, Container, Dialog } from 'matterial'
 import type { AppProps /*, AppContext */ } from 'next/app'
 import { useRouter } from 'next/router'
 import * as React from 'react'
 
 import { UserUpdateInput_input } from 'interfaces/api/user'
+import { RequiredChildren } from 'interfaces/children'
 import { useApollo } from 'api/graphql/apollo'
 import { AuthProvider, useAuth } from 'context/auth-context'
 import { UserProvider, useUser } from 'context/user-context'
@@ -33,14 +34,11 @@ const USER_UPDATE_MUTATION = `
   }
 `
 
-const updateUserData = async (vars: UserUpdateInput_input) => {
-  console.log('Update user', vars)
-  const userUpdateRes = await graphQlFetch<
-    UserUpdate_data,
-    UserUpdateInput_input
-  >(USER_UPDATE_MUTATION, vars)
-  console.log(userUpdateRes)
-}
+const updateUserData = (vars: UserUpdateInput_input) =>
+  graphQlFetch<UserUpdate_data, UserUpdateInput_input>(
+    USER_UPDATE_MUTATION,
+    vars
+  )
 
 export default function App({ Component: Component_, pageProps }: AppProps) {
   const Component = Component_ as any
@@ -84,12 +82,12 @@ export default function App({ Component: Component_, pageProps }: AppProps) {
 /**
  * Wrapper component for session requirement to access child components
  */
-function Auth({ children }) {
+function Auth({ children }: RequiredChildren): JSX.Element {
   const { data: auth, loading: authLoading } = useAuth()
   const { data: user, loading: userLoading } = useUser()
 
   if (auth && user) {
-    return children
+    return children as JSX.Element
   }
 
   if (authLoading || userLoading) {
@@ -107,20 +105,21 @@ function Auth({ children }) {
  * Wrapper component for ADMIN role authorization access for child components
  * @example Use of authorization requirement at /pages/admin
  */
-function Admin({ children }) {
+function Admin({ children }: RequiredChildren): JSX.Element {
   const { data } = useAuth()
   const isAdmin = !!data?.roles?.includes('ADMIN')
   console.log('Check Admin', data, 'roles', data?.roles, 'isAdmin', isAdmin)
 
   if (isAdmin) {
-    return children
+    return children as JSX.Element
   }
 
   return <Unauthorized />
 }
 
-function Unauthorized() {
+function Unauthorized(): JSX.Element {
   console.warn('unauthorized')
+
   return (
     <ErrorPage
       title="Not Authorized"
@@ -129,11 +128,14 @@ function Unauthorized() {
   )
 }
 
-function GeolocationChecker({ children }) {
+function GeolocationChecker({ children }: RequiredChildren): JSX.Element {
   const { data, geolocationAsk } = useAuth()
   const router = useRouter()
 
   const [open, setOpen] = React.useState(geolocationAsk.current)
+
+  // Backend set location
+  const [error, setError] = React.useState<null | string>(null)
 
   React.useEffect(() => {
     setOpen(geolocationAsk.current)
@@ -143,48 +145,71 @@ function GeolocationChecker({ children }) {
     geolocationAsk.current = false
     setOpen(false)
 
-    if (method == 'auto') {
-      if (!navigator.geolocation) {
-        console.warn(
-          'Geolocation is not supported by current browser; Using default position'
-        )
+    try {
+      if (method == 'auto') {
+        if (!navigator.geolocation) {
+          setError(
+            'Geolocation is not supported by current browser; Using default position'
+          )
+          updateUserData({
+            id: data.userId,
+            input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
+          })
+        } else {
+          navigator.geolocation.getCurrentPosition(
+            position => {
+              const { latitude, longitude } = position.coords
+              updateUserData({
+                id: data.userId,
+                input: { latitude, longitude },
+              })
+            },
+            () => {
+              updateUserData({
+                id: data.userId,
+                input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
+              })
+              setError(
+                'Unable to retrieve your location; Using default position'
+              )
+            }
+          )
+        }
+      } else if (method == 'manual') {
         updateUserData({
           id: data.userId,
           input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
         })
-      } else {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            const { latitude, longitude } = position.coords
-            updateUserData({
-              id: data.userId,
-              input: { latitude, longitude },
-            })
-          },
-          () => {
-            console.error(
-              'Unable to retrieve your location; Using default position'
-            )
-            updateUserData({
-              id: data.userId,
-              input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
-            })
-          }
-        )
-      }
-    } else if (method == 'manual') {
-      updateUserData({
-        id: data.userId,
-        input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
-      })
 
-      router.push('/set-location')
-    } else {
-      updateUserData({
-        id: data.userId,
-        input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
-      })
+        router.push('/set-location')
+      } else {
+        updateUserData({
+          id: data.userId,
+          input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
+        })
+      }
+    } catch (error) {
+      console.error(error)
+      setError(String(error))
     }
+  }
+
+  if (error) {
+    return (
+      <Dialog
+        active
+        onDismiss={() => setError(null)}
+        className={classes.dialog}
+        label="error"
+        closable
+      >
+        <h2 className={classes.heading}>Error</h2>
+        <p>{String(error)}</p>
+        <Container style={{ alignItems: 'flex-end' }}>
+          <Button onClick={() => setError(null)}>OK</Button>
+        </Container>
+      </Dialog>
+    )
   }
 
   return (
@@ -193,13 +218,12 @@ function GeolocationChecker({ children }) {
         active={open}
         onDismiss={() => setLoc('default')}
         className={classes.dialog}
-        aria-label="set your location"
+        label="set your location"
+        closable
       >
-        <CloseButton onClick={() => setLoc('default')} size="large" />
-
         <h2 className={classes.heading}>Welcome Back</h2>
         <p>We use your location to pair you with nearby riders and drivers.</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
+        <Container style={{ alignItems: 'stretch' }}>
           <Button
             variant="outlined"
             color="primary"
@@ -221,7 +245,7 @@ function GeolocationChecker({ children }) {
           >
             Don't use my location
           </Button>
-        </div>
+        </Container>
       </Dialog>
       {children}
     </>
