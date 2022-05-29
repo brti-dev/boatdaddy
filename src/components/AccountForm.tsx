@@ -1,16 +1,23 @@
-import { SyntheticEvent, ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useMutation, gql } from '@apollo/client'
+import {
+  Button,
+  CheckButton,
+  CheckButtonGroup,
+  Container,
+  Form,
+  FormGroup,
+  TextInput,
+  useAlert,
+  useForm,
+} from 'matterial'
 import { useRouter } from 'next/router'
+import * as React from 'react'
 
 import { User } from 'interfaces/user'
 import { CreateSignature_mutation } from 'interfaces/api/image'
 import { UserUpdateInput } from 'interfaces/api/user'
 import userDataFragment from 'api/graphql/fragments/user-data'
 import { USERNAME_TESTS } from 'lib/user'
-import useAlert from 'lib/use-alert'
-import { Form, FormGroup, TextInput, useForm } from './Form'
-import CheckButton, { CheckButtonGroup } from './CheckButton'
-import Button from './Button'
 import BoatImage from './BoatImage'
 import ProfileImage from './ProfileImage'
 
@@ -94,7 +101,23 @@ function parseInput(data: UserUpdateInput) {
   }
 }
 
-export default function AccountEdit({ user }: { user: User }) {
+/**
+ * Return a Date object in yyyy-mm-dd format
+ */
+function parseDate(date?: Date | string): string {
+  if (!date) {
+    return ''
+  }
+
+  if (typeof date === 'string') {
+    return parseDate(new Date(date))
+  }
+
+  return date.toISOString().split('T')[0]
+}
+
+export default function AccountEdit({ user }: { user: User }): JSX.Element {
+  // console.log('AccountEdit', user)
   const router = useRouter()
 
   const [createSignature] =
@@ -143,7 +166,7 @@ export default function AccountEdit({ user }: { user: User }) {
     }
   }
 
-  const [submitUpdate, { data, error, loading }] = useMutation(ACCOUNT_MUTATION)
+  const [submitUpdate, { error, loading }] = useMutation(ACCOUNT_MUTATION)
 
   const {
     form: state,
@@ -153,9 +176,8 @@ export default function AccountEdit({ user }: { user: User }) {
   } = useForm(parseData(user))
 
   // Track changes and user events that leave the page
-  const [hasChanges, setHasChanges] = useState(false)
-  const Router = useRouter()
-  useEffect(() => {
+  const [hasChanges, setHasChanges] = React.useState(false)
+  React.useEffect(() => {
     const notSaved = hasChanges
     console.log('notSaved', notSaved)
     const confirmationMessage = 'Changes you made may not be saved.'
@@ -164,9 +186,9 @@ export default function AccountEdit({ user }: { user: User }) {
       return confirmationMessage // Gecko + Webkit, Safari, Chrome etc.
     }
     const beforeRouteHandler = (url: string) => {
-      if (Router.pathname !== url && !confirm(confirmationMessage)) {
+      if (router.pathname !== url && !confirm(confirmationMessage)) {
         // to inform NProgress or something ...
-        Router.events.emit('routeChangeError')
+        router.events.emit('routeChangeError')
         // tslint:disable-next-line: no-string-throw
         throw `Route change to "${url}" was aborted (this error can be safely ignored). See https://github.com/zeit/next.js/issues/2476.`
       }
@@ -174,28 +196,27 @@ export default function AccountEdit({ user }: { user: User }) {
     if (notSaved) {
       console.log('Not saved add eh')
       window.addEventListener('beforeunload', beforeUnloadHandler)
-      Router.events.on('routeChangeStart', beforeRouteHandler)
+      router.events.on('routeChangeStart', beforeRouteHandler)
     } else {
       window.removeEventListener('beforeunload', beforeUnloadHandler)
-      Router.events.off('routeChangeStart', beforeRouteHandler)
+      router.events.off('routeChangeStart', beforeRouteHandler)
     }
     return () => {
       window.removeEventListener('beforeunload', beforeUnloadHandler)
-      Router.events.off('routeChangeStart', beforeRouteHandler)
+      router.events.off('routeChangeStart', beforeRouteHandler)
     }
   }, [hasChanges])
 
   const [Alert, setAlert] = useAlert(null)
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement>,
     value: string | number | boolean | null
   ) => {
     setHasChanges(true)
     setAlert(null)
 
     const { name } = event.target as HTMLInputElement
-    console.log('change', name, value)
 
     if (name === 'username') {
       USERNAME_TESTS.map(({ test, message }) => {
@@ -221,7 +242,7 @@ export default function AccountEdit({ user }: { user: User }) {
     doHandleChange(event, value)
   }
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event?.target?.files?.[0]) {
       const file = event.target.files[0]
 
@@ -240,7 +261,7 @@ export default function AccountEdit({ user }: { user: User }) {
     }
   }
 
-  const handleSubmit = async (event: SyntheticEvent) => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     if (!!state.error) {
@@ -282,32 +303,29 @@ export default function AccountEdit({ user }: { user: User }) {
 
     const variables = { id: user.id, input: parseInput(state.data) }
 
-    console.log('mutate', variables)
-
     setHasChanges(false)
 
-    try {
-      const res = await submitUpdate({ variables })
-      console.log('Submit res', res)
+    await submitUpdate({ variables })
+    if (!error) {
       setAlert({ message: 'Account saved', severity: 'success' })
       router.push(`/@${user.username}`)
-    } catch (err) {
-      console.error(err)
     }
   }
 
-  useEffect(() => {
-    setAlert({ message: String(error), severity: 'error' })
+  React.useEffect(() => {
+    if (error) {
+      setAlert({ message: String(error), severity: 'error' })
+    }
   }, [error])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!state.error) {
       setAlert(null)
     }
   }, [state.error])
 
-  const profileImgRef = useRef(null)
-  const boatImgRef = useRef(null)
+  const profileImgRef = React.useRef(null)
+  const boatImgRef = React.useRef(null)
 
   return (
     <Form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
@@ -333,7 +351,7 @@ export default function AccountEdit({ user }: { user: User }) {
       />
       <div style={{ marginTop: '-1em' }}>
         {state.data?.image ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1em' }}>
+          <Container row style={{ alignItems: 'center' }}>
             <ProfileImage src={state.data.image} alt="Your profile picture" />
             <Button
               variant="outlined"
@@ -341,7 +359,7 @@ export default function AccountEdit({ user }: { user: User }) {
             >
               Upload new
             </Button>
-          </div>
+          </Container>
         ) : (
           <Button
             variant="outlined"
@@ -398,7 +416,7 @@ export default function AccountEdit({ user }: { user: User }) {
           <TextInput
             type="date"
             name="birthday"
-            value={state.data.birthday?.toString().slice(0, 10)}
+            value={parseDate(state.data.birthday)}
             id="sessionform__birthday"
             required
             onChange={handleChange}
@@ -420,8 +438,9 @@ export default function AccountEdit({ user }: { user: User }) {
               },
             })
           }
+          prepend="👨"
         >
-          🧑 I'm a Boat Daddy
+          I'm a Boat Daddy
         </CheckButton>
         <CheckButton
           name="isBoatDaddy"
@@ -435,13 +454,14 @@ export default function AccountEdit({ user }: { user: User }) {
               },
             })
           }
+          prepend="🕵"
         >
-          🕵 I'm looking for a Boat Daddy
+          I'm looking for a Boat Daddy
         </CheckButton>
       </CheckButtonGroup>
       <FormGroup
         className={!state.data?.isBoatDaddy && 'visually-hidden'}
-        label="About you👨"
+        label="About you"
         input={
           <TextInput
             type="date"
@@ -507,12 +527,9 @@ export default function AccountEdit({ user }: { user: User }) {
         }
         error={isError('boatImage')}
       />
-      <div
+      <Container
         style={{
           marginTop: '-1em',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1em',
         }}
       >
         {state.data?.isBoatDaddy && state.data?.boatImage && (
@@ -528,7 +545,7 @@ export default function AccountEdit({ user }: { user: User }) {
             </Button>
           </div>
         )}
-      </div>
+      </Container>
       <Button
         type="submit"
         disabled={loading}
