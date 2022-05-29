@@ -1,4 +1,4 @@
-import { DocumentNode, GraphQLFormattedError } from 'api/graphql'
+import { DocumentNode, GraphQLFormattedError } from 'graphql'
 
 export type GraphQLResponse<D> = {
   data?: D
