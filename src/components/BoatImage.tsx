@@ -15,7 +15,8 @@ export default function BoatImage({
   src,
   alt = 'Take a good hard look at this boat',
   ...props
-}: BoatImageProps) {
+}: BoatImageProps): JSX.Element {
+  // console.log('BoatImage', src, alt, props)
   const { width, height, ...rest } = props
 
   if (src.includes('cloudinaryPublicId=')) {

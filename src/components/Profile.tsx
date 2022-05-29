@@ -122,11 +122,11 @@ function Profile({ user }: { user: User }) {
         <BoatImage
           src={user.profile.boatImage}
           alt={`${user.username}'s boat`}
-          dpr="auto"
-          quality="auto"
-          width={900}
-          // height={Math.floor((9 / 16) * 900)}
-          gravity="auto"
+          // dpr="auto"
+          // quality="auto"
+          // width={900}
+          // // height={Math.floor((9 / 16) * 900)}
+          // gravity="auto"
         />
       )}
       {user.longitude && user.latitude ? (

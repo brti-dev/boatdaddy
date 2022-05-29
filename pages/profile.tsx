@@ -24,7 +24,7 @@ const Loader = () => (
   </ContentLoader>
 )
 
-function ProfileLayout({ username }) {
+function ProfileLayout({ username }: { username: string }): JSX.Element {
   const { data, error, loading } = getUser({ username })
 
   if (error) {
@@ -43,7 +43,7 @@ function ProfileLayout({ username }) {
   )
 }
 
-function Profile() {
+export default function Profile(): JSX.Element {
   const { query } = useRouter()
 
   const username = query?.username?.slice(1) as string
@@ -54,5 +54,3 @@ function Profile() {
 
   return <ProfileLayout username={username} />
 }
-
-export default Profile
