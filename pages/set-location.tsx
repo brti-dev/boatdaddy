@@ -23,7 +23,6 @@ const USER_UPDATE_MUTATION = `
 `
 
 const updateUserData = async (vars: UserUpdateInput_input) => {
-  console.log('Update user', vars)
   const userUpdateRes = await graphQlFetch<
     UserUpdate_data,
     UserUpdateInput_input
@@ -44,13 +43,15 @@ export default function SetLocation() {
     error: null,
   })
 
+  React.useEffect(() => console.log(state), [state])
+
   const submitLoc = () => {
     setState(s => ({ ...s, loading: true }))
     updateUserData({
       id: user.data.id,
       input: { latitude: state.latitude, longitude: state.longitude },
     })
-      .then(res => {
+      .then(_ => {
         router.push(`/@${user.data.username}`)
       })
       .catch(error => {

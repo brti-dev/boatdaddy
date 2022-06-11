@@ -41,7 +41,6 @@ export default function Hail() {
     })
 
   React.useEffect(() => {
-    console.log('map state effect', mapState)
     if (!mapState?.bounds) {
       return
     }
