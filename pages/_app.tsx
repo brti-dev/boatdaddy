@@ -19,8 +19,30 @@ import 'matterial/styles/global.scss'
 import 'styles/custom.scss'
 import classes from 'styles/nav.module.scss'
 
-const DEFAULT_LAT = 41.49
-const DEFAULT_LONG = -73.45
+const DEFAULT_POSITION = [41.49, -73.45]
+const DEFAULT_POSITIONS = [
+  ...DEFAULT_POSITION,
+  [41.48, -74.44],
+  [41.47, -73.45],
+  [41.46, -73.45],
+  [41.45, -73.43],
+  [41.44, -73.45],
+  [41.431, -73.455],
+  [41.465, -73.428],
+  [41.486, -73.437],
+  [41.518, -73.459],
+  [41.54, -73.46],
+  [41.564, -73.483],
+  [41.551, -73.468],
+]
+function getRandomInt(min: number, max: number): number {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min) + min) //The maximum is exclusive and the minimum is inclusive
+}
+const rand = getRandomInt(0, DEFAULT_POSITIONS.length)
+const DEFAULT_LATITUDE = DEFAULT_POSITIONS[rand][0]
+const DEFAULT_LONGITUDE = DEFAULT_POSITIONS[rand][1]
 
 type UserUpdate_data = {
   id: number
@@ -153,7 +175,10 @@ function GeolocationChecker({ children }: RequiredChildren): JSX.Element {
           )
           updateUserData({
             id: data.userId,
-            input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
+            input: {
+              latitude: DEFAULT_LATITUDE,
+              longitude: DEFAULT_LONGITUDE,
+            },
           })
         } else {
           navigator.geolocation.getCurrentPosition(
@@ -167,7 +192,10 @@ function GeolocationChecker({ children }: RequiredChildren): JSX.Element {
             () => {
               updateUserData({
                 id: data.userId,
-                input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
+                input: {
+                  latitude: DEFAULT_LATITUDE,
+                  longitude: DEFAULT_LONGITUDE,
+                },
               })
               setError(
                 'Unable to retrieve your location; Using default position'
@@ -178,14 +206,14 @@ function GeolocationChecker({ children }: RequiredChildren): JSX.Element {
       } else if (method == 'manual') {
         updateUserData({
           id: data.userId,
-          input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
+          input: { latitude: DEFAULT_LATITUDE, longitude: DEFAULT_LONGITUDE },
         })
 
         router.push('/set-location')
       } else {
         updateUserData({
           id: data.userId,
-          input: { latitude: DEFAULT_LAT, longitude: DEFAULT_LONG },
+          input: { latitude: DEFAULT_LATITUDE, longitude: DEFAULT_LONGITUDE },
         })
       }
     } catch (error) {
