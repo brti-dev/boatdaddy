@@ -1,19 +1,35 @@
-import { Tooltip, Button, InfoIcon } from 'matterial'
+import { Tooltip, Button, Icon } from 'matterial'
+import * as React from 'react'
 
 import { User } from 'interfaces/api/user'
+
 import BoatImage from 'components/BoatImage'
 import { ProfileAvatar, BoatName } from 'components/Profile'
 import classes from 'styles/driver-card.module.scss'
 
 export default function DriverCard({ user }: { user: User }) {
+  const [{ active, hover }, setState] = React.useState({
+    active: false,
+    hover: false,
+  })
+
   return (
-    <div className={`surface ${classes.driverCard}`}>
-      <Tooltip label={`@${user.username}`}>
-        <header>
-          <h5>{user.profile.name || user.username}</h5>
-          <ProfileAvatar user={user} size={30} />
-        </header>
-      </Tooltip>
+    <div
+      className={classes.driverCard}
+      data-hover={hover}
+      data-active={active}
+      onMouseEnter={() => setState({ active, hover: true })}
+      onMouseLeave={() => setState({ active: false, hover: false })}
+      onClick={() => setState({ active: !active, hover })}
+    >
+      <header>
+        <h5>{user.profile.name || user.username}</h5>
+        <ProfileAvatar user={user} size={30} />
+        <strong>
+          <span>@</span>
+          {user.username}
+        </strong>
+      </header>
 
       <dl>
         <dt>📍</dt>
@@ -24,7 +40,7 @@ export default function DriverCard({ user }: { user: User }) {
         </dd>
       </dl>
 
-      <div className={classes.boatImage}>
+      <div className={classes.boatImage} data-show-on-active="true">
         {user.profile.boatImage && (
           <BoatImage
             src={user.profile.boatImage}
@@ -35,16 +51,22 @@ export default function DriverCard({ user }: { user: User }) {
         )}
       </div>
 
-      <footer>
+      <footer data-show-on-active="true">
         <Button
           variant="contained"
-          color="primary"
+          color="secondary"
+          size="small"
           to={`/hail/?driver=${user.username}`}
         >
-          Hail {user.username}
+          Hail
         </Button>
-        <Button shape="circle" size="large" to={`/@${user.username}`}>
-          <InfoIcon />
+        <Button
+          variant="contained"
+          color="secondary"
+          size="small"
+          to={`/@${user.username}`}
+        >
+          Profile
         </Button>
       </footer>
     </div>

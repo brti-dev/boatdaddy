@@ -1,27 +1,70 @@
 .driverCard {
   --gap: 10px;
+  --translate: 5px;
 
+  box-sizing: border-box;
+  font-size: 80%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: var(--gap);
-  box-sizing: border-box;
   width: calc(200px + var(--gap) * 4);
-  margin: 0;
+  margin: 0 0 calc(0px - var(--translate));
   padding: calc(var(--gap) * 2);
+  background-color: var(--color-body);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+  &[data-hover='true'],
+  &[data-active='true'] {
+    box-shadow: var(--color-body) 0px 0px 0px 3px, var(--shadow);
+    transform: translateY(calc(0px - var(--translate)));
+  }
+
+  &[data-active='true'] {
+    box-shadow: var(--color-secondary) 0px 0px 0px 3px, var(--shadow);
+  }
+
+  [data-show-on-active='true'] {
+    max-height: 0;
+    transition: max-height 0.15s ease-out;
+    overflow: hidden;
+  }
+
+  &[data-active='true'] [data-show-on-active='true'] {
+    max-height: 500px;
+    transition: max-height 0.3s ease-in;
+  }
 
   header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 
     h5 {
       margin: 0;
       padding: 0;
-      font-size: 80%;
+      font-size: 90%;
+      font-family: revert;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+    }
+
+    strong {
+      flex: 0 0 100%;
+      font-size: 70%;
+      color: var(--color-accent-4);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      span {
+        color: var(--color-accent-3);
+      }
     }
   }
 

@@ -89,14 +89,11 @@ export default function Hail() {
             </Button>
           </div>
         ) : (
-          <>
-            <h5>Hail these daddies</h5>
-            <NearbyList
-              data={nearby.data as NearbyDrivers_data}
-              error={nearby.error}
-              loading={nearby.loading}
-            />
-          </>
+          <NearbyList
+            data={nearby.data as NearbyDrivers_data}
+            error={nearby.error}
+            loading={nearby.loading}
+          />
         )}
       </div>
     </Layout>

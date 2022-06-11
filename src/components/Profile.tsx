@@ -148,6 +148,7 @@ function Profile({ user }: { user: User }) {
             size="large"
             to={`/hail/@${user.username}`}
             className={classes.hailButton}
+            width="100%"
           >
             Hail a Ride with {user.username}
           </Button>
